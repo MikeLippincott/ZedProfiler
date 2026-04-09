@@ -1,0 +1,111 @@
+# ZedProfiler Roadmap
+
+This file is for roadmap planning.
+
+## Scope for current release
+
+### In scope
+
+- Handcrafted featurization modules:
+  - AreaSizeShape
+  - Colocalization
+  - Intensity
+  - Granularity
+  - Neighbors
+  - Texture
+- Featurization helper utilities needed by the modules
+- Full test suite with coverage gate (>=85%)
+- Sphinx documentation
+- Example notebooks for module usage
+- RFC2119-driven feature naming policy
+
+## Architecture and Product Decisions
+
+- Linux-first, CPU-only for the current release.
+- File-format agnostic APIs operating on NumPy arrays.
+- Input contracts:
+  - Single-channel arrays: (z, y, x)
+  - Multi-channel arrays: (c, z, y, x)
+- Modules are intentionally small and composable for external parallel orchestration.
+
+## PR Plan
+
+### Phase 1: Foundation (PR 1-3)
+
+1. PR 1: Packaging and environment baseline
+
+- Python package scaffold, uv dependency management, version metadata 0.0.1, lint/test tooling, CI skeleton.
+- Linux support and CPU-only scope statements in metadata and docs.
+
+2. PR 2: Core data model and API contracts
+
+- Canonical input contracts, loader interfaces, common error types.
+- Return schema contract (required keys, types, deterministic ordering).
+
+3. PR 3: RFC2119 naming specification and validators
+
+- Port and adapt naming conventions into this repository.
+- Add runtime and CI naming validation helpers and conformance tests.
+
+### Phase 2: Feature modules and tests (PR 4-9)
+
+4. PR 4: AreaSizeShape module and tests
+
+- CPU implementation, anisotropy handling, edge cases.
+
+5. PR 5: Colocalization module and tests
+
+- Metrics API, threshold options, schema and naming compliance.
+
+6. PR 6: Intensity module and tests
+
+- Object-level intensity features and required helpers.
+
+7. PR 7: Granularity module and tests
+
+- CPU granularity spectrum, subsampling behavior, parameter validation.
+
+8. PR 8: Neighbors module and tests
+
+- Neighbor counting APIs, distance threshold and anisotropy handling.
+
+9. PR 9: Texture module and tests
+
+- Haralick-style texture API, scaling helper, deterministic output ordering.
+
+### Phase 3: Integration, docs, release (PR 10-13)
+
+10. PR 10: Integration matrix and parallelization guidance
+
+- Cross-module integration tests and explicit non-goal docs for internal parallelization.
+
+11. PR 11: Example notebooks and public dataset references
+
+- One notebook per module plus one end-to-end chaining notebook.
+
+12. PR 12: Sphinx docs, logo, API docs
+
+- API pages, architecture and scope pages, docs build checks in CI.
+
+13. PR 13: Release v0.0.1 and publish workflow
+
+- Changelog, semantic tag, PyPI publish automation, README install updates.
+
+## Verification Gates
+
+1. Run full unit and integration tests on Linux with coverage >=85%.
+2. Run naming validation tests for all emitted feature names.
+3. Build Sphinx docs in CI with warnings treated as errors.
+4. Execute example notebooks in a clean environment.
+5. Validate install/import from both wheel and sdist.
+6. Perform release dry-run before publishing.
+
+## v0.0.2 Backlog (Planned)
+
+1. Nucleocentric featurization.
+2. Optional mask output mode.
+3. Expanded benchmark strategy.
+
+## v0.0.3 Backlog (Planned)
+
+1. Potential Arrow Flight handoff experiments.
