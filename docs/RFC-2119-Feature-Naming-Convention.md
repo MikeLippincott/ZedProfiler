@@ -70,7 +70,7 @@ The `<compartment>` component:
 - MUST NOT contain whitespace or special characters
 - MUST use pascalcase capitalization
 
-**Example:** `nuclei`, `cytoplasm`, `organoid`
+**Example:** `Nuclei`, `Cytoplasm`, `Organoid`
 
 #### 2.2.2 Channel component
 
@@ -87,9 +87,9 @@ The `<channel>` component:
 - MAY use pascalcase capitalization
 - MAY use hyphen-separated channel combinations for colocalization features (e.g., `DNA-mito`)
 - MUST list channels in alphabetical order when combined (e.g., `DNA-mito` not `mito-DNA`)
-- MUST be set to `nochannel` for channel-independent features (e.g., areasizeshape)
+- MUST be set to `NoChannel` for channel-independent features (e.g., areasizeshape)
 
-**Example:** `DNA`, `mito`, `DNA-mito`
+**Example:** `DNA`, `Mito`, `DNA-Mito`
 
 #### 2.2.3 Featuretype component
 
@@ -102,13 +102,13 @@ The `<featuretype>` component:
   - `Granularity` - granular spectrum and texture-at-scale features
   - `Intensity` - pixel intensity statistics
   - `Neighbors` - spatial relationship and neighbor counting
-  - `Sammed3d` - deep learning features from SAM-med3d model
+  - `SAMMed3D` - deep learning features from SAM-med3d model
   - `Texture` - haralick texture features
 - MUST NOT contain whitespace
 - MUST use pascalcase capitalization
 - MUST NOT include version numbers or implementation details
 
-**Example:** `intensity`, `texture`, `colocalization`
+**Example:** `Intensity`, `Texture`, `Colocalization`
 
 #### 2.2.4 Measurement component
 
