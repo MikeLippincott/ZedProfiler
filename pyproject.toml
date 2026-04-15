@@ -29,6 +29,7 @@ scripts.ZedProfiler = "ZedProfiler.cli:trigger"
 dev = [
   "poethepoet>=0.34",
   "pytest>=8.3.5",
+  "pytest-cov>=5",
 ]
 docs = [
   "myst-nb>=1.2",
@@ -87,7 +88,7 @@ formats = "ipynb,py:light"
 
 [tool.vulture]
 min_confidence = 90
-paths = [ "src/ZedProfiler", "tests" ]
+paths = [ "src/zedprofiler", "tests" ]
 
 [tool.poe]
 # tasks for development environments

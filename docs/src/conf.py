@@ -56,7 +56,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/org/repohttps://github.com/WayScience/ZedProfiler",
+            "url": "https://github.com/WayScience/ZedProfiler",
             "icon": "fa-brands fa-github",
         },
     ],

@@ -1,20 +1,15 @@
-"""
-Tests for the main module.
-"""
+"""Smoke tests for top-level package access."""
 
-from ZedProfiler.main import show_message
+import zedprofiler
+from zedprofiler import colocalization
 
 
-def test_show_message(my_data: str) -> None:
-    """
-    Test the show_message function.
-    """
+def test_package_version_is_exposed() -> None:
+    """The package should expose a string version."""
+    assert isinstance(zedprofiler.__version__, str)
+    assert zedprofiler.__version__
 
-    # Test default message
-    result = show_message()
-    assert result.shape == (1, 1)
-    assert result.iloc[0, 0] == "Hello, world!"
 
-    result = show_message(my_data)
-    assert result.shape == (1, 1)
-    assert result.iloc[0, 0] == my_data
+def test_promoted_feature_module_is_accessible() -> None:
+    """Promoted feature modules should be importable from top-level."""
+    assert colocalization.__name__ == "zedprofiler.featurization.colocalization"

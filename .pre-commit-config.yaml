@@ -9,7 +9,7 @@ repos:
     -   id: check-yaml
     -   id: detect-private-key
 -   repo: https://github.com/tox-dev/pyproject-fmt
-    rev: "v2.21.0"
+    rev: "v2.21.1"
     hooks:
     -   id: pyproject-fmt
 -   repo: https://github.com/citation-file-format/cffconvert
@@ -56,3 +56,16 @@ repos:
     rev: 'v2.16'
     hooks:
     -   id: vulture
+-   repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.11.0
+    hooks:
+    -   id: shellcheck
+#       args: ["--severity=warning"]  # Optionally only show errors and warnings
+-   repo: local
+    hooks:
+    -   id: coverage-check
+        name: coverage-check-and-badge-update
+        entry: just coverage-check
+        language: system
+        pass_filenames: false
+        always_run: true

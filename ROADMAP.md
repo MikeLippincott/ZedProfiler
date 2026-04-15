@@ -1,6 +1,8 @@
 # ZedProfiler Roadmap
 
-This file is for roadmap planning.
+This file is for planning of new modules, features, and PRs that are needed the release(s) of ZedProfiler.
+The roadmap is organized into phases, with each phase containing a set of PRs that build upon each other.
+The roadmap is intended to be a living document and may be updated as needed.
 
 ## Scope for current release
 
@@ -17,11 +19,11 @@ This file is for roadmap planning.
 - Full test suite with coverage gate (>=85%)
 - Sphinx documentation
 - Example notebooks for module usage
-- RFC2119-driven feature naming policy
+- Our [RFC2119-specification](./docs/src/RFC-2119-Feature-Naming-Convention.md) driven feature naming policy
 
 ## Architecture and Product Decisions
 
-- Linux-first, CPU-only for the current release.
+- Linux-first, CPU-only, low RAM usage for the current release.
 - File-format agnostic APIs operating on NumPy arrays.
 - Input contracts:
   - Single-channel arrays: (z, y, x)
@@ -94,17 +96,17 @@ This file is for roadmap planning.
 ## Verification Gates
 
 1. Run full unit and integration tests on Linux with coverage >=85%.
-2. Run naming validation tests for all emitted feature names.
-3. Build Sphinx docs in CI with warnings treated as errors.
-4. Execute example notebooks in a clean environment.
-5. Validate install/import from both wheel and sdist.
-6. Perform release dry-run before publishing.
+1. Run naming validation tests for all emitted feature names.
+1. Build Sphinx docs in CI with warnings treated as errors.
+1. Execute example notebooks in a clean environment.
+1. Validate install/import from both wheel and sdist.
+1. Perform release dry-run before publishing.
 
 ## v0.0.2 Backlog (Planned)
 
 1. Nucleocentric featurization.
-2. Optional mask output mode.
-3. Expanded benchmark strategy.
+1. Optional mask output mode.
+1. Expanded benchmark strategy.
 
 ## v0.0.3 Backlog (Planned)
 
