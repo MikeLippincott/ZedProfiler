@@ -28,6 +28,7 @@ dev = [
   "poethepoet>=0.34",
   "pytest>=8.3.5",
   "pytest-cov>=5",
+  "ruff>=0.15.10",
 ]
 docs = [
   "myst-nb>=1.2",
