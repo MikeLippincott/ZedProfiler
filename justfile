@@ -1,12 +1,12 @@
 set shell := ["bash", "-cu"]
 
-# Create and sync the local uv environment with all project extras.
+# Create and sync the local uv environment with all project dependency groups.
 env:
-    uv sync --extra dev --extra docs --extra featurization
+    uv sync --group dev --group docs --group notebooks
 
 # Re-sync environment after dependency changes.
 sync:
-    uv sync --extra dev --extra docs --extra featurization
+    uv sync --group dev --group docs --group notebooks
 
 # Run tests with coverage gate from pyproject settings.
 test:
