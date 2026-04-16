@@ -1,0 +1,45 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+---
+cff-version: 1.2.0
+title: ZedProfiler
+message: >-
+  If you use this software, please cite it using the
+  metadata from the CITATION.cff file.
+type: software
+authors:
+  - given-names: Michael J.
+    family-names: Lippincott
+    orcid: "https://orcid.org/0000-0002-8637-1448"
+  - given-names: Dave
+    family-names: Bunten
+    orcid: "https://orcid.org/0000-0001-6041-3665"
+  - given-names: Gregory P.
+    family-names: Way
+    orcid: "https://orcid.org/0000-0002-0503-9348"
+
+repository-code: "https://github.com/WayScience/ZedProfiler"
+abstract: >-
+  CPU-first handcrafted 3D featurization toolkit for high-throughput profiling
+keywords:
+  - python
+  - image-based profiling
+  - high-content screening
+  - high-throughput screening
+  - microscopy
+  - volumetric image analysis
+  - image feature extraction
+  - feature engineering
+license: BSD-3-Clause
+
+references:
+  - url: "https://github.com/WayScience/ZedProfiler"
+    type: software-code
+    title: "ZedProfiler: A CPU-first 3D image feature extraction toolkit for high-content and high-throughput image-based profiling"
+    authors:
+      - given-names: Michael J.
+        family-names: Lippincott
+      - given-names: Dave
+        family-names: Bunten
+      - given-names: Gregory P.
+        family-names: Way
