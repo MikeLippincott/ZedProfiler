@@ -25,15 +25,15 @@ scripts.ZedProfiler = "ZedProfiler.cli:trigger"
 
 [dependency-groups]
 dev = [
-  "poethepoet>=0.44.0",
+  "poethepoet>=0.44",
   "pytest>=9.0.3",
   "pytest-cov>=5",
   "ruff>=0.15.10",
 ]
 docs = [
-  "myst-nb>=1.4.0",
-  "pydata-sphinx-theme>=0.17.0",
-  "sphinx>=9.1.0",
+  "myst-nb>=1.4",
+  "pydata-sphinx-theme>=0.17",
+  "sphinx>=9.1",
 ]
 notebooks = [
   "black>=26.3.1",
