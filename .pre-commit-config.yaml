@@ -63,9 +63,9 @@ repos:
 #       args: ["--severity=warning"]  # Optionally only show errors and warnings
 -   repo: local
     hooks:
-    -   id: coverage-check
-        name: coverage-check-and-badge-update
-        entry: just coverage-check
+    -   id: just-all
+        name: just-all
+        entry: just all
         language: system
         pass_filenames: false
         always_run: true

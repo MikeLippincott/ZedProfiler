@@ -1,4 +1,4 @@
-# Feature naming convention and schema specification
+# Feature naming schema specification
 
 **Status:** experimental
 **Version:** 0.0.1
@@ -10,7 +10,7 @@ ______________________________________________________________________
 
 ## Abstract
 
-This document specifies the naming convention and schema for morphological features extracted using ZedProfiler. The specification defines requirements for feature identifiers, data structures, and formatting rules to ensure consistency, interoperability, and maintainability across pipelines.
+This document specifies the naming specification and schema for morphological features extracted using ZedProfiler. The specification defines requirements for feature identifiers, data structures, and formatting rules to ensure consistency, interoperability, and maintainability across pipelines.
 
 ______________________________________________________________________
 
@@ -18,7 +18,7 @@ ______________________________________________________________________
 
 ### 1.1 Purpose
 
-This specification establishes a standardized feature naming convention and data schema. Standardization enables:
+This specification establishes a standardized feature naming specification and data schema. Standardization enables:
 
 - Consistent feature identification across analysis stages
 - Automated feature parsing and metadata extraction
@@ -146,7 +146,7 @@ Nuclei_DNA_SAMMed3D_CLSFeature-512
 
 ______________________________________________________________________
 
-## 2B. metadata naming convention
+## 2B. metadata naming specification
 
 ### 2.1 General structure
 
@@ -204,20 +204,8 @@ Metadata_Location_Cell_CentroidX
 
 ### 3.2 Informative references
 
-- **Cellprofiler feature naming convention**
+- **Cellprofiler feature naming specification**
   Influenced naming structure for biological image analysis
 
 - **OME data model**
   Open microscopy environment standards for microscopy data
-
-______________________________________________________________________
-
-## Copyright notice
-
-Copyright (c) 2026 way science lab. all rights reserved.
-
-This document may be freely distributed and used for implementation purposes within the NF1 3D organoid profiling pipeline project and related research activities. the license for this document is the covered under the license of ZedProfiler, which is available at [LICENSE](../LICENSE).
-
-______________________________________________________________________
-
-**END OF SPECIFICATION**

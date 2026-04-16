@@ -19,7 +19,7 @@ The roadmap is intended to be a living document and may be updated as needed.
 - [ ] Full test suite with coverage gate (>=85%)
 - [ ] Sphinx documentation
 - [ ] Example notebooks for module usage
-- [ ] Our [RFC2119-specification](./docs/src/RFC-2119-Feature-Naming-Convention.md) driven feature naming policy
+- [ ] Our [RFC2119-specification](./docs/src/Feature_Naming_Convention.md) driven feature naming policy
 
 ## Architecture and Product Decisions
 
