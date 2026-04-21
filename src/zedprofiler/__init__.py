@@ -17,11 +17,8 @@ from zedprofiler.featurization import (
     neighbors,
     texture,
 )
-from zedprofiler.IO.loading_classes import ImageSetConfig, ImageSetLoader
 
 __all__ = [
-    "ImageSetConfig",
-    "ImageSetLoader",
     "__version__",
     "areasizeshape",
     "colocalization",
