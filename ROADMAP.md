@@ -53,27 +53,27 @@ The roadmap is intended to be a living document and may be updated as needed.
 
 4. PR 4: AreaSizeShape module and tests
 
-- [ ] CPU implementation, anisotropy handling, edge cases.
+   - [x] Implement module
 
-5. PR 5: Colocalization module and tests
+1. PR 5: Colocalization module and tests
 
-- [ ] Metrics API, threshold options, schema and naming compliance.
+   - [x] Implement module
 
-6. PR 6: Intensity module and tests
+1. PR 6: Intensity module and tests
 
-- [ ] Object-level intensity features and required helpers.
+   - [x] Implement module
 
-7. PR 7: Granularity module and tests
+1. PR 7: Granularity module and tests
 
-- [ ] CPU granularity spectrum, subsampling behavior, parameter validation.
+   - [x] Implement module
 
-8. PR 8: Neighbors module and tests
+1. PR 8: Neighbors module and tests
 
-- [ ] Neighbor counting APIs, distance threshold and anisotropy handling.
+   - [x] Implement module
 
-9. PR 9: Texture module and tests
+1. PR 9: Texture module and tests
 
-- [ ] Haralick-style texture API, scaling helper, deterministic output ordering.
+   - [x] Implement module
 
 ### Phase 3: Integration, docs, release (PR 10-13)
 
