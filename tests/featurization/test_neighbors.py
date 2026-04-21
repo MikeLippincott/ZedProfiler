@@ -105,8 +105,8 @@ def test_get_coordinates_returns_centroids_for_selected_objects() -> None:
         0.0,
     ]
     assert coords.loc[
-        coords["object_id"] == EXPECTED_SECOND_OBJECT_ID,
-        ["x", "y", "z"]].iloc[0].tolist() == [
+        coords["object_id"] == EXPECTED_SECOND_OBJECT_ID, ["x", "y", "z"]
+    ].iloc[0].tolist() == [
         1.0,
         1.0,
         1.0,
