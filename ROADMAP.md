@@ -93,6 +93,11 @@ The roadmap is intended to be a living document and may be updated as needed.
 
 - [ ] Changelog, semantic tag, PyPI publish automation, README install updates.
 
+### Phase 4: Post-release improvements (PR 14+)
+
+14. Add the ability for loading of images from array instead of file
+    file paths for increased flexibility in data sources and testing.
+
 ## Verification Gates
 
 - [ ] Run full unit and integration tests on Linux with coverage >=85%.
