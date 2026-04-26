@@ -119,10 +119,20 @@ class TestRobustness:
         assert result.endswith("-")
         assert "test" in result
 
-    def test_single_character_strings(self) -> None:
+    @pytest.mark.parametrize(
+        ("raw_value", "expected"),
+        [
+            ("a", "a"),
+            ("_", "-"),
+            (".", "-"),
+            (" ", "-"),
+            ("/", "-"),
+        ],
+    )
+    def test_single_character_strings(
+        self,
+        raw_value: str,
+        expected: str,
+    ) -> None:
         """Test single character string handling."""
-        assert remove_underscores_from_string("a") == "a"
-        assert remove_underscores_from_string("_") == "-"
-        assert remove_underscores_from_string(".") == "-"
-        assert remove_underscores_from_string(" ") == "-"
-        assert remove_underscores_from_string("/") == "-"
+        assert remove_underscores_from_string(raw_value) == expected

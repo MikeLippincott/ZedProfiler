@@ -2,41 +2,43 @@
 
 from __future__ import annotations
 
-import dataclasses
 import logging
 import pathlib
-from types import SimpleNamespace
+from collections.abc import Iterator
+from dataclasses import dataclass
 
+import bioio
 import numpy
-
-try:
-    import skimage.io as _skimage_io
-except ImportError:
-    _skimage_io = None
-
-skimage = SimpleNamespace(io=SimpleNamespace(imread=None))
-if _skimage_io is not None:
-    skimage.io.imread = _skimage_io.imread
+from beartype import beartype
 
 logging.basicConfig(level=logging.INFO)
 
 
-def _read_image(path: pathlib.Path) -> numpy.ndarray:
-    """Read an image with scikit-image when available."""
-    if skimage.io.imread is None:
-        raise ModuleNotFoundError(
-            "scikit-image is required to load image files. "
-            "Install `scikit-image` to use ImageSetLoader file I/O."
-        )
-    return skimage.io.imread(path)
+@beartype
+def _image_loading(image_path: pathlib.Path) -> numpy.ndarray:
+    """
+    Internal loader using bioio as a backend
+
+    Parameters
+    ----------
+    image_path : pathlib.Path
+        Path to the image to load
+
+    Returns
+    -------
+    numpy.ndarray
+        Image returned
+    """
+    image = bioio.BioImage(str(image_path))  # selects the first scene found
+    return image.get_image_data("ZYX")
 
 
-@dataclasses.dataclass
+@dataclass
 class ImageSetConfig:
     """Configuration options for ImageSetLoader."""
 
     image_set_name: str | None = None
-    mask_key_name: list[str] | None = None
+    label_key_name: list[str] | None = None
     raw_image_key_name: list[str] | None = None
 
     # validate the arg types
@@ -45,23 +47,56 @@ class ImageSetConfig:
 
         if not isinstance(self.image_set_name, (str, type(None))):
             raise TypeError("image_set_name must be a string or None")
-        if not isinstance(self.mask_key_name, (list, type(None))):
-            raise TypeError("mask_key_name must be a list of strings or None")
+        if not isinstance(self.label_key_name, (list, type(None))):
+            raise TypeError("label_key_name must be a list of strings or None")
         if not isinstance(self.raw_image_key_name, (list, type(None))):
             raise TypeError("raw_image_key_name must be a list of strings or None")
 
-        if self.mask_key_name is None:
-            self.mask_key_name = []
+        if self.label_key_name is None:
+            self.label_key_name = []
         if self.raw_image_key_name is None:
             self.raw_image_key_name = []
 
 
+class _LazyImageSetDict(dict[str, pathlib.Path | numpy.ndarray]):
+    """Dictionary that loads image arrays on first access."""
+
+    def __getitem__(self, key: str) -> numpy.ndarray:
+        value = super().__getitem__(key)
+        if isinstance(value, pathlib.Path):
+            value = _image_loading(value)
+            super().__setitem__(key, value)
+        return value
+
+    def get(
+        self,
+        key: str,
+        default: pathlib.Path | numpy.ndarray | None = None,
+    ) -> pathlib.Path | numpy.ndarray | None:
+        if key in self:
+            return self[key]
+        return default
+
+    def items(self) -> Iterator[tuple[str, numpy.ndarray]]:
+        for key in dict.__iter__(self):
+            yield key, self[key]
+
+    def values(self) -> Iterator[numpy.ndarray]:
+        for key in dict.__iter__(self):
+            yield self[key]
+
+
 class ImageSetLoader:
     """
-    Load an image set consisting of raw z stack images and segmentation masks.
+    ImageSet in this context refers to a set of images that can be
+    related to each other via their metadata.
+    For example all images coming from the same well, FOV or timepoint
+    but different spectral channels and segmentation labels.
+
+    Load an image set consisting of raw z stack images and segmentation labels.
 
     A class to load an image set consisting of raw z stack images from multiple
-    spectral channels and segmentation masks. The images are loaded into a
+    spectral channels and segmentation labels. The images are loaded into a
     dictionary, and various attributes and compartments are extracted from the
     images. The class also provides methods to retrieve images and their attributes.
 
@@ -69,8 +104,8 @@ class ImageSetLoader:
     ----------
     image_set_path : pathlib.Path
         Path to the image set directory.
-    mask_set_path : pathlib.Path
-        Path to the mask set directory.
+    label_set_path : pathlib.Path
+        Path to the label set directory.
     anisotropy_spacing : tuple
         The anisotropy spacing of the images in format
         (z_spacing, y_spacing, x_spacing).
@@ -88,8 +123,8 @@ class ImageSetLoader:
         The anisotropy factor calculated from the spacing.
     image_set_dict : dict
         A dictionary containing the loaded images, with keys as channel names.
-    unique_mask_objects : dict
-        A dictionary containing unique object IDs for each mask in the image set.
+    unique_label_objects : dict
+        A dictionary containing unique object IDs for each label in the image set.
     unique_compartment_objects : dict
         A dictionary containing unique object IDs for each compartment in the image set.
         A compartment is defined as a segmented region in the image (e.g., Cell,
@@ -102,7 +137,7 @@ class ImageSetLoader:
     Methods
     -------
     retrieve_image_attributes()
-        Retrieve unique object IDs for each mask in the image set.
+        Retrieve unique object IDs for each label in the image set.
     get_unique_objects_in_compartments()
         Retrieve unique object IDs for each compartment in the image set.
     get_image(key)
@@ -115,12 +150,14 @@ class ImageSetLoader:
         Retrieve the anisotropy factor.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
-        image_set_path: pathlib.Path,
-        mask_set_path: pathlib.Path | None,
         anisotropy_spacing: tuple[float, float, float],
         channel_mapping: dict[str, str],
+        image_set_path: pathlib.Path | None,
+        label_set_path: pathlib.Path | None,
+        image_set_array: numpy.ndarray | None = None,
+        label_set_array: numpy.ndarray | None = None,
         config: ImageSetConfig | None = None,
     ) -> None:
         """Initialize the ImageSetLoader with paths, spacing, and mapping.
@@ -129,78 +166,109 @@ class ImageSetLoader:
         ----------
         image_set_path : pathlib.Path
             Path to the image set directory.
-        mask_set_path : pathlib.Path | None
-            Path to the mask set directory.
+        label_set_path : pathlib.Path | None
+            Path to the label set directory.
         anisotropy_spacing : tuple
             The anisotropy spacing of the images. In format
             (z_spacing, y_spacing, x_spacing).
         channel_mapping : dict
             A dictionary mapping channel names to image file names.
         config : ImageSetConfig | None
-            Optional configuration object with image_set_name, mask_key_name,
+            Optional configuration object with image_set_name, label_key_name,
             and raw_image_key_name. If None, defaults are used.
         """
-        if config is None:
-            config = ImageSetConfig()
-
+        config = config or ImageSetConfig()
+        self._validate_input_sources(
+            image_set_path=image_set_path,
+            label_set_path=label_set_path,
+            image_set_array=image_set_array,
+            label_set_array=label_set_array,
+        )
+        self.image_set_dict = _LazyImageSetDict()
         channel_tokens = [str(value) for value in channel_mapping.values()]
         self.anisotropy_spacing = anisotropy_spacing
         self.anisotropy_factor = self.anisotropy_spacing[0] / self.anisotropy_spacing[1]
         self.image_set_name = config.image_set_name
-        if image_set_path is None:
-            channel_files = []
-        else:
-            channel_files = sorted(image_set_path.glob("*"))
-            channel_files = [
-                f
-                for f in channel_files
-                if f.suffix in [".tif", ".tiff"]
-                and any(token in f.name for token in channel_tokens)
-            ]
+        self.label_set_path = label_set_path
+        self._load_path_based_images(
+            channel_mapping=channel_mapping,
+            channel_tokens=channel_tokens,
+            image_set_path=image_set_path,
+            label_set_path=label_set_path,
+        )
+        self._load_array_based_images(
+            config=config,
+            image_set_array=image_set_array,
+            label_set_array=label_set_array,
+        )
 
-        self.mask_set_path = mask_set_path
-
-        mask_files = sorted(mask_set_path.glob("*")) if mask_set_path else []
-        mask_files = [
-            f
-            for f in mask_files
-            if f.suffix in [".tif", ".tiff"]
-            and any(token in f.name for token in channel_tokens)
-        ]
-
-        # Load images into a dictionary
-        self.image_set_dict = {}
-        for f in channel_files:
-            for key, value in channel_mapping.items():
-                if str(value) in f.name:
-                    self.image_set_dict[key] = _read_image(f)
-        for f in mask_files:
-            for key, value in channel_mapping.items():
-                if str(value) in f.name:
-                    self.image_set_dict[key] = _read_image(f)
-
-        self.retrieve_image_attributes()
         self.get_compartments()
         self.get_image_names()
         self.get_unique_objects_in_compartments()
 
-    def retrieve_image_attributes(self) -> None:
-        """
-        This is also a quick and dirty way of loading two types of images:
-            1. masks (multi-indexed segmentation masks)
-            2. The spectral images to extract morphology features from
+    @staticmethod
+    def _validate_input_sources(
+        image_set_path: pathlib.Path | None,
+        label_set_path: pathlib.Path | None,
+        image_set_array: numpy.ndarray | None,
+        label_set_array: numpy.ndarray | None,
+    ) -> None:
+        if image_set_array is None and image_set_path is None:
+            raise ValueError(
+                "Either image_set_array or image_set_path must be provided."
+            )
+        if label_set_array is None and label_set_path is None:
+            raise ValueError(
+                "Either label_set_array or label_set_path must be provided."
+            )
 
-        My naming convention puts the work "mask" in the segmentation images this
-        this is a way to differentiate each mask of each compartment
-        apart from the spectral images.
+    def _load_path_based_images(
+        self,
+        channel_mapping: dict[str, str],
+        channel_tokens: list[str],
+        image_set_path: pathlib.Path | None,
+        label_set_path: pathlib.Path | None,
+    ) -> None:
+        if image_set_path is None:
+            return
 
-        Future work should be to load the images in a more structured way
-        that does not depend on the file naming convention.
-        """
-        self.unique_mask_objects = {}
-        for key, value in self.image_set_dict.items():
-            if "mask" in key:
-                self.unique_mask_objects[key] = numpy.unique(value)
+        channel_files = sorted(image_set_path.glob("*"))
+        channel_files = [
+            f
+            for f in channel_files
+            if f.suffix in [".tif", ".tiff"]
+            and any(token in f.name for token in channel_tokens)
+        ]
+
+        label_files = sorted(label_set_path.glob("*")) if label_set_path else []
+        label_files = [
+            f
+            for f in label_files
+            if f.suffix in [".tif", ".tiff"]
+            and any(token in f.name for token in channel_tokens)
+        ]
+
+        for f in channel_files:
+            for key, value in channel_mapping.items():
+                if str(value) in f.name:
+                    self.image_set_dict[key] = f
+        for f in label_files:
+            for key, value in channel_mapping.items():
+                if str(value) in f.name:
+                    self.image_set_dict[key] = f
+
+    def _load_array_based_images(
+        self,
+        config: ImageSetConfig,
+        image_set_array: numpy.ndarray | None,
+        label_set_array: numpy.ndarray | None,
+    ) -> None:
+        if image_set_array is not None:
+            for key in config.raw_image_key_name:
+                self.image_set_dict[key] = image_set_array
+        if label_set_array is not None:
+            for key in config.label_key_name:
+                self.image_set_dict[key] = label_set_array
 
     def get_unique_objects_in_compartments(self) -> None:
         """Populate unique object IDs per compartment."""
@@ -209,7 +277,7 @@ class ImageSetLoader:
             self.compartments = None
         for compartment in self.compartments:
             self.unique_compartment_objects[compartment] = numpy.unique(
-                self.image_set_dict[compartment]
+                self.get_image(compartment)
             )
             # remove the 0 label
             self.unique_compartment_objects[compartment] = [
@@ -222,7 +290,7 @@ class ImageSetLoader:
         Parameters
         ----------
         key : str
-            Channel or mask key.
+            Channel or label key.
 
         Returns
         -------
@@ -237,7 +305,7 @@ class ImageSetLoader:
         Returns
         -------
         list[str]
-            List of image names excluding compartment masks.
+            List of image names excluding compartment labels.
         """
         compartments = (
             self.compartments
@@ -258,7 +326,9 @@ class ImageSetLoader:
         self.compartments = [
             x
             for x in self.image_set_dict
-            if "Nuclei" in x or "Cell" in x or "Cytoplasm" in x or "Organoid" in x
+            if any(
+                channel_mapping_key in x for channel_mapping_key in self.image_set_dict
+            )
         ]
         return self.compartments
 
@@ -324,13 +394,9 @@ class ObjectLoader:
 
         self.channel = channel_name
         self.compartment = compartment_name
-        self.image = (
-            image_set_loader.image_set_dict[self.channel] if self.channel else None
-        )
+        self.image = image_set_loader.get_image(self.channel) if self.channel else None
         self.label_image = (
-            image_set_loader.image_set_dict[self.compartment]
-            if self.compartment
-            else None
+            image_set_loader.get_image(self.compartment) if self.compartment else None
         )
         # get the labeled image objects
         self.object_ids = numpy.unique(self.label_image)
@@ -390,7 +456,7 @@ class TwoObjectLoader:
         Parameters
         ----------
         image_set_loader : ImageSetLoader
-            Image set loader containing images and masks.
+            Image set loader containing images and labels.
         compartment : str
             Compartment name for the label image.
         channel1 : str
@@ -400,7 +466,7 @@ class TwoObjectLoader:
         """
         self.image_set_loader = image_set_loader
         self.compartment = compartment
-        self.label_image = self.image_set_loader.image_set_dict[compartment].copy()
-        self.image1 = self.image_set_loader.image_set_dict[channel1].copy()
-        self.image2 = self.image_set_loader.image_set_dict[channel2].copy()
+        self.label_image = self.image_set_loader.get_image(compartment)
+        self.image1 = self.image_set_loader.get_image(channel1)
+        self.image2 = self.image_set_loader.get_image(channel2)
         self.object_ids = image_set_loader.unique_compartment_objects[compartment]

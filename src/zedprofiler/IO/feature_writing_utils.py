@@ -9,9 +9,60 @@ import dataclasses
 import pathlib
 
 import pandas
+import pandera.pandas as pa
+from beartype import beartype
+
+FEATURE_NAME_COMPONENT_COLUMNS = (
+    "compartment",
+    "channel",
+    "feature_type",
+    "measurement",
+)
 
 
-def remove_underscores_from_string(string: str) -> str:
+def _coerce_dataframe_column_names_to_strings(
+    dataframe: pandas.DataFrame,
+) -> pandas.DataFrame:
+    """Ensure DataFrame column labels are string-typed before writing."""
+    parsed_dataframe = dataframe.copy()
+    parsed_dataframe.columns = [str(column) for column in parsed_dataframe.columns]
+    return parsed_dataframe
+
+
+def _coerce_feature_name_components(
+    dataframe: pandas.DataFrame,
+) -> pandas.DataFrame:
+    """Normalize feature-name components using shared delimiter cleanup."""
+    parsed_dataframe = dataframe.copy()
+    for column in FEATURE_NAME_COMPONENT_COLUMNS:
+        if column in parsed_dataframe.columns:
+            parsed_dataframe[column] = parsed_dataframe[column].map(
+                remove_underscores_from_string
+            )
+    return parsed_dataframe
+
+
+FEATURE_OUTPUT_SCHEMA = pa.DataFrameSchema(
+    columns={},
+    strict=False,
+    parsers=[pa.Parser(_coerce_dataframe_column_names_to_strings)],
+)
+
+
+FEATURE_NAME_COMPONENT_SCHEMA = pa.DataFrameSchema(
+    columns={
+        "compartment": pa.Column(object, nullable=False, coerce=True),
+        "channel": pa.Column(object, nullable=False, coerce=True),
+        "feature_type": pa.Column(object, nullable=False, coerce=True),
+        "measurement": pa.Column(object, nullable=False, coerce=True),
+    },
+    strict=True,
+    parsers=[pa.Parser(_coerce_feature_name_components)],
+)
+
+
+@beartype
+def remove_underscores_from_string(string: object) -> str:
     """
     Remove unwanted delimiters from a string and replace them with hyphens.
 
@@ -31,7 +82,7 @@ def remove_underscores_from_string(string: str) -> str:
         except Exception as e:
             msg = (
                 f"Input string must be a string or convertible to a string. "
-                f"Received input: {string} of type {type(string)}"
+                f"Received input: {string!r} of type {type(string)}"
             )
             raise ValueError(msg) from e
     string = string.translate(
@@ -48,8 +99,9 @@ def remove_underscores_from_string(string: str) -> str:
     return string
 
 
+@beartype
 def format_morphology_feature_name(
-    compartment: str, channel: str, feature_type: str, measurement: str
+    compartment: object, channel: object, feature_type: object, measurement: object
 ) -> str:
     """
     Format a morphology feature name in a consistent way across all morphology features.
@@ -73,14 +125,25 @@ def format_morphology_feature_name(
         The formatted feature name.
     """
 
-    compartment = remove_underscores_from_string(compartment)
-    channel = remove_underscores_from_string(channel)
-    feature_type = remove_underscores_from_string(feature_type)
-    measurement = remove_underscores_from_string(measurement)
+    component_frame = pandas.DataFrame(
+        [
+            {
+                "compartment": compartment,
+                "channel": channel,
+                "feature_type": feature_type,
+                "measurement": measurement,
+            }
+        ]
+    )
+    coerced_components = FEATURE_NAME_COMPONENT_SCHEMA.validate(component_frame)
+    parsed_row = coerced_components.iloc[0]
+    return (
+        f"{parsed_row['compartment']}_{parsed_row['channel']}_"
+        f"{parsed_row['feature_type']}_{parsed_row['measurement']}"
+    )
 
-    return f"{compartment}_{channel}_{feature_type}_{measurement}"
 
-
+@beartype
 @dataclasses.dataclass
 class FeatureMetadata:
     """Metadata for feature output."""
@@ -91,6 +154,7 @@ class FeatureMetadata:
     cpu_or_gpu: str
 
 
+@beartype
 def save_features_as_parquet(
     parent_path: pathlib.Path,
     df: pandas.DataFrame,
@@ -115,10 +179,13 @@ def save_features_as_parquet(
     -------
     pathlib.Path
     """
-    save_path = (
-        parent_path
-        / f"{metadata.compartment}_{metadata.channel}_{metadata.feature_type}_"
-        f"{metadata.cpu_or_gpu}_features.parquet"
+    validated_df = FEATURE_OUTPUT_SCHEMA.validate(df)
+    output_prefix = format_morphology_feature_name(
+        metadata.compartment,
+        metadata.channel,
+        metadata.feature_type,
+        metadata.cpu_or_gpu,
     )
-    df.to_parquet(save_path, index=False)
+    save_path = parent_path / f"{output_prefix}_features.parquet"
+    validated_df.to_parquet(save_path, index=False)
     return save_path

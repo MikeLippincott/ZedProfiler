@@ -76,19 +76,24 @@ class TestIntegrationWorkflows:
 
         assert len(results) == len(set(results)), "Feature names should be unique"
 
-    def test_multiple_delimiter_combinations(self) -> None:
-        """Test delimiter removal with various combinations."""
-        test_cases = [
+    @pytest.mark.parametrize(
+        ("input_str", "expected"),
+        [
             ("single_underscore", "single-underscore"),
             ("multiple.periods.here", "multiple-periods-here"),
             ("mixed_delimiters.here/and here", "mixed-delimiters-here-and-here"),
             ("__leading", "--leading"),
             ("trailing__", "trailing--"),
-        ]
-
-        for input_str, expected in test_cases:
-            result = remove_underscores_from_string(input_str)
-            assert result == expected, f"Failed for input: {input_str}"
+        ],
+    )
+    def test_multiple_delimiter_combinations(
+        self,
+        input_str: str,
+        expected: str,
+    ) -> None:
+        """Test delimiter removal with various combinations."""
+        result = remove_underscores_from_string(input_str)
+        assert result == expected
 
     def test_empty_dataframe_save_restore(self) -> None:
         """Test saving and restoring empty dataframes."""
