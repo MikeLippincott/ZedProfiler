@@ -7,10 +7,19 @@ The package accepts:
 from __future__ import annotations
 
 import pathlib
-from dataclasses import dataclass, field
+from typing import Any
 
 import numpy as np
+import pandera as pa
 import tomli
+from beartype import beartype
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_validator,
+    model_validator,
+)
 
 from zedprofiler.exceptions import ContractError
 
@@ -18,9 +27,213 @@ EXPECTED_SPATIAL_DIMS = 3
 TWO_DIMENSIONAL = 2
 FOUR_DIMENSIONAL = 4
 FIVE_OR_MORE_DIMENSIONS = 5
+NON_METADATA_UNDERSCORE_SEPARATED_PARTS = 4
+METADATA_UNDERSCORE_SEPARATED_PARTS = 3
 REQUIRED_RETURN_KEYS = ("image_array", "features", "metadata")
 
+# Pandera schema for validating numpy arrays with expected dimensionality
+ImageArraySchema = pa.DataFrameSchema(
+    columns={},
+    checks=[
+        pa.Check(
+            lambda x: len(x.shape) in [3, 4, 5],
+            error="Array must have 3, 4, or 5 dimensions",
+        ),
+    ],
+    name="ImageArray",
+)
 
+
+# ============================================================================
+# Pydantic Models for Data Contract Validation
+# ============================================================================
+
+
+class ImageArrayModel(BaseModel):
+    """Pydantic model for validating image arrays."""
+
+    array: np.ndarray
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    @field_validator("array", mode="before")
+    @classmethod
+    def validate_array_type(_cls, v: object) -> np.ndarray:
+        """Ensure array is a numpy array."""
+        if not isinstance(v, np.ndarray):
+            raise ValueError(f"Expected numpy array, got {type(v)}")
+        return v
+
+    @field_validator("array", mode="after")
+    @classmethod
+    def validate_array_dtype_and_shape(_cls, arr: np.ndarray) -> np.ndarray:
+        """Validate array dtype is numeric and shape is valid."""
+        if not np.issubdtype(arr.dtype, np.number):
+            raise ValueError(f"Array dtype must be numeric, got {arr.dtype}")
+
+        arr_shape = arr.shape
+        # Check dimensionality
+        if len(arr_shape) == TWO_DIMENSIONAL:
+            raise ValueError(
+                f"Input array has shape {arr_shape} with {TWO_DIMENSIONAL} "
+                f"dimensions. Expected {EXPECTED_SPATIAL_DIMS} dimensions."
+            )
+        elif len(arr_shape) == FOUR_DIMENSIONAL and arr_shape[0] > 1:
+            raise ValueError(
+                f"Input array has shape {arr_shape} with {FOUR_DIMENSIONAL} "
+                "dimensions, but the first dimension (channels) has size "
+                f"{arr_shape[0]}. Expected a single-channel 3D array."
+            )
+        elif (
+            len(arr_shape) >= FIVE_OR_MORE_DIMENSIONS
+            and arr_shape[0] > 1
+            and arr_shape[1] > 1
+        ):
+            raise ValueError(
+                f"Input array has shape {arr_shape} with {len(arr_shape)} "
+                f"dimensions. Expected {EXPECTED_SPATIAL_DIMS} dimensions."
+            )
+
+        # Check all dimensions are positive
+        for dim_size in arr_shape:
+            if dim_size <= 0:
+                raise ValueError(
+                    f"Input array has shape {arr_shape} with non-positive "
+                    "dimension size. All dimensions must have size greater than 0."
+                )
+
+        # Check not all dimensions are 1
+        if sum(arr_shape) == len(arr_shape):
+            raise ValueError(
+                f"Input array has shape {arr_shape} with one or more "
+                "dimensions of size 1. Expected all three dimensions to "
+                "have size greater than 1."
+            )
+
+        return arr
+
+
+class FeatureDictModel(BaseModel):
+    """Pydantic model for validating feature dictionaries."""
+
+    features: dict[str, Any]
+
+    @field_validator("features", mode="before")
+    @classmethod
+    def validate_is_dict(_cls, v: object) -> dict[str, Any]:
+        """Ensure features is a dictionary."""
+        if not isinstance(v, dict):
+            raise ValueError(f"Expected dict, got {type(v)}")
+        return v
+
+
+class MetadataDictModel(BaseModel):
+    """Pydantic model for validating metadata dictionaries."""
+
+    metadata: dict[str, Any]
+
+    @field_validator("metadata", mode="before")
+    @classmethod
+    def validate_is_dict(_cls, v: object) -> dict[str, Any]:
+        """Ensure metadata is a dictionary."""
+        if not isinstance(v, dict):
+            raise ValueError(f"Expected dict, got {type(v)}")
+        return v
+
+
+class ReturnSchemaModel(BaseModel):
+    """Pydantic model for validating return schema."""
+
+    result: dict[str, Any]
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    @field_validator("result", mode="before")
+    @classmethod
+    def validate_is_dict(_cls, v: object) -> dict[str, Any]:
+        """Ensure result is a dictionary."""
+        if not isinstance(v, dict):
+            raise ValueError(f"Expected dict, got {type(v)}")
+        return v
+
+    @field_validator("result", mode="after")
+    @classmethod
+    def validate_keys_and_types(_cls, result: dict[str, Any]) -> dict[str, Any]:
+        """Validate result has correct keys in correct order and correct types."""
+        actual_keys = tuple(result.keys())
+        if actual_keys != REQUIRED_RETURN_KEYS:
+            raise ValueError(
+                "Return result keys must match required deterministic order "
+                f"{REQUIRED_RETURN_KEYS}, got {actual_keys}."
+            )
+
+        if not isinstance(result["image_array"], np.ndarray):
+            raise ValueError(
+                f"Return result key 'image_array' must be a numpy array, "
+                f"got {type(result['image_array'])}"
+            )
+        if not isinstance(result["features"], dict):
+            raise ValueError(
+                f"Return result key 'features' must be a dict, "
+                f"got {type(result['features'])}"
+            )
+        if not isinstance(result["metadata"], dict):
+            raise ValueError(
+                f"Return result key 'metadata' must be a dict, "
+                f"got {type(result['metadata'])}"
+            )
+
+        return result
+
+
+class ColumnNameModel(BaseModel):
+    """Pydantic model for parsing and validating column names."""
+
+    column_name: str
+    compartment: str | None = None
+    channel: str | None = None
+    feature: str | None = None
+
+    @field_validator("column_name", mode="before")
+    @classmethod
+    def validate_is_string(_cls, v: object) -> str:
+        """Ensure column_name is a string."""
+        if not isinstance(v, str):
+            raise ValueError(f"Expected string, got {type(v)}")
+        return v
+
+    @model_validator(mode="after")
+    def parse_column_name(self) -> ColumnNameModel:
+        """Parse column name into components."""
+        parts = self.column_name.split("_")
+
+        if "Metadata" in self.column_name:
+            if len(parts) < METADATA_UNDERSCORE_SEPARATED_PARTS:
+                raise ValueError(
+                    "Metadata column name must have at least "
+                    f"{METADATA_UNDERSCORE_SEPARATED_PARTS} "
+                    "parts separated by underscores, "
+                    f"got {len(parts)} parts in '{self.column_name}'"
+                )
+            # Don't parse compartment/channel/feature for metadata columns
+            return self
+
+        if len(parts) < NON_METADATA_UNDERSCORE_SEPARATED_PARTS:
+            raise ValueError(
+                "Column name must have at least "
+                f"{NON_METADATA_UNDERSCORE_SEPARATED_PARTS} "
+                "parts separated by underscores, "
+                f"got {len(parts)} parts in '{self.column_name}'"
+            )
+
+        self.compartment = parts[0]
+        self.channel = parts[1]
+        self.feature = parts[2]
+
+        return self
+
+
+@beartype
 def validate_image_array_shape_contracts(
     arr: np.ndarray,
 ) -> bool:
@@ -79,6 +292,7 @@ def validate_image_array_shape_contracts(
     return True
 
 
+@beartype
 def validate_image_array_type_contracts(
     arr: np.ndarray,
 ) -> bool:
@@ -111,6 +325,127 @@ def validate_image_array_type_contracts(
     return True
 
 
+# ============================================================================
+# Helper Functions for Pydantic Validation
+# ============================================================================
+
+
+@beartype
+def validate_image_with_pydantic(arr: np.ndarray) -> ImageArrayModel:
+    """
+    Validate image array using Pydantic model.
+
+    Parameters
+    ----------
+    arr : np.ndarray
+        Input array to validate
+
+    Returns
+    -------
+    ImageArrayModel
+        Validated image array model
+
+    Raises
+    ------
+    ContractError
+        If validation fails
+    """
+    try:
+        return ImageArrayModel(array=arr)
+    except Exception as e:
+        raise ContractError(f"Image array validation failed: {e}")
+
+
+@beartype
+def validate_return_with_pydantic(
+    result: dict[str, object],
+) -> ReturnSchemaModel:
+    """
+    Validate return schema using Pydantic model.
+
+    Parameters
+    ----------
+    result : dict[str, object]
+        Return result to validate
+
+    Returns
+    -------
+    ReturnSchemaModel
+        Validated return schema model
+
+    Raises
+    ------
+    ContractError
+        If validation fails
+    """
+    try:
+        return ReturnSchemaModel(result=result)
+    except Exception as e:
+        raise ContractError(f"Return schema validation failed: {e}")
+
+
+@beartype
+def validate_column_name_with_pydantic(column_name: str) -> ColumnNameModel:
+    """
+    Validate column name using Pydantic model.
+
+    Parameters
+    ----------
+    column_name : str
+        Column name to validate
+
+    Returns
+    -------
+    ColumnNameModel
+        Validated column name model with parsed components
+
+    Raises
+    ------
+    ContractError
+        If validation fails
+    """
+    try:
+        return ColumnNameModel(column_name=column_name)
+    except Exception as e:
+        raise ContractError(f"Column name validation failed: {e}")
+
+
+# ============================================================================
+# Pandera Schema Functions
+# ============================================================================
+
+
+def create_image_array_schema() -> pa.SeriesSchema:
+    """
+    Create a Pandera schema for image array validation.
+
+    Returns
+    -------
+    pa.SeriesSchema
+        Pandera schema for numeric arrays
+    """
+    # Use a single numeric dtype for the series schema; Pandera dtype
+    # objects should be instantiated rather than combined with `|`.
+    return pa.SeriesSchema(
+        dtype=pa.Float64(),
+        name="image_array",
+        checks=[pa.Check(lambda x: x is not None, error="Value cannot be None")],
+    )
+
+
+def get_pandera_image_schema() -> pa.SeriesSchema:
+    """
+    Get Pandera schema for image array validation.
+
+    Returns
+    -------
+    pa.SeriesSchema
+        Pandera schema for numeric arrays
+    """
+    return create_image_array_schema()
+
+
+@beartype
 def validate_return_schema_contract(
     result: dict[str, object],
 ) -> bool:
@@ -125,26 +460,33 @@ def validate_return_schema_contract(
             f"{REQUIRED_RETURN_KEYS}, got {actual_keys}."
         )
 
-    if not isinstance(result["image_array"], np.ndarray):
-        raise ContractError("Return result key 'image_array' must be a numpy array.")
-    if not isinstance(result["features"], dict):
-        raise ContractError("Return result key 'features' must be a dict.")
-    if not isinstance(result["metadata"], dict):
-        raise ContractError("Return result key 'metadata' must be a dict.")
+    try:
+        ReturnSchemaModel(result=result)
+    except Exception as e:
+        raise ContractError(f"Return result validation failed: {e}")
 
     return True
 
 
-@dataclass
-class ExpectedValues:
-    """Expected values for feature naming validation tests."""
+class ExpectedValues(BaseModel):
+    """Pydantic model for expected values in feature naming validation."""
 
     config_file_path: pathlib.Path
-    compartments: list[str] = field(default_factory=list)
-    channels: list[str] = field(default_factory=list)
-    features: list[str] = field(default_factory=list)
+    compartments: list[str] = Field(default_factory=list)
+    channels: list[str] = Field(default_factory=list)
+    features: list[str] = Field(default_factory=list)
 
-    def __post_init__(self) -> None:
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    @field_validator("config_file_path", mode="before")
+    @classmethod
+    def validate_config_path(_cls, v: object) -> pathlib.Path:
+        """Ensure config_file_path is a valid Path object."""
+        if not isinstance(v, pathlib.Path):
+            v = pathlib.Path(v)
+        return v
+
+    def model_post_init(self, _context: object) -> None:
         """Load expected values from a TOML configuration file."""
         config = tomli.loads(self.config_file_path.read_text())
         self.compartments = list(set(config["expected_values"]["compartments"]))
@@ -152,7 +494,6 @@ class ExpectedValues:
         # add "NoChannel" as a valid channel for metadata columns
         # This is automatically added in the ZedProfiler
         # regardless of input channel we want this added
-        # Add "NoChannel" as a valid channel for metadata columns.
         self.channels.append("NoChannel")
         self.features = [
             "AreaSizeShape",
@@ -173,7 +514,21 @@ class ExpectedValues:
             "features": self.features,
         }
 
+    def __init__(self, *args: object, **data: object) -> None:
+        """Support positional `config_file_path` for backward compatibility.
 
+        Tests and existing code may instantiate ExpectedValues(path) using a
+        positional argument. Pydantic BaseModel requires keyword arguments, so
+        accept a single positional argument and forward it as
+        `config_file_path=` to the BaseModel initializer.
+        """
+        if args and "config_file_path" not in data:
+            # take the first positional arg as config_file_path
+            data["config_file_path"] = args[0]
+        super().__init__(**data)
+
+
+@beartype
 def validate_column_name_schema(
     column_name: str,
     expected_values_config_path: pathlib.Path,
