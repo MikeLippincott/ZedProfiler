@@ -23,42 +23,21 @@ FEATURE_NAME_COMPONENT_COLUMNS = (
 def _coerce_dataframe_column_names_to_strings(
     dataframe: pandas.DataFrame,
 ) -> pandas.DataFrame:
-    """Ensure DataFrame column labels are string-typed before writing."""
+    """
+    Ensure DataFrame column labels are string-typed before writing.
+
+    Parameters
+    ----------
+    dataframe : pandas.DataFrame
+        The DataFrame whose column names should be coerced to strings.
+    Returns
+    -------
+    pandas.DataFrame
+        A copy of the input DataFrame with all column names coerced to strings.
+    """
     parsed_dataframe = dataframe.copy()
     parsed_dataframe.columns = [str(column) for column in parsed_dataframe.columns]
     return parsed_dataframe
-
-
-def _coerce_feature_name_components(
-    dataframe: pandas.DataFrame,
-) -> pandas.DataFrame:
-    """Normalize feature-name components using shared delimiter cleanup."""
-    parsed_dataframe = dataframe.copy()
-    for column in FEATURE_NAME_COMPONENT_COLUMNS:
-        if column in parsed_dataframe.columns:
-            parsed_dataframe[column] = parsed_dataframe[column].map(
-                remove_underscores_from_string
-            )
-    return parsed_dataframe
-
-
-FEATURE_OUTPUT_SCHEMA = pa.DataFrameSchema(
-    columns={},
-    strict=False,
-    parsers=[pa.Parser(_coerce_dataframe_column_names_to_strings)],
-)
-
-
-FEATURE_NAME_COMPONENT_SCHEMA = pa.DataFrameSchema(
-    columns={
-        "compartment": pa.Column(object, nullable=False, coerce=True),
-        "channel": pa.Column(object, nullable=False, coerce=True),
-        "feature_type": pa.Column(object, nullable=False, coerce=True),
-        "measurement": pa.Column(object, nullable=False, coerce=True),
-    },
-    strict=True,
-    parsers=[pa.Parser(_coerce_feature_name_components)],
-)
 
 
 @beartype
@@ -97,6 +76,61 @@ def remove_underscores_from_string(string: object) -> str:
     )
 
     return string
+
+
+def _coerce_feature_name_components(
+    dataframe: pandas.DataFrame,
+) -> pandas.DataFrame:
+    """
+    Normalize feature-name components using shared delimiter cleanup.
+
+    Parameters
+    ----------
+    dataframe : pandas.DataFrame
+        The DataFrame containing feature name components to be normalized.
+        Expected to have columns corresponding to FEATURE NAME COMPONENT COLUMNS.
+    Returns
+    -------
+    pandas.DataFrame
+        A copy of the input DataFrame with feature name components normalized by
+        removing unwanted delimiters and replacing them with hyphens.
+    """
+    parsed_dataframe = dataframe.copy()
+    for column in FEATURE_NAME_COMPONENT_COLUMNS:
+        if column in parsed_dataframe.columns:
+            parsed_dataframe[column] = parsed_dataframe[column].map(
+                remove_underscores_from_string
+            )
+    return parsed_dataframe
+
+
+# ============================================================================
+# Constants
+# ============================================================================
+
+FEATURE_NAME_COMPONENT_COLUMNS = (
+    "compartment",
+    "channel",
+    "feature_type",
+    "measurement",
+)
+
+FEATURE_OUTPUT_SCHEMA = pa.DataFrameSchema(
+    columns={},
+    strict=False,
+    parsers=[pa.Parser(_coerce_dataframe_column_names_to_strings)],
+)
+
+FEATURE_NAME_COMPONENT_SCHEMA = pa.DataFrameSchema(
+    columns={
+        "compartment": pa.Column(object, nullable=False, coerce=True),
+        "channel": pa.Column(object, nullable=False, coerce=True),
+        "feature_type": pa.Column(object, nullable=False, coerce=True),
+        "measurement": pa.Column(object, nullable=False, coerce=True),
+    },
+    strict=True,
+    parsers=[pa.Parser(_coerce_feature_name_components)],
+)
 
 
 @beartype

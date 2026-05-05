@@ -213,6 +213,30 @@ class ImageSetLoader:
         image_set_array: numpy.ndarray | None,
         label_set_array: numpy.ndarray | None,
     ) -> None:
+        """
+        Validate the input sources such that either the image path or the
+        array is passed through but not neither and not both.
+
+        Parameters
+        ----------
+        image_set_path : pathlib.Path | None
+            Path to the image set directory.
+        label_set_path : pathlib.Path | None
+            Path to the label set directory.
+        image_set_array : numpy.ndarray | None
+            Array containing the image data.
+        label_set_array : numpy.ndarray | None
+            Array containing the label data.
+
+        Raises
+        ------
+        ValueError
+            If neither image_set_array nor image_set_path is provided, or if
+            neither label_set_array nor label_set_path is provided.
+        ValueError
+            If both image_set_array and image_set_path are provided, or if
+            both label_set_array and label_set_path are provided.
+        """
         if image_set_array is None and image_set_path is None:
             raise ValueError(
                 "Either image_set_array or image_set_path must be provided."
@@ -220,6 +244,16 @@ class ImageSetLoader:
         if label_set_array is None and label_set_path is None:
             raise ValueError(
                 "Either label_set_array or label_set_path must be provided."
+            )
+        if image_set_array is not None and image_set_path is not None:
+            raise ValueError(
+                "Only one of image_set_array or image_set_path should be "
+                "provided, not both."
+            )
+        if label_set_array is not None and label_set_path is not None:
+            raise ValueError(
+                "Only one of label_set_array or label_set_path should be "
+                "provided, not both."
             )
 
     def _load_path_based_images(
@@ -229,6 +263,21 @@ class ImageSetLoader:
         image_set_path: pathlib.Path | None,
         label_set_path: pathlib.Path | None,
     ) -> None:
+        """
+        Load the images if a path is given.
+        Note that currently we only load tiffs...
+
+        Parameters
+        ----------
+        channel_mapping : dict[str, str]
+            A dictionary mapping channel names to image file name tokens.
+        channel_tokens : list[str]
+            A list of tokens to look for in file names to identify channels.
+        image_set_path : pathlib.Path | None
+            Path to the image set directory.
+        label_set_path : pathlib.Path | None
+            Path to the label set directory.
+        """
         if image_set_path is None:
             return
 
@@ -263,6 +312,19 @@ class ImageSetLoader:
         image_set_array: numpy.ndarray | None,
         label_set_array: numpy.ndarray | None,
     ) -> None:
+        """
+        Load the array based images.
+        These are already in memory and stored as numpy arrays.
+
+        Parameters
+        ----------
+        config : ImageSetConfig
+            Configuration object containing key names for images and labels.
+        image_set_array : numpy.ndarray | None
+            Array containing the image data.
+        label_set_array : numpy.ndarray | None
+            Array containing the label data.
+        """
         if image_set_array is not None:
             for key in config.raw_image_key_name:
                 self.image_set_dict[key] = image_set_array
@@ -271,7 +333,14 @@ class ImageSetLoader:
                 self.image_set_dict[key] = label_set_array
 
     def get_unique_objects_in_compartments(self) -> None:
-        """Populate unique object IDs per compartment."""
+        """
+        Populate unique object IDs per compartment.
+
+        Parameters
+        ----------
+        None
+            This method does not take any parameters.
+        """
         self.unique_compartment_objects = {}
         if len(self.compartments) == 0:
             self.compartments = None
