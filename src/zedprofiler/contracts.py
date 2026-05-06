@@ -5,6 +5,9 @@ as well as for column names in the output DataFrame.
 These contracts are enforced through a combination of Pydantic models,
 Beartypes Pandera schemas.
 
+Where inputs are the image path or arrays.
+Outputs are the feature DataFrame and metadata dictionary/Dfs.
+
 The package accepts:
 - Single-channel 3D arrays shaped (z, y, x)
 """
@@ -48,11 +51,6 @@ ImageArraySchema = pa.DataFrameSchema(
     ],
     name="ImageArray",
 )
-
-
-# ============================================================================
-# Pydantic Models for Data Contract Validation
-# ============================================================================
 
 
 class ImageArrayModel(BaseModel):
@@ -331,11 +329,6 @@ def validate_image_array_type_contracts(
     return True
 
 
-# ============================================================================
-# Helper Functions for Pydantic Validation
-# ============================================================================
-
-
 @beartype
 def validate_image_with_pydantic(arr: np.ndarray) -> ImageArrayModel:
     """
@@ -414,11 +407,6 @@ def validate_column_name_with_pydantic(column_name: str) -> ColumnNameModel:
         return ColumnNameModel(column_name=column_name)
     except Exception as e:
         raise ContractError(f"Column name validation failed: {e}")
-
-
-# ============================================================================
-# Pandera Schema Functions
-# ============================================================================
 
 
 def create_image_array_schema() -> pa.SeriesSchema:
