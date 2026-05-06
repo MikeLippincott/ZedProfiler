@@ -1,5 +1,7 @@
-"""
-conftest.py for pytest configuration.
+"""Pytest fixtures for reusable test profiles and image-size parameters.
+
+This module defines a set of `TestProfile` fixtures with different image shapes,
+feature dictionaries, and metadata patterns used across the test suite.
 """
 
 from __future__ import annotations
@@ -20,15 +22,27 @@ from test_data_profiles import TestProfile  # noqa: E402
 
 @pytest.fixture
 def my_data() -> str:
+    """Provide a basic string fixture.
+
+    Returns
+    -------
+    str
+        A deterministic string value used by tests that require simple text
+        input.
+    """
     return "Hello, differently!"
 
 
-# ============================================================================
-# FIXTURE: Minimal valid profile
-# ============================================================================
 @pytest.fixture
 def minimal_profile() -> TestProfile:
-    """Minimal valid profile with required fields only."""
+    """Create the smallest valid test profile.
+
+    Returns
+    -------
+    TestProfile
+        A profile containing a valid 3D image array and empty feature and
+        metadata mappings.
+    """
     return TestProfile(
         image_array=np.random.rand(8, 16, 16),
         features={},
@@ -36,12 +50,16 @@ def minimal_profile() -> TestProfile:
     )
 
 
-# ============================================================================
-# FIXTURE: Small 3D image profile
-# ============================================================================
 @pytest.fixture
 def small_image_profile() -> TestProfile:
-    """Profile with a small 3D image (z=4, y=8, x=8)."""
+    """Create a profile with a small 3D image.
+
+    Returns
+    -------
+    TestProfile
+        A profile with image shape ``(4, 8, 8)`` plus representative
+        intensity features and metadata fields.
+    """
     return TestProfile(
         image_array=np.random.rand(4, 8, 8).astype(np.float32),
         features={
@@ -56,12 +74,16 @@ def small_image_profile() -> TestProfile:
     )
 
 
-# ============================================================================
-# FIXTURE: Medium 3D image profile
-# ============================================================================
 @pytest.fixture
 def medium_image_profile() -> TestProfile:
-    """Profile with a medium 3D image (z=16, y=32, x=32)."""
+    """Create a profile with a medium 3D image.
+
+    Returns
+    -------
+    TestProfile
+        A profile with image shape ``(16, 32, 32)`` and a mixed set of
+        intensity, texture, and morphology feature values.
+    """
     return TestProfile(
         image_array=np.random.rand(16, 32, 32).astype(np.float32),
         features={
@@ -80,12 +102,16 @@ def medium_image_profile() -> TestProfile:
     )
 
 
-# ============================================================================
-# FIXTURE: Large 3D image profile
-# ============================================================================
 @pytest.fixture
 def large_image_profile() -> TestProfile:
-    """Profile with a larger 3D image (z=32, y=64, x=64)."""
+    """Create a profile with a large 3D image.
+
+    Returns
+    -------
+    TestProfile
+        A profile with image shape ``(32, 64, 64)`` and a richer collection of
+        features and metadata fields.
+    """
     return TestProfile(
         image_array=np.random.rand(32, 64, 64).astype(np.float32),
         features={
@@ -112,12 +138,16 @@ def large_image_profile() -> TestProfile:
     )
 
 
-# ============================================================================
-# FIXTURE: Multi-channel intensity profile
-# ============================================================================
 @pytest.fixture
 def intensity_profile() -> TestProfile:
-    """Profile focused on intensity features from multiple channels."""
+    """Create a profile focused on intensity features.
+
+    Returns
+    -------
+    TestProfile
+        A profile emphasizing intensity-derived measurements across multiple
+        channels and compartments.
+    """
     return TestProfile(
         image_array=np.random.rand(16, 48, 48).astype(np.float32),
         features={
@@ -139,12 +169,16 @@ def intensity_profile() -> TestProfile:
     )
 
 
-# ============================================================================
-# FIXTURE: Texture profile
-# ============================================================================
 @pytest.fixture
 def texture_profile() -> TestProfile:
-    """Profile focused on texture features."""
+    """Create a profile focused on texture features.
+
+    Returns
+    -------
+    TestProfile
+        A profile containing entropy, gabor, and contrast style texture
+        measurements.
+    """
     return TestProfile(
         image_array=np.random.rand(12, 40, 40).astype(np.float32),
         features={
@@ -164,12 +198,16 @@ def texture_profile() -> TestProfile:
     )
 
 
-# ============================================================================
-# FIXTURE: Morphology profile
-# ============================================================================
 @pytest.fixture
 def morphology_profile() -> TestProfile:
-    """Profile focused on area/size/shape features."""
+    """Create a profile focused on area-size-shape features.
+
+    Returns
+    -------
+    TestProfile
+        A profile emphasizing morphology metrics such as volume, surface area,
+        and sphericity.
+    """
     return TestProfile(
         image_array=np.random.rand(20, 56, 56).astype(np.float32),
         features={
@@ -191,12 +229,16 @@ def morphology_profile() -> TestProfile:
     )
 
 
-# ============================================================================
-# FIXTURE: Colocalization profile
-# ============================================================================
 @pytest.fixture
 def colocalization_profile() -> TestProfile:
-    """Profile focused on colocalization features."""
+    """Create a profile focused on colocalization features.
+
+    Returns
+    -------
+    TestProfile
+        A profile containing correlation and overlap metrics for paired channel
+        combinations.
+    """
     return TestProfile(
         image_array=np.random.rand(14, 44, 44).astype(np.float32),
         features={
@@ -215,12 +257,15 @@ def colocalization_profile() -> TestProfile:
     )
 
 
-# ============================================================================
-# FIXTURE: Granularity profile
-# ============================================================================
 @pytest.fixture
 def granularity_profile() -> TestProfile:
-    """Profile focused on granularity features."""
+    """Create a profile focused on granularity features.
+
+    Returns
+    -------
+    TestProfile
+        A profile with a sequence of granularity spectrum measurements.
+    """
     return TestProfile(
         image_array=np.random.rand(16, 48, 48).astype(np.float32),
         features={
@@ -242,12 +287,16 @@ def granularity_profile() -> TestProfile:
     )
 
 
-# ============================================================================
-# FIXTURE: Neighbors profile
-# ============================================================================
 @pytest.fixture
 def neighbors_profile() -> TestProfile:
-    """Profile focused on neighbor-based features."""
+    """Create a profile focused on neighbor-based features.
+
+    Returns
+    -------
+    TestProfile
+        A profile with adjacency, neighbor count, and nearest-distance style
+        neighborhood features.
+    """
     return TestProfile(
         image_array=np.random.rand(10, 32, 32).astype(np.float32),
         features={
@@ -265,12 +314,16 @@ def neighbors_profile() -> TestProfile:
     )
 
 
-# ============================================================================
-# FIXTURE: Complete profile with all feature types
-# ============================================================================
 @pytest.fixture
 def complete_profile() -> TestProfile:
-    """Complete profile with a mix of all feature types."""
+    """Create a comprehensive profile spanning feature categories.
+
+    Returns
+    -------
+    TestProfile
+        A profile that mixes intensity, texture, morphology, granularity,
+        colocalization, and neighbor-derived measurements.
+    """
     return TestProfile(
         image_array=np.random.rand(24, 64, 64).astype(np.float32),
         features={
@@ -305,9 +358,9 @@ def complete_profile() -> TestProfile:
     )
 
 
-# ============================================================================
 # COLLECTION FIXTURES: Groups of profiles
-# ============================================================================
+
+
 @pytest.fixture
 def all_profiles(
     minimal_profile: TestProfile,
@@ -315,7 +368,25 @@ def all_profiles(
     medium_image_profile: TestProfile,
     large_image_profile: TestProfile,
 ) -> list[TestProfile]:
-    """Collection of profiles with increasing image sizes."""
+    """Collect profiles spanning multiple image sizes.
+
+    Parameters
+    ----------
+    minimal_profile : TestProfile
+        Fixture that provides the minimal valid profile.
+    small_image_profile : TestProfile
+        Fixture that provides a small image profile.
+    medium_image_profile : TestProfile
+        Fixture that provides a medium image profile.
+    large_image_profile : TestProfile
+        Fixture that provides a large image profile.
+
+    Returns
+    -------
+    list[TestProfile]
+        A list of profiles ordered to provide size diversity for parameterized
+        tests.
+    """
     return [
         small_image_profile,
         minimal_profile,
@@ -328,7 +399,20 @@ def all_profiles(
 def all_feature_type_profiles(
     request: pytest.FixtureRequest,
 ) -> list[TestProfile]:
-    """Collection of profiles focused on different feature types."""
+    """Collect profiles grouped by feature category.
+
+    Parameters
+    ----------
+    request : pytest.FixtureRequest
+        Pytest fixture request object used to resolve fixtures dynamically by
+        name.
+
+    Returns
+    -------
+    list[TestProfile]
+        Profiles specialized for intensity, texture, morphology,
+        colocalization, granularity, and neighbor-based tests.
+    """
     fixture_names = [
         "intensity_profile",
         "texture_profile",
@@ -340,9 +424,9 @@ def all_feature_type_profiles(
     return [request.getfixturevalue(fixture_name) for fixture_name in fixture_names]
 
 
-# ============================================================================
 # PARAMETERIZED FIXTURE DATA
-# ============================================================================
+
+
 @pytest.fixture(
     params=[
         (4, 8, 8),
@@ -353,7 +437,18 @@ def all_feature_type_profiles(
     ]
 )
 def varying_image_sizes(request: pytest.FixtureRequest) -> tuple[int, int, int]:
-    """Parameterized fixture for various 3D image dimensions."""
+    """Provide parameterized image dimensions for profile generation.
+
+    Parameters
+    ----------
+    request : pytest.FixtureRequest
+        Pytest fixture request containing the current ``params`` tuple.
+
+    Returns
+    -------
+    tuple[int, int, int]
+        A 3-tuple ``(z, y, x)`` describing image dimensions for test cases.
+    """
     return request.param
 
 
@@ -361,7 +456,20 @@ def varying_image_sizes(request: pytest.FixtureRequest) -> tuple[int, int, int]:
 def profile_with_varying_size(
     varying_image_sizes: tuple[int, int, int],
 ) -> TestProfile:
-    """Profile with varying image sizes."""
+    """Create a profile from the current parameterized image size.
+
+    Parameters
+    ----------
+    varying_image_sizes : tuple[int, int, int]
+        Image dimensions as ``(z, y, x)`` supplied by
+        ``varying_image_sizes``.
+
+    Returns
+    -------
+    TestProfile
+        A profile containing a random 3D float32 image of the requested shape,
+        a minimal feature set, and minimal metadata.
+    """
     z, y, x = varying_image_sizes
     return TestProfile(
         image_array=np.random.rand(z, y, x).astype(np.float32),

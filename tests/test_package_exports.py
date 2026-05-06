@@ -1,4 +1,4 @@
-r"""Tests for package export ergonomics."""
+"""Tests for package export ergonomics."""
 
 import zedprofiler
 from zedprofiler import colocalization

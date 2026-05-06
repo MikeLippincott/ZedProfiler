@@ -10,6 +10,7 @@ import pathlib
 from typing import Any
 
 import numpy as np
+import pandas as pd
 import pandera as pa
 import tomli
 from beartype import beartype
@@ -551,8 +552,8 @@ def validate_column_name_schema(
     ContractError
         If the column name does not meet the expected schema
     """
-    non_metadata_underscore_seperated_parts = 4
-    metadata_underscore_seperated_parts = 3
+    non_metadata_underscore_separated_parts = NON_METADATA_UNDERSCORE_SEPARATED_PARTS
+    metadata_underscore_separated_parts = METADATA_UNDERSCORE_SEPARATED_PARTS
 
     expected_values = ExpectedValues(expected_values_config_path).to_dict()
     # check if the column name is a string
@@ -562,45 +563,62 @@ def validate_column_name_schema(
     # check if the column name has at least 4 parts separated by underscores
     parts = column_name.split("_")
     if (
-        len(parts) < non_metadata_underscore_seperated_parts
+        len(parts) < non_metadata_underscore_separated_parts
         and "Metadata" not in column_name
     ):
         msg = (
             "Column name must have at least "
-            f"{non_metadata_underscore_seperated_parts} "
+            f"{non_metadata_underscore_separated_parts} "
             "parts separated by underscores, "
             f"got {len(parts)} parts in '{column_name}'"
         )
         raise ContractError(msg)
 
     if "Metadata" in column_name:
-        if len(parts) < metadata_underscore_seperated_parts:
+        if len(parts) < metadata_underscore_separated_parts:
             raise ContractError(
                 "Metadata column name must have at least "
-                f"{metadata_underscore_seperated_parts} "
+                f"{metadata_underscore_separated_parts} "
                 "parts separated by "
                 f"underscores, got {len(parts)} parts in '{column_name}'"
             )
         return True
 
-    compartment = parts[0]
-    channel = parts[1]
-    feature = parts[2]
-
-    # check if the compartment is one of the expected values
-    expected_compartments = expected_values.get("compartments", [])
-    expected_channels = expected_values.get("channels", [])
-    expected_features = expected_values.get("features", [])
-    msg = (
-        f"Compartment '{compartment}' is not in the expected values: "
-        f"{expected_compartments}"
+    feature_components = pd.DataFrame(
+        [
+            {
+                "compartment": parts[0],
+                "channel": parts[1],
+                "feature": parts[2],
+            }
+        ]
     )
-    if compartment not in expected_compartments:
-        raise ContractError(msg)
-    msg = f"Channel '{channel}' is not in the expected values: {expected_channels}"
-    if channel not in expected_channels:
-        raise ContractError(msg)
-    msg = f"Feature '{feature}' is not in expected values: {expected_features}"
-    if feature not in expected_features:
-        raise ContractError(msg)
+    feature_component_schema = pa.DataFrameSchema(
+        {
+            "compartment": pa.Column(
+                str,
+                checks=pa.Check.isin(expected_values.get("compartments", [])),
+                nullable=False,
+                coerce=True,
+            ),
+            "channel": pa.Column(
+                str,
+                checks=pa.Check.isin(expected_values.get("channels", [])),
+                nullable=False,
+                coerce=True,
+            ),
+            "feature": pa.Column(
+                str,
+                checks=pa.Check.isin(expected_values.get("features", [])),
+                nullable=False,
+                coerce=True,
+            ),
+        },
+        strict=True,
+    )
+    try:
+        feature_component_schema.validate(feature_components)
+    except (pa.errors.SchemaError, pa.errors.SchemaErrors) as e:
+        raise ContractError(f"Column name schema validation failed: {e}") from e
+
     return True

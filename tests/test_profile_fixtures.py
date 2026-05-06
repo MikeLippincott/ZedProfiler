@@ -6,6 +6,7 @@ This module shows how to use the available test data profiles in your tests.
 from __future__ import annotations
 
 import numpy as np
+import pytest
 from test_data_profiles import TestProfile
 
 EXPECTED_IMAGE_NDIM = 3
@@ -23,68 +24,96 @@ class TestProfileFixtures:
         assert len(minimal_profile.features) == 0
         assert len(minimal_profile.metadata) == 0
 
-    def test_small_image_profile(self, small_image_profile: TestProfile) -> None:
-        """Verify small profile has expected shape and data."""
-        assert small_image_profile.image_array.shape == (4, 8, 8)
-        assert "Nuclei_DNA_Intensity_MeanIntensity" in small_image_profile.features
-        assert small_image_profile.metadata["Metadata_Object_ObjectID"] == 1
+    @pytest.mark.parametrize(
+        ("fixture_name", "expected_shape", "required_feature", "required_metadata_key"),
+        [
+            (
+                "small_image_profile",
+                (4, 8, 8),
+                "Nuclei_DNA_Intensity_MeanIntensity",
+                "Metadata_Object_ObjectID",
+            ),
+            (
+                "medium_image_profile",
+                (16, 32, 32),
+                "Nuclei_DNA_Intensity_MeanIntensity",
+                "Metadata_Object_ObjectID",
+            ),
+            (
+                "large_image_profile",
+                (32, 64, 64),
+                "Nuclei_DNA_Intensity_MeanIntensity",
+                "Metadata_Object_ObjectID",
+            ),
+        ],
+    )
+    def test_image_profiles_by_size(
+        self,
+        request: pytest.FixtureRequest,
+        fixture_name: str,
+        expected_shape: tuple[int, int, int],
+        required_feature: str,
+        required_metadata_key: str,
+    ) -> None:
+        """Verify size-specific profiles via parametrized fixture lookup."""
+        profile: TestProfile = request.getfixturevalue(fixture_name)
+        assert profile.image_array.shape == expected_shape
+        assert required_feature in profile.features
+        assert required_metadata_key in profile.metadata
 
-    def test_medium_image_profile(self, medium_image_profile: TestProfile) -> None:
-        """Verify medium profile contains mixed feature types."""
-        assert medium_image_profile.image_array.shape == (16, 32, 32)
-        # Check for multiple feature types
-        features = medium_image_profile.features
-        assert any("Intensity" in f for f in features)
-        assert any("Texture" in f for f in features)
-        assert any("Areasizeshape" in f for f in features)
+    @pytest.mark.parametrize(
+        ("feature_kind", "expected_ratio", "fixture_name"),
+        [
+            ("Intensity", 0.7, "intensity_profile"),
+            ("Texture", 0.7, "texture_profile"),
+            ("Areasizeshape", 0.7, "morphology_profile"),
+        ],
+    )
+    def test_feature_dominance_profiles(
+        self,
+        request: pytest.FixtureRequest,
+        feature_kind: str,
+        expected_ratio: float,
+        fixture_name: str,
+    ) -> None:
+        """Verify feature-focused profiles are dominated by their feature kind."""
+        profile: TestProfile = request.getfixturevalue(fixture_name)
+        features = profile.features
+        feature_count = sum(
+            1 for feature_name in features if feature_kind in feature_name
+        )
+        total_count = len(features)
+        assert feature_count > total_count * expected_ratio
+
+    @pytest.mark.parametrize(
+        ("fixture_name", "required_token"),
+        [
+            ("colocalization_profile", "Colocalization"),
+            ("granularity_profile", "Granularity"),
+            ("neighbors_profile", "Neighbors"),
+        ],
+    )
+    def test_single_kind_feature_profiles(
+        self,
+        request: pytest.FixtureRequest,
+        fixture_name: str,
+        required_token: str,
+    ) -> None:
+        """Verify token-specific profiles contain only their expected token."""
+        profile: TestProfile = request.getfixturevalue(fixture_name)
+        features = profile.features
+        assert all(required_token in feature_name for feature_name in features)
 
     def test_complete_profile(self, complete_profile: TestProfile) -> None:
         """Verify complete profile has comprehensive feature coverage."""
         assert complete_profile.image_array.shape == (24, 64, 64)
         features = complete_profile.features
-        # Verify all feature types are present
-        assert any("Intensity" in f for f in features)
-        assert any("Texture" in f for f in features)
-        assert any("Areasizeshape" in f for f in features)
-        assert any("Colocalization" in f for f in features)
-        assert any("Granularity" in f for f in features)
-        assert any("Neighbors" in f for f in features)
-
-    def test_intensity_profile(self, intensity_profile: TestProfile) -> None:
-        """Verify intensity profile focuses on intensity features."""
-        features = intensity_profile.features
-        intensity_count = sum(1 for f in features if "Intensity" in f)
-        total_count = len(features)
-        assert intensity_count > total_count * 0.7  # Majority are intensity
-
-    def test_texture_profile(self, texture_profile: TestProfile) -> None:
-        """Verify texture profile focuses on texture features."""
-        features = texture_profile.features
-        texture_count = sum(1 for f in features if "Texture" in f)
-        total_count = len(features)
-        assert texture_count > total_count * 0.7  # Majority are texture
-
-    def test_morphology_profile(self, morphology_profile: TestProfile) -> None:
-        """Verify morphology profile focuses on shape/size features."""
-        features = morphology_profile.features
-        morph_count = sum(1 for f in features if "Areasizeshape" in f)
-        total_count = len(features)
-        assert morph_count > total_count * 0.7  # Majority are morphology
-
-    def test_colocalization_profile(self, colocalization_profile: TestProfile) -> None:
-        """Verify colocalization profile has colocalization features."""
-        features = colocalization_profile.features
-        assert all("Colocalization" in f for f in features)
-
-    def test_granularity_profile(self, granularity_profile: TestProfile) -> None:
-        """Verify granularity profile has granularity spectrum features."""
-        features = granularity_profile.features
-        assert all("Granularity" in f for f in features)
-
-    def test_neighbors_profile(self, neighbors_profile: TestProfile) -> None:
-        """Verify neighbors profile has neighbor features."""
-        features = neighbors_profile.features
-        assert all("Neighbors" in f for f in features)
+        assert any("Intensity" in feature_name for feature_name in features)
+        assert any("Texture" in feature_name for feature_name in features)
+        assert any("Areasizeshape" in feature_name for feature_name in features)
+        assert any("Colocalization" in feature_name for feature_name in features)
+        assert any("Granularity" in feature_name for feature_name in features)
+        assert any("Neighbors" in feature_name for feature_name in features)
 
     def test_all_profiles_collection(self, all_profiles: list[TestProfile]) -> None:
         """Verify collection fixture contains expected profiles."""
