@@ -6,18 +6,11 @@ feature dictionaries, and metadata patterns used across the test suite.
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
 import numpy as np
 import pytest
 
-# Add tests directory to path for imports
-TEST_DIR = Path(__file__).parent
-sys.path.insert(0, str(TEST_DIR))
-
 # Import dataclass from test_data_profiles
-from test_data_profiles import TestProfile  # noqa: E402
+from test_data_profiles import TestProfile
 
 
 @pytest.fixture

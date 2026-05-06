@@ -15,7 +15,7 @@ from pydantic import ValidationError
 
 from zedprofiler.contracts import (
     ColumnNameModel,
-    ExpectedValues,
+    ExpectedFeatureNameValues,
     FeatureDictModel,
     ImageArrayModel,
     MetadataDictModel,
@@ -111,7 +111,7 @@ def test_validate_image_array_type_contracts_rejects_non_numeric_dtype() -> None
 def test_expected_values_loads_config_and_adds_nochannel(
     expected_values_config_path: Path,
 ) -> None:
-    values = ExpectedValues(expected_values_config_path)
+    values = ExpectedFeatureNameValues(expected_values_config_path)
 
     assert "Nuclei" in values.compartments
     assert "DNA" in values.channels
@@ -122,7 +122,7 @@ def test_expected_values_loads_config_and_adds_nochannel(
 def test_expected_values_to_dict_returns_expected_keys(
     expected_values_config_path: Path,
 ) -> None:
-    values = ExpectedValues(expected_values_config_path).to_dict()
+    values = ExpectedFeatureNameValues(expected_values_config_path).to_dict()
 
     assert set(values.keys()) == {"compartments", "channels", "features"}
 

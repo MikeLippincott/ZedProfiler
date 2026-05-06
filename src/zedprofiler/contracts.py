@@ -1,5 +1,10 @@
 """Core data contracts shared across featurizers.
 
+We have contracts for the data inputs and outputs of featurizers,
+as well as for column names in the output DataFrame.
+These contracts are enforced through a combination of Pydantic models,
+Beartypes Pandera schemas.
+
 The package accepts:
 - Single-channel 3D arrays shaped (z, y, x)
 """
@@ -469,7 +474,7 @@ def validate_return_schema_contract(
     return True
 
 
-class ExpectedValues(BaseModel):
+class ExpectedFeatureNameValues(BaseModel):
     """Pydantic model for expected values in feature naming validation."""
 
     config_file_path: pathlib.Path
@@ -555,7 +560,7 @@ def validate_column_name_schema(
     non_metadata_underscore_separated_parts = NON_METADATA_UNDERSCORE_SEPARATED_PARTS
     metadata_underscore_separated_parts = METADATA_UNDERSCORE_SEPARATED_PARTS
 
-    expected_values = ExpectedValues(expected_values_config_path).to_dict()
+    expected_values = ExpectedFeatureNameValues(expected_values_config_path).to_dict()
     # check if the column name is a string
     if not isinstance(column_name, str):
         raise ContractError(f"Column name must be a string, got {type(column_name)}")
