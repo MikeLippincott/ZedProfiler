@@ -12,7 +12,7 @@ import numpy as np
 
 
 @dataclass
-class TestProfile:
+class Profile:
     """A complete test profile with image data, features, and metadata."""
 
     image_array: np.ndarray

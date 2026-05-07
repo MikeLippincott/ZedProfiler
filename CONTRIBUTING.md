@@ -57,14 +57,21 @@ We apply a custom script to update our coverage badge in the README during our C
 When running `scripts/update_coverage_badge.py` the script will parse the `coverage.xml` file generated from pytest and update the badge in the README with the new coverage percentage.
 When running `just all` locally, the coverage badge will not be updated since it is intended to be updated as part of the CI workflow.
 
-```
+```sh
 just all
+```
+
+Where `all` is runnins all defined steps in the `justfile` which includes running tests and generating coverage reports.
+To see all of the steps defined in the `justfile`, you can run:
+
+```sh
+just --list
 ```
 
 the coverage badge will be automatically updated as part of the workflow.
 If you want to update the coverage, run:
 
-```
+```sh
 just coverage
 ```
 

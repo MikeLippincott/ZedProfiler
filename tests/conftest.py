@@ -1,6 +1,6 @@
 """Pytest fixtures for reusable test profiles and image-size parameters.
 
-This module defines a set of `TestProfile` fixtures with different image shapes,
+This module defines a set of `Profile` fixtures with different image shapes,
 feature dictionaries, and metadata patterns used across the test suite.
 """
 
@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 
 # Import dataclass from test_data_profiles
-from test_data_profiles import TestProfile
+from test_data_profiles import Profile
 
 
 @pytest.fixture
@@ -27,16 +27,16 @@ def my_data() -> str:
 
 
 @pytest.fixture
-def minimal_profile() -> TestProfile:
+def minimal_profile() -> Profile:
     """Create the smallest valid test profile.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile containing a valid 3D image array and empty feature and
         metadata mappings.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(8, 16, 16),
         features={},
         metadata={},
@@ -44,16 +44,16 @@ def minimal_profile() -> TestProfile:
 
 
 @pytest.fixture
-def small_image_profile() -> TestProfile:
+def small_image_profile() -> Profile:
     """Create a profile with a small 3D image.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile with image shape ``(4, 8, 8)`` plus representative
         intensity features and metadata fields.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(4, 8, 8).astype(np.float32),
         features={
             "Nuclei_DNA_Intensity_MeanIntensity": 0.512,
@@ -68,16 +68,16 @@ def small_image_profile() -> TestProfile:
 
 
 @pytest.fixture
-def medium_image_profile() -> TestProfile:
+def medium_image_profile() -> Profile:
     """Create a profile with a medium 3D image.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile with image shape ``(16, 32, 32)`` and a mixed set of
         intensity, texture, and morphology feature values.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(16, 32, 32).astype(np.float32),
         features={
             "Nuclei_DNA_Intensity_MeanIntensity": 0.528,
@@ -96,16 +96,16 @@ def medium_image_profile() -> TestProfile:
 
 
 @pytest.fixture
-def large_image_profile() -> TestProfile:
+def large_image_profile() -> Profile:
     """Create a profile with a large 3D image.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile with image shape ``(32, 64, 64)`` and a richer collection of
         features and metadata fields.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(32, 64, 64).astype(np.float32),
         features={
             "Nuclei_DNA_Intensity_MeanIntensity": 0.435,
@@ -132,16 +132,16 @@ def large_image_profile() -> TestProfile:
 
 
 @pytest.fixture
-def intensity_profile() -> TestProfile:
+def intensity_profile() -> Profile:
     """Create a profile focused on intensity features.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile emphasizing intensity-derived measurements across multiple
         channels and compartments.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(16, 48, 48).astype(np.float32),
         features={
             "Nuclei_DNA_Intensity_MeanIntensity": 0.654,
@@ -163,16 +163,16 @@ def intensity_profile() -> TestProfile:
 
 
 @pytest.fixture
-def texture_profile() -> TestProfile:
+def texture_profile() -> Profile:
     """Create a profile focused on texture features.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile containing entropy, gabor, and contrast style texture
         measurements.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(12, 40, 40).astype(np.float32),
         features={
             "Nuclei_DNA_Texture_Entropy-256-3": 5.678,
@@ -192,16 +192,16 @@ def texture_profile() -> TestProfile:
 
 
 @pytest.fixture
-def morphology_profile() -> TestProfile:
+def morphology_profile() -> Profile:
     """Create a profile focused on area-size-shape features.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile emphasizing morphology metrics such as volume, surface area,
         and sphericity.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(20, 56, 56).astype(np.float32),
         features={
             "Nuclei_DNA_Areasizeshape_Volume": 1024.0,
@@ -223,16 +223,16 @@ def morphology_profile() -> TestProfile:
 
 
 @pytest.fixture
-def colocalization_profile() -> TestProfile:
+def colocalization_profile() -> Profile:
     """Create a profile focused on colocalization features.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile containing correlation and overlap metrics for paired channel
         combinations.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(14, 44, 44).astype(np.float32),
         features={
             "Cell_DNA-Mito_Colocalization_Correlation": 0.623,
@@ -251,15 +251,15 @@ def colocalization_profile() -> TestProfile:
 
 
 @pytest.fixture
-def granularity_profile() -> TestProfile:
+def granularity_profile() -> Profile:
     """Create a profile focused on granularity features.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile with a sequence of granularity spectrum measurements.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(16, 48, 48).astype(np.float32),
         features={
             "Nuclei_DNA_Granularity_Spectrum-1": 0.234,
@@ -281,16 +281,16 @@ def granularity_profile() -> TestProfile:
 
 
 @pytest.fixture
-def neighbors_profile() -> TestProfile:
+def neighbors_profile() -> Profile:
     """Create a profile focused on neighbor-based features.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile with adjacency, neighbor count, and nearest-distance style
         neighborhood features.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(10, 32, 32).astype(np.float32),
         features={
             "Nuclei_NoChannel_Neighbors_AdjacentCount": 6.0,
@@ -308,16 +308,16 @@ def neighbors_profile() -> TestProfile:
 
 
 @pytest.fixture
-def complete_profile() -> TestProfile:
+def complete_profile() -> Profile:
     """Create a comprehensive profile spanning feature categories.
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile that mixes intensity, texture, morphology, granularity,
         colocalization, and neighbor-derived measurements.
     """
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(24, 64, 64).astype(np.float32),
         features={
             # Intensity
@@ -356,27 +356,27 @@ def complete_profile() -> TestProfile:
 
 @pytest.fixture
 def all_profiles(
-    minimal_profile: TestProfile,
-    small_image_profile: TestProfile,
-    medium_image_profile: TestProfile,
-    large_image_profile: TestProfile,
-) -> list[TestProfile]:
+    minimal_profile: Profile,
+    small_image_profile: Profile,
+    medium_image_profile: Profile,
+    large_image_profile: Profile,
+) -> list[Profile]:
     """Collect profiles spanning multiple image sizes.
 
     Parameters
     ----------
-    minimal_profile : TestProfile
+    minimal_profile : Profile
         Fixture that provides the minimal valid profile.
-    small_image_profile : TestProfile
+    small_image_profile : Profile
         Fixture that provides a small image profile.
-    medium_image_profile : TestProfile
+    medium_image_profile : Profile
         Fixture that provides a medium image profile.
-    large_image_profile : TestProfile
+    large_image_profile : Profile
         Fixture that provides a large image profile.
 
     Returns
     -------
-    list[TestProfile]
+    list[Profile]
         A list of profiles ordered to provide size diversity for parameterized
         tests.
     """
@@ -391,7 +391,7 @@ def all_profiles(
 @pytest.fixture
 def all_feature_type_profiles(
     request: pytest.FixtureRequest,
-) -> list[TestProfile]:
+) -> list[Profile]:
     """Collect profiles grouped by feature category.
 
     Parameters
@@ -402,7 +402,7 @@ def all_feature_type_profiles(
 
     Returns
     -------
-    list[TestProfile]
+    list[Profile]
         Profiles specialized for intensity, texture, morphology,
         colocalization, granularity, and neighbor-based tests.
     """
@@ -448,7 +448,7 @@ def varying_image_sizes(request: pytest.FixtureRequest) -> tuple[int, int, int]:
 @pytest.fixture
 def profile_with_varying_size(
     varying_image_sizes: tuple[int, int, int],
-) -> TestProfile:
+) -> Profile:
     """Create a profile from the current parameterized image size.
 
     Parameters
@@ -459,12 +459,12 @@ def profile_with_varying_size(
 
     Returns
     -------
-    TestProfile
+    Profile
         A profile containing a random 3D float32 image of the requested shape,
         a minimal feature set, and minimal metadata.
     """
     z, y, x = varying_image_sizes
-    return TestProfile(
+    return Profile(
         image_array=np.random.rand(z, y, x).astype(np.float32),
         features={"Nuclei_DNA_Intensity_MeanIntensity": 0.512},
         metadata={"Metadata_Object_ObjectID": 1},

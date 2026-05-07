@@ -380,7 +380,11 @@ def validate_return_with_pydantic(
     try:
         return ReturnSchemaModel(result=result)
     except Exception as e:
-        raise ContractError(f"Return schema validation failed: {e}")
+        msg = (
+            "Return schema validation failed. Please ensure that the data "
+            f"fit the expected schema: {e}"
+        )
+        raise ContractError(msg)
 
 
 @beartype
@@ -425,18 +429,6 @@ def create_image_array_schema() -> pa.SeriesSchema:
         name="image_array",
         checks=[pa.Check(lambda x: x is not None, error="Value cannot be None")],
     )
-
-
-def get_pandera_image_schema() -> pa.SeriesSchema:
-    """
-    Get Pandera schema for image array validation.
-
-    Returns
-    -------
-    pa.SeriesSchema
-        Pandera schema for numeric arrays
-    """
-    return create_image_array_schema()
 
 
 @beartype

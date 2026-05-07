@@ -5,7 +5,8 @@ import pytest
 
 # Load the module relative to this test file
 _spec = importlib.util.spec_from_file_location(
-    "update_coverage_badge", Path(__file__).parent / "update_coverage_badge.py"
+    "update_coverage_badge",
+    Path(__file__).parent.parent / "scripts" / "update_coverage_badge.py",
 )
 mod = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(mod)

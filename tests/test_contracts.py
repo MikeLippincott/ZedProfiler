@@ -21,7 +21,6 @@ from zedprofiler.contracts import (
     MetadataDictModel,
     ReturnSchemaModel,
     create_image_array_schema,
-    get_pandera_image_schema,
     validate_column_name_schema,
     validate_column_name_with_pydantic,
     validate_image_array_shape_contracts,
@@ -515,29 +514,10 @@ def test_create_image_array_schema_returns_series_schema() -> None:
     assert hasattr(schema, "validate")
 
 
-def test_get_pandera_image_schema_returns_series_schema() -> None:
-    """Test get_pandera_image_schema helper returns valid schema."""
-    schema = get_pandera_image_schema()
-
-    assert schema is not None
-    assert hasattr(schema, "validate")
-
-
-def test_pandera_schema_validates_numeric_array() -> None:
-    """Test Pandera schema validates numeric arrays."""
-    schema = get_pandera_image_schema()
-    arr = np.zeros((10, 20, 30), dtype=np.float32)
-
-    # Pandera schemas validate pandas Series; ensure schema exists
-    assert schema is not None
-    assert hasattr(schema, "validate")
-    assert isinstance(arr, np.ndarray)
-    assert np.issubdtype(arr.dtype, np.number)
-
-
 def test_pandera_schema_rejects_non_numeric_array() -> None:
     """Test Pandera schema rejects non-numeric arrays."""
-    schema = get_pandera_image_schema()
+    schema = create_image_array_schema()
+
     arr = np.array(["a", "b", "c"], dtype=str)
 
     # Should raise SchemaError
