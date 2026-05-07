@@ -102,7 +102,7 @@ def linear_costes_threshold_calculation(
     first_image_max = first_image.max()
     second_image_max = second_image.max()
 
-    # Initialise without a threshold
+    # Initialize without a threshold
     costReg, _ = scipy.stats.pearsonr(first_image, second_image)
     thr_first_image_c = i
     thr_second_image_c = (a * i) + b
@@ -185,7 +185,7 @@ def bisection_costes_threshold_calculation(
     a = num / denom
     b = ymean - a * xmean
 
-    # Initialise variables
+    # Initialize variables
     left = 1
     right = scale_max
     mid = ((right - left) // (6 / 5)) + left
@@ -392,7 +392,7 @@ def compute_colocalization(  # noqa: PLR0912, PLR0915
         )
         / pdt
     )
-    # leave in for now
+    # leave in for now given they are not exported but still calculated
     K1 = scipy.ndimage.sum(
         cropped_image_1[combined_thresh] * cropped_image_2[combined_thresh],
     ) / (numpy.array(fpsq))
