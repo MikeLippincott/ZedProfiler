@@ -213,11 +213,7 @@ def get_coordinates(
     coords = {"object_id": [], "x": [], "y": [], "z": []}
 
     for obj_id in object_ids:
-        object_mask = nuclei_mask.copy()
-        object_mask[object_mask != obj_id] = 0
-        object_mask[object_mask == obj_id] = 1
-        # Get the centroid of the object
-        z, y, x = numpy.where(object_mask == 1)
+z, y, x = numpy.where(nuclei_mask == obj_id)
         centroid = (numpy.mean(x), numpy.mean(y), numpy.mean(z))
         coords["object_id"].append(obj_id)
         coords["x"].append(centroid[0])
