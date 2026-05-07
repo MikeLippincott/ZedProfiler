@@ -298,8 +298,8 @@ def mahalanobis_distance_from_centroid(
         inv_cov = numpy.linalg.pinv(cov_matrix)
 
     # Calculate Mahalanobis distance for each point
-diff = coords - centroid
-distances = numpy.sqrt(numpy.einsum("ij,jk,ik->i", diff, inv_cov, diff))
+    diff = coords - centroid
+    distances = numpy.sqrt(numpy.einsum("ij,jk,ik->i", diff, inv_cov, diff))
 
     return distances
 
