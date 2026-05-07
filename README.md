@@ -1,6 +1,6 @@
 # ZedProfiler
 
-[![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen)](#quality-gates)
+[![Coverage](https://img.shields.io/badge/coverage-89%25-green)](#quality-gates)
 
 CPU-first 3D image feature extraction toolkit for high-content and high-throughput image-based profiling.
 
