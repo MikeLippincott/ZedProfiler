@@ -299,7 +299,8 @@ def compute_granularity(  # noqa: C901, PLR0912, PLR0913, PLR0915
         "value": [],
     }
 
-    nobjects = int(numpy.max(original_labels)) if numpy.any(original_labels > 0) else 0
+    label_range = numpy.unique(original_labels[original_labels > 0])
+    nobjects = len(label_range)
 
     if nobjects > 0:
         label_range = numpy.arange(1, nobjects + 1)

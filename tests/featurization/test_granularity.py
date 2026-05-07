@@ -113,7 +113,8 @@ def test_compute_granularity_generates_measurements_for_objects() -> None:
 
     assert result["object_id"] == [1, 1, 1]
     assert result["feature"] == [1, 2, 3]
-    assert len(result["value"]) == EXPECTED_THREE_SCALES
+    # Expected per-scale granularity percentages for the single object
+    assert result["value"] == [100.0, 0.0, 0.0]
 
 
 def test_compute_granularity_with_subsampling_mask_and_verbose(
@@ -144,4 +145,7 @@ def test_compute_granularity_with_subsampling_mask_and_verbose(
     assert "Background removed via tophat filter." in captured.out
     assert result["object_id"] == [1, 1]
     assert result["feature"] == [1, 2]
-    assert len(result["value"]) == EXPECTED_TWO_SCALES
+    # Expected per-scale granularity percentages (floating values)
+    assert result["value"] == pytest.approx(
+        [57.91469603714501, 42.085303962855], rel=1e-12
+    )
