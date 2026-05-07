@@ -62,7 +62,7 @@ just all
 ```
 
 the coverage badge will be automatically updated as part of the workflow.
-If you want to update the covererage then just run:
+If you want to update the coverage, run:
 
 ```
 just coverage
