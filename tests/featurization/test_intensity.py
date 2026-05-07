@@ -5,6 +5,8 @@ import numpy as np
 from zedprofiler.featurization.intensity import compute_intensity, get_outline
 
 EXPECTED_MEASUREMENT_COUNT = 42
+EXPECTED_OBJECT_ONE_PEAK_COORD = 0.0
+EXPECTED_OBJECT_TWO_PEAK_COORD = 3.0
 
 
 def test_get_outline_marks_boundaries_per_slice() -> None:
@@ -103,3 +105,39 @@ def test_compute_intensity_skips_empty_object_without_signal() -> None:
         "compartment": [],
         "value": [],
     }
+
+
+def test_compute_intensity_peak_location_is_within_object() -> None:
+    image = np.zeros((4, 4, 4), dtype=float)
+    image[0, 0, 0] = 10.0
+    image[3, 3, 3] = 100.0
+
+    labels = np.zeros((4, 4, 4), dtype=int)
+    labels[0, 0, 0] = 1
+    labels[3, 3, 3] = 2
+
+    loader = SimpleNamespace(
+        image=image,
+        label_image=labels,
+        object_ids=[1, 2],
+        channel="channel_c",
+        compartment="nuclei",
+    )
+
+    result = compute_intensity(loader)
+
+    def _value_for(object_id: int, feature_name: str) -> float:
+        for idx, current_object_id in enumerate(result["object_id"]):
+            if (
+                int(current_object_id) == object_id
+                and result["feature_name"][idx] == feature_name
+            ):
+                return float(result["value"][idx])
+        raise AssertionError(f"Missing {feature_name} for object {object_id}")
+
+    assert _value_for(1, "MaxZ") == EXPECTED_OBJECT_ONE_PEAK_COORD
+    assert _value_for(1, "MaxY") == EXPECTED_OBJECT_ONE_PEAK_COORD
+    assert _value_for(1, "MaxX") == EXPECTED_OBJECT_ONE_PEAK_COORD
+    assert _value_for(2, "MaxZ") == EXPECTED_OBJECT_TWO_PEAK_COORD
+    assert _value_for(2, "MaxY") == EXPECTED_OBJECT_TWO_PEAK_COORD
+    assert _value_for(2, "MaxX") == EXPECTED_OBJECT_TWO_PEAK_COORD

@@ -60,6 +60,7 @@ def compute_intensity(  # noqa: PLR0915
         "compartment": [],
         "value": [],
     }
+    # loop through each object and calculate measurements
     for index, label in enumerate(labels):
         selected_label_object = label_object.copy()
         selected_image_object = image_object.copy()
