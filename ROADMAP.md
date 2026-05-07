@@ -9,7 +9,7 @@ The roadmap is intended to be a living document and may be updated as needed.
 ### In scope
 
 - [ ] Handcrafted featurization modules:
-  - [ ] AreaSizeShape
+  - [ ] volumesizeshape
   - [ ] Colocalization
   - [ ] Intensity
   - [ ] Granularity
@@ -51,29 +51,29 @@ The roadmap is intended to be a living document and may be updated as needed.
 
 ### Phase 2: Feature modules and tests (PR 4-9)
 
-4. PR 4: AreaSizeShape module and tests
+4. PR 4: volumesizeshape module and tests
 
-- [ ] CPU implementation, anisotropy handling, edge cases.
+   - [x] Implement module
 
-5. PR 5: Colocalization module and tests
+1. PR 5: Colocalization module and tests
 
-- [ ] Metrics API, threshold options, schema and naming compliance.
+   - [x] Implement module
 
-6. PR 6: Intensity module and tests
+1. PR 6: Intensity module and tests
 
-- [ ] Object-level intensity features and required helpers.
+   - [x] Implement module
 
-7. PR 7: Granularity module and tests
+1. PR 7: Granularity module and tests
 
-- [ ] CPU granularity spectrum, subsampling behavior, parameter validation.
+   - [x] Implement module
 
-8. PR 8: Neighbors module and tests
+1. PR 8: Neighbors module and tests
 
-- [ ] Neighbor counting APIs, distance threshold and anisotropy handling.
+   - [x] Implement module
 
-9. PR 9: Texture module and tests
+1. PR 9: Texture module and tests
 
-- [ ] Haralick-style texture API, scaling helper, deterministic output ordering.
+   - [x] Implement module
 
 ### Phase 3: Integration, docs, release (PR 10-13)
 
@@ -92,6 +92,11 @@ The roadmap is intended to be a living document and may be updated as needed.
 13. PR 13: Release v0.0.1 and publish workflow
 
 - [ ] Changelog, semantic tag, PyPI publish automation, README install updates.
+
+### Phase 4: Post-release improvements (PR 14+)
+
+14. Add the ability for loading of images from array instead of file
+    file paths for increased flexibility in data sources and testing.
 
 ## Verification Gates
 

@@ -10,10 +10,10 @@ from zedprofiler._version import __version__
 # This keeps imports ergonomic while preserving the canonical nested namespace:
 # `zedprofiler.featurization.<module>`.
 from zedprofiler.featurization import (
-    areasizeshape,
     colocalization,
     granularity,
     intensity,
     neighbors,
     texture,
+    volumesizeshape,
 )
