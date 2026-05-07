@@ -9,7 +9,7 @@ The roadmap is intended to be a living document and may be updated as needed.
 ### In scope
 
 - [ ] Handcrafted featurization modules:
-  - [ ] AreaSizeShape
+  - [ ] volumesizeshape
   - [ ] Colocalization
   - [ ] Intensity
   - [ ] Granularity
@@ -51,7 +51,7 @@ The roadmap is intended to be a living document and may be updated as needed.
 
 ### Phase 2: Feature modules and tests (PR 4-9)
 
-4. PR 4: AreaSizeShape module and tests
+4. PR 4: volumesizeshape module and tests
 
 - [ ] CPU implementation, anisotropy handling, edge cases.
 
@@ -92,6 +92,11 @@ The roadmap is intended to be a living document and may be updated as needed.
 13. PR 13: Release v0.0.1 and publish workflow
 
 - [ ] Changelog, semantic tag, PyPI publish automation, README install updates.
+
+### Phase 4: Post-release improvements (PR 14+)
+
+14. Add the ability for loading of images from array instead of file
+    file paths for increased flexibility in data sources and testing.
 
 ## Verification Gates
 
