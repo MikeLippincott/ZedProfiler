@@ -313,7 +313,7 @@ def mahalanobis_distance_from_centroid(
 
 
 def classify_cells_into_shells(
-    coords: pandas.DataFrame or dict,
+    coords: pandas.DataFrame | dict,
     n_shells: int = 5,
     method: str = "mahalanobis",
     min_cells_per_shell: int = 3,
