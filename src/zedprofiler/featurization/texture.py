@@ -146,8 +146,11 @@ def compute_texture(
             int(props["bbox-4"][i]),
             int(props["bbox-5"][i]),
         )
-
+    # loop through each label and get the bounding box
+    # to compute features for the object
     for _, label in enumerate(labels):
+        if int(label) == 0:
+            continue
         bbox = label_to_bbox.get(int(label))
         if bbox is None:
             continue
@@ -164,6 +167,8 @@ def compute_texture(
         features = numpy.empty((n_directions, 13, max(labels)))
         image_object = scale_image(image_object, num_gray_levels=grayscale)
         try:
+            # calculates 13 Haralick features for each direction (13)
+            #  and each object, and stores them in a 3D array
             features[:, :, label - 1] = mahotas.features.haralick(
                 ignore_zeros=True,
                 f=image_object,
@@ -172,7 +177,8 @@ def compute_texture(
             )
         except ValueError:
             features = numpy.full(len(feature_names), numpy.nan, dtype=float)
-
+    # iterate through the direction, feature, and object dimensions
+    # of the features array to populate the output dictionary
     for direction, direction_features in enumerate(features):
         direction_str = f"{direction:02d}"
         for feature_name, feature in zip(feature_names, direction_features):
