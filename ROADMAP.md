@@ -9,7 +9,7 @@ The roadmap is intended to be a living document and may be updated as needed.
 ### In scope
 
 - [ ] Handcrafted featurization modules:
-  - [ ] AreaSizeShape
+  - [ ] volumesizeshape
   - [ ] Colocalization
   - [ ] Intensity
   - [ ] Granularity
@@ -51,7 +51,7 @@ The roadmap is intended to be a living document and may be updated as needed.
 
 ### Phase 2: Feature modules and tests (PR 4-9)
 
-4. PR 4: AreaSizeShape module and tests
+4. PR 4: volumesizeshape module and tests
 
 - [ ] CPU implementation, anisotropy handling, edge cases.
 

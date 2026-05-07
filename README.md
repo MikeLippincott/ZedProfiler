@@ -1,6 +1,6 @@
 # ZedProfiler
 
-[![Coverage](https://img.shields.io/badge/coverage-99%25-brightgreen)](#quality-gates)
+[![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen)](#quality-gates)
 
 CPU-first 3D image feature extraction toolkit for high-content and high-throughput image-based profiling.
 
@@ -23,7 +23,7 @@ import pathlib
 import pandas as pd
 
 from zedprofiler.IO.loading_classes import ImageSetConfig, ImageSetLoader, ObjectLoader
-from zedprofiler.featurization.areasizeshape import compute as compute_areasizeshape
+from zedprofiler.featurization.volumesizeshape import compute as compute_volumesizeshape
 
 image_set_path = pathlib.Path(
     os.path.expanduser(
@@ -62,7 +62,7 @@ object_loader = ObjectLoader(
     channel_name=image_set_config.raw_image_key_name[0],
     compartment_name=image_set_config.mask_key_name[0],
 )
-area_dict_df = pd.DataFrame(compute_areasizeshape(
+area_dict_df = pd.DataFrame(compute_volumesizeshape(
     image_set_loader=image_set_loader,
     object_loader=object_loader,
 ))

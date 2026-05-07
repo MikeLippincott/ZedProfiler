@@ -1,4 +1,4 @@
-"""Area, size, and shape features for 3D objects."""
+"""Volume, size, and shape features for 3D objects."""
 
 from __future__ import annotations
 
@@ -14,12 +14,16 @@ from zedprofiler.exceptions import ZedProfilerError
 class SupportsImageSetLoader(Protocol):
     """Minimal image-set loader interface required by this module."""
 
+    # voxel size in z,y,x space
     anisotropy_spacing: tuple[float, float, float]
 
 
 class SupportsObjectLoader(Protocol):
     """Minimal object loader interface required by this module."""
 
+    # label image the image which contains the labeled objects,
+    # where each object is represented by a unique integer label
+    # (0 is typically reserved for background)
     label_image: np.ndarray
     object_ids: Sequence[int]
 
@@ -50,7 +54,7 @@ def compute(
     image_set_loader: SupportsImageSetLoader | None = None,
     object_loader: SupportsObjectLoader | None = None,
 ) -> dict[str, list[float]]:
-    """Compute area/size/shape features for one object loader.
+    """Compute volume/size/shape features for one object loader.
 
     This supports two invocation modes:
     - no arguments: returns an empty deterministic schema so dispatchers can
@@ -61,11 +65,11 @@ def compute(
         return _empty_feature_result()
     if image_set_loader is None or object_loader is None:
         raise ZedProfilerError(
-            "areasizeshape.compute requires both image_set_loader and "
+            "volumesizeshape.compute requires both image_set_loader and "
             "object_loader for execution."
         )
 
-    return measure_3D_area_size_shape(
+    return measure_3D_volume_size_shape(
         image_set_loader=image_set_loader,
         object_loader=object_loader,
     )
@@ -77,7 +81,7 @@ def _get_skimage_measure() -> object:
         return import_module("skimage.measure")
     except ImportError as exc:
         raise ZedProfilerError(
-            "areasizeshape requires scikit-image for area/size/shape computation."
+            "volumesizeshape requires scikit-image for area/size/shape computation."
         ) from exc
 
 
@@ -104,11 +108,11 @@ def calculate_surface_area(
     return measure.mesh_surface_area(verts, faces)
 
 
-def measure_3D_area_size_shape(
+def measure_3D_volume_size_shape(
     image_set_loader: SupportsImageSetLoader,
     object_loader: SupportsObjectLoader,
 ) -> dict[str, list[float]]:
-    """Measure area/size/shape features for each non-zero label object."""
+    """Measure volume/size/shape features for each non-zero label object."""
     measure = _get_skimage_measure()
 
     label_object = object_loader.label_image
@@ -118,7 +122,7 @@ def measure_3D_area_size_shape(
     features_to_record = _empty_feature_result()
 
     desired_properties = [
-        "area",
+        "area",  # for 3D it is volume but skimage uses "area" naming for the property
         "bbox",
         "centroid",
         "bbox_area",
@@ -127,9 +131,14 @@ def measure_3D_area_size_shape(
         "equivalent_diameter",
     ]
     for label in unique_objects:
+        # avoid the 0 index which is the background and not an object,
         if label == 0:
             continue
         subset_lab_object = label_object.copy()
+        # subset here means zeroing out all other objects except the
+        # one we want to measure, so that we can use
+        # skimage's regionprops_table to compute
+        # features for that object
         subset_lab_object[subset_lab_object != label] = 0
         props = measure.regionprops_table(
             subset_lab_object,
