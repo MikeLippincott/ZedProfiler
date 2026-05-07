@@ -24,8 +24,11 @@ dependencies = [
   "jinja2>=3.1.6",
   "matplotlib>=3.10.8",
   "pandas>=3.0.2",
-  "pyarrow>=24",
+  "pandera>=0.31.1",
+  "pyarrow>=23.0.1",
+  "pydantic>=2.10",
   "scikit-image>=0.26",
+  "tomli>=2.4.1",
 ]
 scripts.ZedProfiler = "ZedProfiler.cli:trigger"
 

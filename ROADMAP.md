@@ -36,13 +36,13 @@ The roadmap is intended to be a living document and may be updated as needed.
 
 1. PR 1: Packaging and environment baseline
 
-- [ ] Python package scaffold, uv dependency management, version metadata 0.0.1, lint/test tooling, CI skeleton.
-- [ ] Linux support and CPU-only scope statements in metadata and docs.
+- [x] Python package scaffold, uv dependency management, version metadata 0.0.1, lint/test tooling, CI skeleton.
+- [x] Linux support and CPU-only scope statements in metadata and docs.
 
 2. PR 2: Core data model and API contracts
 
-- [ ] Canonical input contracts, loader interfaces, common error types.
-- [ ] Return schema contract (required keys, types, deterministic ordering).
+- [x] Canonical input contracts, loader interfaces, common error types.
+- [x] Return schema contract (required keys, types, deterministic ordering).
 
 3. PR 3: RFC2119 naming specification and validators
 
