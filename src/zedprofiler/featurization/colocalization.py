@@ -7,17 +7,21 @@ fluorescence channels using the Costes automatic thresholding method.
 
 from __future__ import annotations
 
-from typing import Dict, Tuple
+from collections.abc import Sequence
+from typing import Dict, Protocol, Tuple
 
 import numpy
+import pandas
 import scipy.ndimage
 import skimage
 
+from zedprofiler.contracts import validate_column_name_schema
 from zedprofiler.image_utils.image_utils import (
     crop_3D_image,
     new_crop_border,
     select_objects_from_label,
 )
+from zedprofiler.IO.feature_writing_utils import format_morphology_feature_name
 
 COSTES_R_FAR_THRESHOLD = 0.45
 COSTES_R_MID_THRESHOLD = 0.35
@@ -26,6 +30,17 @@ MIN_PEARSON_POINTS = 2
 WIDE_BISECTION_WINDOW = 6
 UINT8_MAX = 255
 UINT16_MAX = 65535
+
+
+class SupportsTwoObjectLoader(Protocol):
+    """Minimal loader interface required for paired-object colocalization."""
+
+    image_set_loader: object
+    compartment: str
+    image1: numpy.ndarray
+    image2: numpy.ndarray
+    label_image: numpy.ndarray
+    object_ids: Sequence[int]
 
 
 def _require_scipy() -> None:
@@ -289,7 +304,7 @@ def prepare_two_images_for_colocalization(  # noqa: PLR0913
     return cropped_image_1, cropped_image_2
 
 
-def compute_colocalization(  # noqa: PLR0912, PLR0915
+def calculate_colocalization(  # noqa: PLR0912, PLR0915
     cropped_image_1: numpy.ndarray,
     cropped_image_2: numpy.ndarray,
     thr: int = 15,
@@ -501,3 +516,118 @@ def compute_colocalization(  # noqa: PLR0912, PLR0915
     results["RankWeightedColocalizationCoeff2"] = RWC2
 
     return results
+
+
+def compute_colocalization(  # noqa: C901, PLR0912
+    two_object_loader: SupportsTwoObjectLoader,
+    thr: int = 15,
+    fast_costes: str = "Accurate",
+    channel1: str | None = None,
+    channel2: str | None = None,
+) -> dict[str, list[float]]:
+    """
+    Compute colocalization features for pairs of objects from two channels.
+
+    Parameters
+    ----------
+    two_object_loader : SupportsTwoObjectLoader
+        The loader that provides access to the two channels and their
+        corresponding labels.
+    thr : int, optional
+        The threshold for the Manders' coefficients, by default 15
+    fast_costes : str, optional
+        The mode for Costes' threshold calculation, by default "Accurate".
+        Options are "Accurate" or "Fast".
+        "Accurate" uses a linear algorithm, while "Fast" uses a bisection algorithm.
+        The "Fast" mode is faster but less accurate.
+    channel1 : str | None, optional
+        The name of the first channel, used for feature naming, by default None
+    channel2 : str | None, optional
+        The name of the second channel, used for feature naming, by default None
+
+    Returns
+    -------
+    dict[str, list[float]]
+        A dictionary containing lists of colocalization feature values for
+        each object pair.
+    """
+    if channel1 is None or channel2 is None:
+        raise ValueError("channel1 and channel2 must be provided for feature naming.")
+    list_of_dfs = []
+    for object_id in two_object_loader.object_ids:
+        cropped_image1, cropped_image2 = prepare_two_images_for_colocalization(
+            label_object1=two_object_loader.label_image,
+            label_object2=two_object_loader.label_image,
+            image_object1=two_object_loader.image1,
+            image_object2=two_object_loader.image2,
+            object_id1=object_id,
+            object_id2=object_id,
+        )
+        colocalization_features = calculate_colocalization(
+            cropped_image_1=cropped_image1,
+            cropped_image_2=cropped_image2,
+            thr=15,
+            fast_costes="Accurate",
+        )
+
+        # Build a simple dict row (avoid pandas dependency)
+        row: dict[str, object] = {}
+        for meas_key, meas_val in colocalization_features.items():
+            full_name = format_morphology_feature_name(
+                compartment=two_object_loader.compartment,
+                channel=f"{channel1}-{channel2}",
+                feature_type="Colocalization",
+                measurement=meas_key,
+            )
+            # cast numeric values to float32 where appropriate
+            if full_name not in (
+                "Metadata_Object_ObjectID",
+                "Metadata_Experiment_ImageSet",
+            ):
+                try:
+                    row[full_name] = numpy.float32(meas_val)
+                except Exception:
+                    row[full_name] = meas_val
+            else:
+                row[full_name] = meas_val
+
+        # ensure object_id and image_set are present and first
+        row["Metadata_Object_ObjectID"] = object_id
+        row["Metadata_Experiment_ImageSet"] = (
+            two_object_loader.image_set_loader.image_set_name
+        )
+        list_of_dfs.append(row)
+
+    # Convert list of row-dicts into a dict-of-lists with stable ordering
+    if not list_of_dfs:
+        return {}
+
+    # Collect other metric keys preserving first-seen ordering
+    other_keys: list[str] = []
+    for d in list_of_dfs:
+        for k in d:
+            if k in ("Metadata_Object_ObjectID", "Metadata_Experiment_ImageSet"):
+                continue
+            if k not in other_keys:
+                other_keys.append(k)
+
+    all_keys = [
+        "Metadata_Object_ObjectID",
+        "Metadata_Experiment_ImageSet",
+        *other_keys,
+    ]
+    result: dict[str, list[object]] = {
+        k: [r.get(k) for r in list_of_dfs] for k in all_keys
+    }
+
+    for col in list(result.keys()):
+        try:
+            validate_column_name_schema(
+                column_name=col,
+                compartments=[two_object_loader.compartment],
+                channels=[f"{channel1}-{channel2}"],
+            )
+        except ValueError as e:
+            raise ValueError(f"Column name {col} does not conform to schema: {e}")
+
+    return pandas.DataFrame(result)

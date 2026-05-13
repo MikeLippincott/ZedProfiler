@@ -7,10 +7,12 @@ from __future__ import annotations
 from typing import Dict, Optional
 
 import numpy
+import pandas
 import scipy.ndimage
 import skimage.morphology
-import tqdm
 
+from zedprofiler.contracts import validate_column_name_schema
+from zedprofiler.IO.feature_writing_utils import format_morphology_feature_name
 from zedprofiler.IO.loading_classes import ObjectLoader
 
 
@@ -149,6 +151,12 @@ def compute_granularity(  # noqa: C901, PLR0912, PLR0913, PLR0915
         ``im.mask``. If None (default), all pixels are considered valid
         (all-True mask), matching the typical CellProfiler behavior for
         unmasked images.
+    channel : str or None
+        Optional channel name for feature naming. If None, channel is not
+        included in feature names.
+    compartment : str or None
+        Optional compartment name for feature naming. If None, compartment is
+        not included in feature names.
 
     Returns
     -------
@@ -294,7 +302,7 @@ def compute_granularity(  # noqa: C901, PLR0912, PLR0913, PLR0915
     # masked by im.mask: labels[~im.mask] = 0.
     # ------------------------------------------------------------------
     object_measurements = {
-        "object_id": [],
+        "Metadata_Object_ObjectID": [],
         "feature": [],
         "value": [],
     }
@@ -343,12 +351,7 @@ def compute_granularity(  # noqa: C901, PLR0912, PLR0913, PLR0915
             f"Spectrum length: {granular_spectrum_length}"
         )
 
-    for scale in tqdm.tqdm(
-        range(1, granular_spectrum_length + 1),
-        desc="Granularity measurement",
-        position=1,
-        leave=False,
-    ):
+    for scale in range(1, granular_spectrum_length + 1):
         prevmean = currentmean
 
         # Masked erosion
@@ -396,17 +399,58 @@ def compute_granularity(  # noqa: C901, PLR0912, PLR0913, PLR0915
 
             # Record measurements for each object
             for idx in range(len(label_range)):
-                object_measurements["object_id"].append(int(label_range[idx]))
+                object_measurements["Metadata_Object_ObjectID"].append(
+                    int(label_range[idx])
+                )
                 object_measurements["feature"].append(scale)
                 object_measurements["value"].append(float(gss[idx]))
 
     if verbose:
-        n_total = len(object_measurements["object_id"])
+        n_total = len(object_measurements["Metadata_Object_ObjectID"])
         non_zero = sum(1 for v in object_measurements["value"] if v > 0)
         print(f"Total measurements: {n_total}")
         print(f"Non-zero measurements: {non_zero}")
         if non_zero > 0:
             vals = [v for v in object_measurements["value"] if v > 0]
             print(f"Mean granularity: {numpy.mean(vals):.2f}")
+    final_df = pandas.DataFrame(object_measurements)
+    # get the mean of each value in the array
+    # melt the dataframe to wide format
+    final_df = final_df.pivot_table(
+        index=["Metadata_Object_ObjectID"], columns=["feature"], values=["value"]
+    )
+    final_df.columns = final_df.columns.droplevel()
+    final_df = final_df.reset_index()
+    # prepend compartment and channel to column names
+    final_df.rename(
+        columns={
+            col: format_morphology_feature_name(
+                compartment=object_loader.compartment,
+                channel=object_loader.channel,
+                feature_type="Granularity",
+                measurement=col,
+            )
+            if col != "Metadata_Object_ObjectID"
+            else col
+            for col in final_df.columns
+        },
+        inplace=True,
+    )
+    final_df.insert(
+        0,
+        "Metadata_Experiment_ImageSet",
+        object_loader.image_set_loader.image_set_name,
+    )
+    result = final_df.to_dict(orient="list")
 
-    return object_measurements
+    for col in list(result.keys()):
+        try:
+            validate_column_name_schema(
+                column_name=col,
+                compartments=[object_loader.compartment],
+                channels=[f"{object_loader.channel}"],
+            )
+        except ValueError as e:
+            raise ValueError(f"Column name {col} does not conform to schema: {e}")
+
+    return final_df

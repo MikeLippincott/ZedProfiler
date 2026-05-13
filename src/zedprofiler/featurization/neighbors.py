@@ -7,6 +7,8 @@ import numpy
 import pandas
 import skimage.measure
 
+from zedprofiler.contracts import validate_column_name_schema
+from zedprofiler.IO.feature_writing_utils import format_morphology_feature_name
 from zedprofiler.IO.loading_classes import ObjectLoader
 
 BBoxCoord = Union[int, float]
@@ -113,7 +115,7 @@ def compute_neighbors(
     image_global_max_coord_x = label_object.shape[2]
 
     neighbors_out_dict = {
-        "object_id": [],
+        "Metadata_Object_ObjectID": [],
         "NeighborsCountAdjacent": [],
         f"NeighborsCountByDistance-{distance_threshold}": [],
     }
@@ -181,13 +183,47 @@ def compute_neighbors(
         n_neighbors_by_distance = (
             len(numpy.unique(croppped_neighbor_image[croppped_neighbor_image > 0])) - 1
         )
-        neighbors_out_dict["object_id"].append(label)
+        neighbors_out_dict["Metadata_Object_ObjectID"].append(label)
         neighbors_out_dict["NeighborsCountAdjacent"].append(n_neighbors_adjacent)
         neighbors_out_dict[f"NeighborsCountByDistance-{distance_threshold}"].append(
             n_neighbors_by_distance
         )
+    final_df = pandas.DataFrame(neighbors_out_dict)
+    # rename
+    final_df.rename(
+        columns={
+            col: format_morphology_feature_name(
+                compartment=object_loader.compartment,
+                channel=object_loader.channel,
+                feature_type="Neighbors",
+                measurement=col,
+            )
+            if col != "Metadata_Object_ObjectID"
+            else col
+            for col in final_df.columns
+        },
+        inplace=True,
+    )
+    if not final_df.empty:
+        final_df.insert(
+            0,
+            "Metadata_Experiment_ImageSet",
+            object_loader.image_set_loader.image_set_name,
+        )
 
-    return neighbors_out_dict
+    # validate column names against schema
+    result = final_df.to_dict(orient="list")
+    for col in list(result.keys()):
+        try:
+            validate_column_name_schema(
+                column_name=col,
+                compartments=[object_loader.compartment],
+                channels=[f"{object_loader.channel}"],
+            )
+        except ValueError as e:
+            raise ValueError(f"Column name {col} does not conform to schema: {e}")
+
+    return final_df
 
 
 def get_coordinates(
@@ -210,12 +246,12 @@ def get_coordinates(
     """
     if object_ids is None:
         object_ids = []
-    coords = {"object_id": [], "x": [], "y": [], "z": []}
+    coords = {"Metadata_Object_ObjectID": [], "x": [], "y": [], "z": []}
 
     for obj_id in object_ids:
         z, y, x = numpy.where(nuclei_mask == obj_id)
         centroid = (numpy.mean(x), numpy.mean(y), numpy.mean(z))
-        coords["object_id"].append(obj_id)
+        coords["Metadata_Object_ObjectID"].append(obj_id)
         coords["x"].append(centroid[0])
         coords["y"].append(centroid[1])
         coords["z"].append(centroid[2])
@@ -340,14 +376,14 @@ def classify_cells_into_shells(
     """
     # Handle both DataFrame and dict input
     if isinstance(coords, pandas.DataFrame):
-        object_ids = coords["object_id"].to_numpy()
+        object_ids = coords["Metadata_Object_ObjectID"].to_numpy()
         coords_array = coords[["x", "y", "z"]].to_numpy()
     else:
-        object_ids = numpy.array(coords["object_id"])
+        object_ids = numpy.array(coords["Metadata_Object_ObjectID"])
         coords_array = numpy.column_stack([coords["x"], coords["y"], coords["z"]])
     if len(coords_array) == 0:
         results = {
-            "object_id": [],
+            "Metadata_Object_ObjectID": [],
             "ShellAssignments": [],
             "DistancesFromCenter": [],
             "DistancesFromExterior": [],
@@ -396,7 +432,7 @@ def classify_cells_into_shells(
     distance_from_exterior = max_distance - distances
 
     results = {
-        "object_id": object_ids,
+        "Metadata_Object_ObjectID": object_ids,
         "ShellAssignments": shell_assignments,
         "DistancesFromCenter": distances,
         "DistancesFromExterior": distance_from_exterior,

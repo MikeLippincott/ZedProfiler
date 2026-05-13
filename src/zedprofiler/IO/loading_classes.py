@@ -11,6 +11,8 @@ import bioio
 import numpy
 from beartype import beartype
 
+from zedprofiler.contracts import ImageArrayModel
+
 logging.basicConfig(level=logging.INFO)
 
 
@@ -327,10 +329,14 @@ class ImageSetLoader:
         """
         if image_set_array is not None:
             for key in config.raw_image_key_name:
-                self.image_set_dict[key] = image_set_array
+                # Run through pydantic validation to ensure the array is valid.
+                validated_array = ImageArrayModel(array=image_set_array).array
+                self.image_set_dict[key] = validated_array
         if label_set_array is not None:
             for key in config.label_key_name:
-                self.image_set_dict[key] = label_set_array
+                # Run through pydantic validation to ensure the array is valid.
+                validated_array = ImageArrayModel(array=label_set_array).array
+                self.image_set_dict[key] = validated_array
 
     def get_unique_objects_in_compartments(self) -> None:
         """
@@ -471,6 +477,8 @@ class ObjectLoader:
         self.object_ids = numpy.unique(self.label_image)
         # drop the 0 label
         self.object_ids = [x for x in self.object_ids if x != 0]
+        # inherit the image set loader
+        self.image_set_loader = image_set_loader
 
 
 class TwoObjectLoader:
@@ -539,3 +547,5 @@ class TwoObjectLoader:
         self.image1 = self.image_set_loader.get_image(channel1)
         self.image2 = self.image_set_loader.get_image(channel2)
         self.object_ids = image_set_loader.unique_compartment_objects[compartment]
+        # inherit the image set name for downstream use
+        self.image_set_name = image_set_loader.image_set_name
