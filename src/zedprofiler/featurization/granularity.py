@@ -311,8 +311,6 @@ def compute_granularity(  # noqa: C901, PLR0912, PLR0913, PLR0915
     nobjects = len(label_range)
 
     if nobjects > 0:
-        label_range = numpy.arange(1, nobjects + 1)
-
         # CellProfiler: self.labels[~im.mask] = 0
         masked_labels = original_labels.copy()
         masked_labels[~original_mask] = 0
@@ -413,6 +411,7 @@ def compute_granularity(  # noqa: C901, PLR0912, PLR0913, PLR0915
         if non_zero > 0:
             vals = [v for v in object_measurements["value"] if v > 0]
             print(f"Mean granularity: {numpy.mean(vals):.2f}")
+
     final_df = pandas.DataFrame(object_measurements)
     # get the mean of each value in the array
     # melt the dataframe to wide format

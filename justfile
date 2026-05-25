@@ -28,9 +28,12 @@ coverage-check: coverage
 lint:
     uv run ruff check .
 
+lint-fix:
+    uv run ruff check . --fix
+
 # Build Sphinx docs with docs dependencies.
 docs:
     cd docs && uv run --group docs sphinx-build src build
 
 # Run the full project workflow (env sync, lint, tests, coverage, and docs build).
-all: sync lint test coverage-check docs
+all: sync lint-fix lint test coverage-check docs
