@@ -14,13 +14,11 @@ The package accepts:
 
 from __future__ import annotations
 
-import pathlib
 from typing import Any
 
 import numpy as np
 import pandas as pd
-import pandera as pa
-import tomli
+import pandera.pandas as pa
 from beartype import beartype
 from pydantic import (
     BaseModel,
@@ -39,6 +37,14 @@ FIVE_OR_MORE_DIMENSIONS = 5
 NON_METADATA_UNDERSCORE_SEPARATED_PARTS = 4
 METADATA_UNDERSCORE_SEPARATED_PARTS = 3
 REQUIRED_RETURN_KEYS = ("image_array", "features", "metadata")
+FEATURES = [
+    "Colocalization",
+    "Granularity",
+    "Texture",
+    "Intensity",
+    "Neighbors",
+    "VolumeSizeShape",
+]
 
 # Pandera schema for validating numpy arrays with expected dimensionality
 ImageArraySchema = pa.DataFrameSchema(
@@ -113,7 +119,14 @@ class ImageArrayModel(BaseModel):
                 "dimensions of size 1. Expected all three dimensions to "
                 "have size greater than 1."
             )
-
+        if not validate_image_array_shape_contracts(arr):
+            raise ValueError(
+                f"Input array with shape {arr_shape} failed shape contract validation."
+            )
+        if not validate_image_array_type_contracts(arr):
+            raise ValueError(
+                f"Input array with dtype {arr.dtype} failed type contract validation."
+            )
         return arr
 
 
@@ -330,32 +343,6 @@ def validate_image_array_type_contracts(
 
 
 @beartype
-def validate_image_with_pydantic(arr: np.ndarray) -> ImageArrayModel:
-    """
-    Validate image array using Pydantic model.
-
-    Parameters
-    ----------
-    arr : np.ndarray
-        Input array to validate
-
-    Returns
-    -------
-    ImageArrayModel
-        Validated image array model
-
-    Raises
-    ------
-    ContractError
-        If validation fails
-    """
-    try:
-        return ImageArrayModel(array=arr)
-    except Exception as e:
-        raise ContractError(f"Image array validation failed: {e}")
-
-
-@beartype
 def validate_return_with_pydantic(
     result: dict[str, object],
 ) -> ReturnSchemaModel:
@@ -383,6 +370,35 @@ def validate_return_with_pydantic(
         msg = (
             "Return schema validation failed. Please ensure that the data "
             f"fit the expected schema: {e}"
+        )
+        raise ContractError(msg)
+
+
+def validate_image_with_pydantic(arr: np.ndarray) -> ImageArrayModel:
+    """
+    Validate the input image array using Pydantic model.
+
+    Parameters
+    ----------
+    arr : np.ndarray
+        Input image array to validate
+
+    Returns
+    -------
+    ImageArrayModel
+        Validated image array model
+
+    Raises
+    ------
+    ContractError
+        If validation fails
+    """
+    try:
+        return ImageArrayModel(array=arr)
+    except Exception as e:
+        msg = (
+            "Image array validation failed. Please ensure that the input "
+            f"array meets the expected contracts: {e}"
         )
         raise ContractError(msg)
 
@@ -457,67 +473,42 @@ def validate_return_schema_contract(
 class ExpectedFeatureNameValues(BaseModel):
     """Pydantic model for expected values in feature naming validation."""
 
-    config_file_path: pathlib.Path
-    compartments: list[str] = Field(default_factory=list)
-    channels: list[str] = Field(default_factory=list)
-    features: list[str] = Field(default_factory=list)
-
+    compartments: list[str] | None = Field(default_factory=list)
+    channels: list[str] | None = Field(default_factory=list)
+    features: list[str] | None = Field(default_factory=list)
+    expected_values_dict: dict[str, list[str]] = Field(default_factory=dict)
     model_config = ConfigDict(arbitrary_types_allowed=True)
+    print(features)
 
-    @field_validator("config_file_path", mode="before")
-    @classmethod
-    def validate_config_path(_cls, v: object) -> pathlib.Path:
-        """Ensure config_file_path is a valid Path object."""
-        if not isinstance(v, pathlib.Path):
-            v = pathlib.Path(v)
-        return v
+    def __init__(self, **data: object) -> None:
+        super().__init__(**data)
+        if self.compartments is not None:
+            self.compartments = list(set(self.compartments))
+        else:
+            raise ValueError("Compartments list cannot be None.")
+        if self.channels is not None:
+            # Add "NoChannel" to channels list
+            self.channels = list(set(self.channels) | {"NoChannel"})
+        else:
+            raise ValueError("Channels list cannot be None.")
+        if self.features is not None and len(self.features) > 0:
+            self.features = list(set(self.features))
+        else:
+            self.features = FEATURES
 
-    def model_post_init(self, _context: object) -> None:
-        """Load expected values from a TOML configuration file."""
-        config = tomli.loads(self.config_file_path.read_text())
-        self.compartments = list(set(config["expected_values"]["compartments"]))
-        self.channels = list(set(config["expected_values"]["channels"]))
-        # add "NoChannel" as a valid channel for metadata columns
-        # This is automatically added in the ZedProfiler
-        # regardless of input channel we want this added
-        self.channels.append("NoChannel")
-        self.features = [
-            "AreaSizeShape",
-            "Correlation",
-            "Granularity",
-            "Intensity",
-            "Neighbors",
-            "Texture",
-            "SAMMed3D",
-            "CHAMMI-75",
-        ]
-
-    def to_dict(self) -> dict[str, list[str]]:
-        """Return expected values as a dictionary."""
-        return {
+        self.expected_values_dict = {
             "compartments": self.compartments,
             "channels": self.channels,
             "features": self.features,
         }
 
-    def __init__(self, *args: object, **data: object) -> None:
-        """Support positional `config_file_path` for backward compatibility.
-
-        Tests and existing code may instantiate ExpectedValues(path) using a
-        positional argument. Pydantic BaseModel requires keyword arguments, so
-        accept a single positional argument and forward it as
-        `config_file_path=` to the BaseModel initializer.
-        """
-        if args and "config_file_path" not in data:
-            # take the first positional arg as config_file_path
-            data["config_file_path"] = args[0]
-        super().__init__(**data)
-
 
 @beartype
 def validate_column_name_schema(
     column_name: str,
-    expected_values_config_path: pathlib.Path,
+    channels: list[str],
+    compartments: list[str],
+    features: list[str] | None = None,
 ) -> bool:
     """
     Validate the column name schema for required fields and types
@@ -526,8 +517,12 @@ def validate_column_name_schema(
     ----------
     column_name : str
         The column name to validate
-    expected_values_config_path : pathlib.Path
-        Path to the configuration file containing expected values for validation
+    channels : list[str]
+        List of valid channels for feature naming
+    compartments : list[str]
+        List of valid compartments for feature naming
+    features : list[str] | None, optional
+        List of valid features for feature naming, by default None
     Returns
     -------
     bool
@@ -540,7 +535,10 @@ def validate_column_name_schema(
     non_metadata_underscore_separated_parts = NON_METADATA_UNDERSCORE_SEPARATED_PARTS
     metadata_underscore_separated_parts = METADATA_UNDERSCORE_SEPARATED_PARTS
 
-    expected_values = ExpectedFeatureNameValues(expected_values_config_path).to_dict()
+    expected_values = ExpectedFeatureNameValues(
+        channels=channels, compartments=compartments, features=None
+    ).expected_values_dict
+
     # check if the column name is a string
     if not isinstance(column_name, str):
         raise ContractError(f"Column name must be a string, got {type(column_name)}")
@@ -568,7 +566,6 @@ def validate_column_name_schema(
                 f"underscores, got {len(parts)} parts in '{column_name}'"
             )
         return True
-
     feature_components = pd.DataFrame(
         [
             {
@@ -578,6 +575,7 @@ def validate_column_name_schema(
             }
         ]
     )
+
     feature_component_schema = pa.DataFrameSchema(
         {
             "compartment": pa.Column(
@@ -601,6 +599,7 @@ def validate_column_name_schema(
         },
         strict=True,
     )
+
     try:
         feature_component_schema.validate(feature_components)
     except (pa.errors.SchemaError, pa.errors.SchemaErrors) as e:

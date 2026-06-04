@@ -7,8 +7,11 @@ from importlib import import_module
 from typing import Protocol
 
 import numpy as np
+import pandas
 
+from zedprofiler.contracts import validate_column_name_schema
 from zedprofiler.exceptions import ZedProfilerError
+from zedprofiler.IO.feature_writing_utils import format_morphology_feature_name
 
 
 class SupportsImageSetLoader(Protocol):
@@ -31,7 +34,7 @@ class SupportsObjectLoader(Protocol):
 def _empty_feature_result() -> dict[str, list[float]]:
     """Return deterministic empty output schema for area/size/shape features."""
     return {
-        "object_id": [],
+        "Metadata_Object_ObjectID": [],
         "Volume": [],
         "CenterX": [],
         "CenterY": [],
@@ -50,7 +53,7 @@ def _empty_feature_result() -> dict[str, list[float]]:
     }
 
 
-def compute(
+def compute_volume_size_shape(
     image_set_loader: SupportsImageSetLoader | None = None,
     object_loader: SupportsObjectLoader | None = None,
 ) -> dict[str, list[float]]:
@@ -145,7 +148,7 @@ def measure_3D_volume_size_shape(
             properties=desired_properties,
         )
 
-        features_to_record["object_id"].append(label)
+        features_to_record["Metadata_Object_ObjectID"].append(label)
         features_to_record["Volume"].append(props["area"].item())
         features_to_record["CenterX"].append(props["centroid-2"].item())
         features_to_record["CenterY"].append(props["centroid-1"].item())
@@ -174,4 +177,40 @@ def measure_3D_volume_size_shape(
         except (RuntimeError, ValueError):
             features_to_record["SurfaceArea"].append(np.nan)
 
-    return features_to_record
+    final_df = pandas.DataFrame(features_to_record)
+
+    # prepend compartment and channel to column names
+    final_df.rename(
+        columns={
+            col: format_morphology_feature_name(
+                compartment=object_loader.compartment,
+                channel=object_loader.channel,
+                feature_type="VolumeSizeShape",
+                measurement=col,
+            )
+            if col != "Metadata_Object_ObjectID"
+            else col
+            for col in final_df.columns
+        },
+        inplace=True,
+    )
+
+    final_df.insert(
+        1,
+        "Metadata_Experiment_ImageSet",
+        object_loader.image_set_loader.image_set_name,
+    )
+
+    # validate column names against schema
+    result = final_df.to_dict(orient="list")
+    for col in list(result.keys()):
+        try:
+            validate_column_name_schema(
+                column_name=col,
+                compartments=[object_loader.compartment],
+                channels=[f"{object_loader.channel}"],
+            )
+        except ValueError as e:
+            raise ValueError(f"Column name {col} does not conform to schema: {e}")
+
+    return final_df

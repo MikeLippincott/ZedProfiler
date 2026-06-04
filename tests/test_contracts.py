@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import tomllib
 from pathlib import Path
 
 import numpy as np
@@ -30,6 +31,13 @@ from zedprofiler.contracts import (
     validate_return_with_pydantic,
 )
 from zedprofiler.exceptions import ContractError
+
+
+def _load_toml_config(config_path: Path) -> dict[str, list[str]]:
+    """Load expected values from TOML file."""
+    with open(config_path, "rb") as f:
+        toml_data = tomllib.load(f)
+    return toml_data.get("expected_values", {})
 
 
 @pytest.fixture
@@ -107,10 +115,21 @@ def test_validate_image_array_type_contracts_rejects_non_numeric_dtype() -> None
         validate_image_array_type_contracts(arr)
 
 
+@pytest.mark.parametrize(
+    argnames="channels,compartments",
+    argvalues=[
+        (["DNA", "AGP", "ER"], ["Nuclei", "Cytoplasm", "Cell"]),
+    ],
+)
 def test_expected_values_loads_config_and_adds_nochannel(
-    expected_values_config_path: Path,
+    channels: list[str],
+    compartments: list[str],
 ) -> None:
-    values = ExpectedFeatureNameValues(expected_values_config_path)
+    values = ExpectedFeatureNameValues(
+        compartments=compartments,
+        channels=channels,
+    )
+    print(values)
 
     assert "Nuclei" in values.compartments
     assert "DNA" in values.channels
@@ -121,78 +140,148 @@ def test_expected_values_loads_config_and_adds_nochannel(
 def test_expected_values_to_dict_returns_expected_keys(
     expected_values_config_path: Path,
 ) -> None:
-    values = ExpectedFeatureNameValues(expected_values_config_path).to_dict()
+    config = _load_toml_config(expected_values_config_path)
+    values = ExpectedFeatureNameValues(
+        compartments=config["compartments"],
+        channels=config["channels"],
+    )
 
-    assert set(values.keys()) == {"compartments", "channels", "features"}
+    result = values.expected_values_dict
+    assert set(result.keys()) == {"compartments", "channels", "features"}
+
+
+def test_expected_values_accepts_expected_values_dict() -> None:
+    expected_values = {
+        "compartments": ["Nuclei", "Cytoplasm"],
+        "channels": ["DNA", "ER"],
+        "features": ["Intensity", "Texture"],
+    }
+
+    values = ExpectedFeatureNameValues(
+        compartments=expected_values["compartments"],
+        channels=expected_values["channels"],
+        features=expected_values["features"],
+    )
+
+    assert "NoChannel" in values.channels
+    assert set(values.compartments) == {"Nuclei", "Cytoplasm"}
+    assert "Intensity" in values.features
+    assert "Texture" in values.features
 
 
 def test_validate_column_name_schema_accepts_valid_feature_column(
     expected_values_config_path: Path,
 ) -> None:
     valid_name = "Nuclei_DNA_Intensity_MeanIntensity"
+    config = _load_toml_config(expected_values_config_path)
 
-    assert validate_column_name_schema(valid_name, expected_values_config_path) is True
+    assert (
+        validate_column_name_schema(
+            valid_name,
+            channels=config["channels"],
+            compartments=config["compartments"],
+        )
+        is True
+    )
 
 
 def test_validate_column_name_schema_accepts_valid_metadata_column(
     expected_values_config_path: Path,
 ) -> None:
     valid_name = "Metadata_Storage_FilePath"
+    config = _load_toml_config(expected_values_config_path)
 
-    assert validate_column_name_schema(valid_name, expected_values_config_path) is True
+    assert (
+        validate_column_name_schema(
+            valid_name,
+            channels=config["channels"],
+            compartments=config["compartments"],
+        )
+        is True
+    )
 
 
 def test_validate_column_name_schema_rejects_non_string_column_name(
     expected_values_config_path: Path,
 ) -> None:
+    config = _load_toml_config(expected_values_config_path)
     # Beartype catches type errors before function execution
     with pytest.raises(BeartypeCallHintParamViolation):
-        validate_column_name_schema(123, expected_values_config_path)  # type: ignore[arg-type]
+        validate_column_name_schema(
+            123,  # type: ignore[arg-type]
+            channels=config["channels"],
+            compartments=config["compartments"],
+        )
 
 
 def test_validate_column_name_schema_rejects_non_metadata_with_too_few_parts(
     expected_values_config_path: Path,
 ) -> None:
     invalid_name = "Nuclei_DNA_Intensity"
+    config = _load_toml_config(expected_values_config_path)
 
     with pytest.raises(ContractError):
-        validate_column_name_schema(invalid_name, expected_values_config_path)
+        validate_column_name_schema(
+            invalid_name,
+            channels=config["channels"],
+            compartments=config["compartments"],
+        )
 
 
 def test_validate_column_name_schema_rejects_metadata_with_too_few_parts(
     expected_values_config_path: Path,
 ) -> None:
     invalid_name = "Metadata_Storage"
+    config = _load_toml_config(expected_values_config_path)
 
     with pytest.raises(ContractError):
-        validate_column_name_schema(invalid_name, expected_values_config_path)
+        validate_column_name_schema(
+            invalid_name,
+            channels=config["channels"],
+            compartments=config["compartments"],
+        )
 
 
 def test_validate_column_name_schema_rejects_unknown_compartment(
     expected_values_config_path: Path,
 ) -> None:
     invalid_name = "Nucleus_DNA_Intensity_MeanIntensity"
+    config = _load_toml_config(expected_values_config_path)
 
     with pytest.raises(ContractError):
-        validate_column_name_schema(invalid_name, expected_values_config_path)
+        validate_column_name_schema(
+            invalid_name,
+            channels=config["channels"],
+            compartments=config["compartments"],
+        )
 
 
 def test_validate_column_name_schema_rejects_unknown_channel(
     expected_values_config_path: Path,
 ) -> None:
     invalid_name = "Nuclei_GFP_Intensity_MeanIntensity"
+    config = _load_toml_config(expected_values_config_path)
 
     with pytest.raises(ContractError):
-        validate_column_name_schema(invalid_name, expected_values_config_path)
+        validate_column_name_schema(
+            invalid_name,
+            channels=config["channels"],
+            compartments=config["compartments"],
+        )
 
 
 def test_validate_column_name_schema_rejects_unknown_feature(
     expected_values_config_path: Path,
 ) -> None:
     invalid_name = "Nuclei_DNA_UnknownFeature_MeanIntensity"
+    config = _load_toml_config(expected_values_config_path)
 
     with pytest.raises(ContractError):
-        validate_column_name_schema(invalid_name, expected_values_config_path)
+        validate_column_name_schema(
+            invalid_name,
+            channels=config["channels"],
+            compartments=config["compartments"],
+        )
 
 
 def test_validate_return_schema_contract_accepts_valid_result() -> None:
@@ -611,10 +700,18 @@ def test_column_name_validation_with_pydantic_and_schema(
 ) -> None:
     """Test column name validation combines Pydantic and schema checking."""
     valid_name = "Nuclei_DNA_Intensity_MeanIntensity"
+    config = _load_toml_config(expected_values_config_path)
 
     # Pydantic model should parse successfully
     col_model = validate_column_name_with_pydantic(valid_name)
     assert col_model.compartment == "Nuclei"
 
     # Full schema validation should pass
-    assert validate_column_name_schema(valid_name, expected_values_config_path) is True
+    assert (
+        validate_column_name_schema(
+            valid_name,
+            channels=config["channels"],
+            compartments=config["compartments"],
+        )
+        is True
+    )

@@ -6,9 +6,12 @@ coordinates, and mass displacement for segmented 3D objects.
 """
 
 import numpy
+import pandas
 import scipy.ndimage
 import skimage.segmentation
 
+from zedprofiler.contracts import validate_column_name_schema
+from zedprofiler.IO.feature_writing_utils import format_morphology_feature_name
 from zedprofiler.IO.loading_classes import ObjectLoader
 
 
@@ -34,7 +37,7 @@ def get_outline(mask: numpy.ndarray) -> numpy.ndarray:
 
 def compute_intensity(  # noqa: PLR0915
     object_loader: ObjectLoader,
-) -> dict:
+) -> pandas.DataFrame:
     """
     Measure the intensity of objects in a 3D image.
 
@@ -54,7 +57,7 @@ def compute_intensity(  # noqa: PLR0915
     labels = object_loader.object_ids
 
     output_dict = {
-        "object_id": [],
+        "Metadata_Object_ObjectID": [],
         "feature_name": [],
         "channel": [],
         "compartment": [],
@@ -187,9 +190,49 @@ def compute_intensity(  # noqa: PLR0915
                 coerced_value = numpy.float32(measurement_value)
             else:
                 coerced_value = measurement_value
-            output_dict["object_id"].append(numpy.int32(label))
+            output_dict["Metadata_Object_ObjectID"].append(numpy.int32(label))
             output_dict["feature_name"].append(feature_name)
             output_dict["channel"].append(object_loader.channel)
             output_dict["compartment"].append(object_loader.compartment)
             output_dict["value"].append(coerced_value)
-    return output_dict
+    final_df = pandas.DataFrame(output_dict)
+    # prepend compartment and channel to column names
+    final_df = final_df.pivot(
+        index=["Metadata_Object_ObjectID"],
+        columns="feature_name",
+        values="value",
+    ).reset_index()
+    final_df.rename(
+        columns={
+            col: format_morphology_feature_name(
+                compartment=object_loader.compartment,
+                channel=object_loader.channel,
+                feature_type="Intensity",
+                measurement=col,
+            )
+            if col != "Metadata_Object_ObjectID"
+            else col
+            for col in final_df.columns
+        },
+        inplace=True,
+    )
+
+    final_df.insert(
+        0,
+        "Metadata_Experiment_ImageSet",
+        object_loader.image_set_loader.image_set_name,
+    )
+
+    # validate column names against schema
+    result = final_df.to_dict(orient="list")
+    for col in list(result.keys()):
+        try:
+            validate_column_name_schema(
+                column_name=col,
+                compartments=[object_loader.compartment],
+                channels=[f"{object_loader.channel}"],
+            )
+        except ValueError as e:
+            raise ValueError(f"Column name {col} does not conform to schema: {e}")
+
+    return final_df

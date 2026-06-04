@@ -267,8 +267,14 @@ class TestImageSetLoaderInit:
         self,
     ) -> None:
         """Array-backed initialization should populate image_set_dict directly."""
-        image_array = np.ones((2, 2), dtype=np.int32)
-        label_array = np.array([[ZERO_LABEL, ONE_LABEL]], dtype=np.int32)
+        image_array = np.ones((2, 2, 2), dtype=np.float32)
+        label_array = np.array(
+            [
+                [[ZERO_LABEL, ONE_LABEL], [TWO_LABEL, TWO_LABEL]],
+                [[ZERO_LABEL, ONE_LABEL], [TWO_LABEL, TWO_LABEL]],
+            ],
+            dtype=np.int32,
+        )
 
         loader = ImageSetLoader(
             image_set_path=None,
@@ -276,17 +282,18 @@ class TestImageSetLoaderInit:
             image_set_array=image_array,
             label_set_array=label_array,
             anisotropy_spacing=(2.0, 1.0, 1.0),
-            channel_mapping={},
+            channel_mapping={
+                "DNA": "dna_raw",
+                "Nuclei_label": "nuc_label",
+            },
             config=ImageSetConfig(
-                label_key_name=["Nuclei_label"],
+                label_key_name=["Nuclei-label"],
                 raw_image_key_name=["DNA"],
             ),
         )
 
         assert np.array_equal(loader.get_image("DNA"), image_array)
-        assert np.array_equal(loader.get_image("Nuclei_label"), label_array)
-        assert loader.image_names == []
-        assert loader.compartments == ["DNA", "Nuclei_label"]
+        assert np.array_equal(loader.get_image("Nuclei-label"), label_array)
 
     def test_init_with_none_image_path_raises_value_error(
         self,
@@ -335,22 +342,43 @@ class TestObjectLoaders:
 
     def test_two_object_loader_loads_images_and_ids(self) -> None:
         """TwoObjectLoader should load the expected arrays and preserve object IDs."""
-        image_set_loader = ImageSetLoader.__new__(ImageSetLoader)
-        image_set_loader.image_set_dict = {
-            "Nuclei_label": np.array([[ZERO_LABEL, ONE_LABEL]], dtype=np.int32),
-            "DNA": np.array([[10, 11]], dtype=np.int32),
-            "RNA": np.array([[20, 21]], dtype=np.int32),
-        }
-        image_set_loader.unique_compartment_objects = {"Nuclei_label": [ONE_LABEL]}
-
-        two = TwoObjectLoader(
-            image_set_loader=image_set_loader,
-            compartment="Nuclei_label",
-            channel1="DNA",
-            channel2="RNA",
+        # label imabe should be 3D
+        label_image = np.array(
+            [
+                [[ZERO_LABEL, ONE_LABEL], [TWO_LABEL, TWO_LABEL]],
+                [[ZERO_LABEL, ONE_LABEL], [TWO_LABEL, TWO_LABEL]],
+            ],
+            dtype=np.int32,
+        )
+        # establish this 3D image where each dimension is ZYX
+        # 2x2x2 array of ones to match the label image shape for simplicity
+        image = np.ones((2, 2, 2), dtype=np.float32)
+        image_set_loader = ImageSetLoader(
+            image_set_path=None,
+            label_set_path=None,
+            image_set_array=image,
+            label_set_array=label_image,
+            anisotropy_spacing=(2.0, 1.0, 1.0),
+            channel_mapping={
+                "DNA": "dna_raw",
+                "AGP": "agp_raw",
+                "Nuclei-label": "nuc_label",
+            },
+            config=ImageSetConfig(
+                label_key_name=["Nuclei-label"],
+                raw_image_key_name=["DNA", "AGP"],
+            ),
         )
 
-        assert two.object_ids == [ONE_LABEL]
-        assert np.array_equal(two.label_image, np.array([[ZERO_LABEL, ONE_LABEL]]))
-        assert np.array_equal(two.image1, np.array([[10, 11]]))
-        assert np.array_equal(two.image2, np.array([[20, 21]]))
+        obj = TwoObjectLoader(
+            image_set_loader=image_set_loader,
+            channel1="DNA",
+            channel2="AGP",
+            compartment="Nuclei-label",
+        )
+
+        assert obj.compartment == "Nuclei-label"
+        assert np.array_equal(obj.image1, image)
+        assert np.array_equal(obj.image2, image)
+        assert np.array_equal(obj.label_image, label_image)
+        assert obj.object_ids == [ONE_LABEL, TWO_LABEL]

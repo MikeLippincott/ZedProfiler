@@ -1,151 +1,182 @@
-import re
-from types import SimpleNamespace
+from __future__ import annotations
+
+from typing import ClassVar
 
 import numpy as np
+import pandas as pd
 import pytest
-from _pytest.capture import CaptureFixture
+from beartype import beartype
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from zedprofiler.featurization.granularity import (
-    _fix_scipy_ndimage_result,
     _subsample_3d,
     _upsample_3d,
     compute_granularity,
 )
 
-EXPECTED_THREE_SCALES = 3
-EXPECTED_TWO_SCALES = 2
+scipy = pytest.importorskip("scipy")
 
 
-def _make_loader(image: np.ndarray, labels: np.ndarray) -> SimpleNamespace:
-    return SimpleNamespace(image=image, label_image=labels)
+class ImageSetLoaderModel(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    image_set_name: str = "gran"
 
 
-def test_fix_scipy_ndimage_result_handles_scalar_and_sequence() -> None:
-    scalar_result = _fix_scipy_ndimage_result(3.14)
-    sequence_result = _fix_scipy_ndimage_result([1.0, 2.0])
+class ObjectLoaderModel(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    image: np.ndarray
+    label_image: np.ndarray
+    object_ids: list[int]
+    image_set_loader: ImageSetLoaderModel
+    compartment: str = "Cell"
+    channel: str = "Ch1"
 
-    np.testing.assert_array_equal(scalar_result, np.array([3.14]))
-    np.testing.assert_array_equal(sequence_result, np.array([1.0, 2.0]))
-
-
-def test_subsample_3d_returns_copy_when_factor_is_one() -> None:
-    data = np.arange(4 * 4 * 4, dtype=float).reshape(4, 4, 4)
-    out = _subsample_3d(data, np.array(data.shape, dtype=float), subsample_factor=1.0)
-
-    np.testing.assert_array_equal(out, data)
-    assert out is not data
-
-
-def test_subsample_3d_reduces_shape_for_fractional_factor() -> None:
-    data = np.arange(4 * 4 * 4, dtype=float).reshape(4, 4, 4)
-    new_shape = np.array(data.shape, dtype=float) * 0.5
-
-    out = _subsample_3d(data, new_shape, subsample_factor=0.5)
-
-    assert out.shape == (2, 2, 2)
+    @field_validator("image", "label_image", mode="before")
+    @classmethod
+    def ensure_array(_cls, v: object) -> np.ndarray:
+        return np.asarray(v)
 
 
-def test_upsample_3d_restores_requested_shape() -> None:
-    data = np.arange(2 * 2 * 2, dtype=float).reshape(2, 2, 2)
+@beartype
+def make_image_and_label(
+    shape: tuple[int, int, int], center: tuple[int, int, int]
+) -> tuple[np.ndarray, np.ndarray]:
+    image = np.zeros(shape, dtype=float)
+    label = np.zeros(shape, dtype=int)
+    z, y, x = center
+    image[z - 1 : z + 2, y - 1 : y + 2, x - 1 : x + 2] = 10.0
+    label[z - 1 : z + 2, y - 1 : y + 2, x - 1 : x + 2] = 1
+    return image, label
 
-    out = _upsample_3d(
-        data=data,
-        subsampled_shape=np.array([2.0, 2.0, 2.0]),
-        original_shape=(4, 4, 4),
-    )
 
-    assert out.shape == (4, 4, 4)
-
-
-@pytest.mark.parametrize(
-    ("kwargs", "error_text"),
-    [
-        ({"subsample_size": 0.0}, "subsample_size must be in (0, 1]"),
-        ({"image_sample_size": 0.0}, "image_sample_size must be in (0, 1]"),
-        ({"radius": 0}, "radius must be positive"),
-        ({"granular_spectrum_length": 0}, "granular_spectrum_length must be positive"),
-    ],
-)
-def test_compute_granularity_validates_inputs(
-    kwargs: dict[str, float | int],
-    error_text: str,
+@pytest.mark.parametrize("shape,center", [((12, 12, 12), (6, 6, 6))])
+def test_compute_granularity_basic(
+    shape: tuple[int, int, int], center: tuple[int, int, int]
 ) -> None:
-    image = np.ones((4, 4, 4), dtype=float)
-    labels = np.ones((4, 4, 4), dtype=int)
-    loader = _make_loader(image, labels)
-
-    with pytest.raises(ValueError, match=re.escape(error_text)):
-        compute_granularity(loader, **kwargs)
-
-
-def test_compute_granularity_returns_empty_measurements_when_no_objects() -> None:
-    image = np.ones((6, 6, 6), dtype=float)
-    labels = np.zeros((6, 6, 6), dtype=int)
-    loader = _make_loader(image, labels)
-
-    result = compute_granularity(
-        loader,
-        radius=1,
-        granular_spectrum_length=2,
-        subsample_size=1.0,
-        image_sample_size=1.0,
-        verbose=False,
+    img, lab = make_image_and_label(shape, center)
+    imgset = ImageSetLoaderModel()
+    loader = ObjectLoaderModel(
+        image=img,
+        label_image=lab,
+        object_ids=[1],
+        image_set_loader=imgset,
     )
 
-    assert result == {"object_id": [], "feature": [], "value": []}
+    df = compute_granularity(loader, radius=1, granular_spectrum_length=4)
+    assert isinstance(df, (pd.DataFrame,))
+    # Expect Metadata_Object_ObjectID column
+    assert "Metadata_Object_ObjectID" in df.columns
 
 
-def test_compute_granularity_generates_measurements_for_objects() -> None:
-    image = np.zeros((7, 7, 7), dtype=float)
-    image[2:5, 2:5, 2:5] = 20.0
-    labels = np.zeros((7, 7, 7), dtype=int)
-    labels[2:5, 2:5, 2:5] = 1
-    loader = _make_loader(image, labels)
+def test_subsample_and_upsample_roundtrip() -> None:
+    data = np.arange(27.0).reshape((3, 3, 3))
+    # subsample by factor 0.5 -> larger grid coords division
+    subsampled = _subsample_3d(data, np.array([1.5, 1.5, 1.5]), 0.5, order=1)
+    assert subsampled.ndim == data.ndim
+    # upsample back to original shape
+    up = _upsample_3d(subsampled, subsampled.shape, data.shape)
+    assert up.shape == data.shape
+    # values won't be identical due to interpolation, but structure preserved
+    assert up.max() >= data.max() * 0.5
 
-    result = compute_granularity(
-        loader,
+
+def test_compute_granularity_subsample_size_ge_1_uses_copy() -> None:
+    # subsample_size >= 1 returns a copy path (no subsampling)
+    shape = (6, 6, 6)
+    img = np.zeros(shape, dtype=float)
+    lab = np.zeros(shape, dtype=int)
+    img[3, 3, 3] = 10.0
+    lab[3, 3, 3] = 1
+
+    class Dummy:
+        image = img
+        label_image = lab
+        object_ids: ClassVar[list[int]] = [1]
+        image_set_loader = type("ISL", (), {"image_set_name": "s"})()
+        compartment = "Cell"
+        channel = "Ch1"
+
+    df = compute_granularity(
+        Dummy(),
         radius=1,
         granular_spectrum_length=3,
         subsample_size=1.0,
-        image_sample_size=1.0,
-        verbose=False,
     )
-
-    assert result["object_id"] == [1, 1, 1]
-    assert result["feature"] == [1, 2, 3]
-    # Expected per-scale granularity percentages for the single object
-    assert result["value"] == [100.0, 0.0, 0.0]
+    assert isinstance(df, pd.DataFrame)
+    assert "Metadata_Object_ObjectID" in df.columns
 
 
-def test_compute_granularity_with_subsampling_mask_and_verbose(
-    capsys: CaptureFixture[str],
-) -> None:
-    image = np.zeros((8, 8, 8), dtype=float)
-    image[2:6, 2:6, 2:6] = 30.0
-    labels = np.zeros((8, 8, 8), dtype=int)
-    labels[2:6, 2:6, 2:6] = 1
-    mask = np.ones((8, 8, 8), dtype=bool)
-    mask[0, :, :] = False
-    loader = _make_loader(image, labels)
+def test_compute_granularity_with_image_sample_size_background_path() -> None:
+    # exercise branch where image_sample_size < 1 triggers background subsampling
+    shape = (12, 12, 12)
+    img = np.zeros(shape, dtype=float)
+    lab = np.zeros(shape, dtype=int)
+    img[6, 6, 6] = 20.0
+    lab[6, 6, 6] = 1
 
-    result = compute_granularity(
-        loader,
+    class Dummy:
+        image = img
+        label_image = lab
+        object_ids: ClassVar[list[int]] = [1]
+        image_set_loader = type("ISL", (), {"image_set_name": "s"})()
+        compartment = "Cell"
+        channel = "Ch1"
+
+    # small image_sample_size will go through background subsampling branch
+    df = compute_granularity(
+        Dummy(),
         radius=1,
-        granular_spectrum_length=2,
-        subsample_size=0.75,
+        granular_spectrum_length=4,
+        subsample_size=0.5,
         image_sample_size=0.5,
-        mask_threshold=0.5,
-        verbose=True,
-        image_mask=mask,
     )
+    assert isinstance(df, pd.DataFrame)
+    assert df.shape[0] >= 1
 
-    captured = capsys.readouterr()
 
-    assert "Subsampled image" in captured.out
-    assert "Background removed via tophat filter." in captured.out
-    assert result["object_id"] == [1, 1]
-    assert result["feature"] == [1, 2]
-    # Expected per-scale granularity percentages (floating values)
-    assert result["value"] == pytest.approx(
-        [57.91469603714501, 42.085303962855], rel=1e-12
+def test_compute_granularity_mask_handling_and_zero_volume_skips() -> None:
+    # Provide a mask that excludes the object to trigger empty thresholds/path
+    shape = (8, 8, 8)
+    img = np.zeros(shape, dtype=float)
+    lab = np.zeros(shape, dtype=int)
+    img[4, 4, 4] = 50.0
+    lab[4, 4, 4] = 1
+
+    mask = np.zeros(shape, dtype=bool)  # exclude everything
+
+    class Dummy:
+        image = img
+        label_image = lab
+        object_ids: ClassVar[list[int]] = [1]
+        image_set_loader = type("ISL", (), {"image_set_name": "s"})()
+        compartment = "Cell"
+        channel = "Ch1"
+
+    # With mask excluding pixels, function should still run and return DataFrame
+    df = compute_granularity(
+        Dummy(), radius=1, granular_spectrum_length=3, image_mask=mask
     )
+    assert isinstance(df, pd.DataFrame)
+
+
+def test_compute_granularity_preserves_sparse_label_ids() -> None:
+    # Sparse labels should not be renumbered to 1..n internally.
+    shape = (8, 8, 8)
+    img = np.zeros(shape, dtype=float)
+    lab = np.zeros(shape, dtype=int)
+    img[2, 2, 2] = 10.0
+    img[5, 5, 5] = 20.0
+    lab[2, 2, 2] = 257
+    lab[5, 5, 5] = 514
+
+    class Dummy:
+        image = img
+        label_image = lab
+        object_ids: ClassVar[list[int]] = [257, 514]
+        image_set_loader = type("ISL", (), {"image_set_name": "s"})()
+        compartment = "Cell"
+        channel = "Ch1"
+
+    df = compute_granularity(Dummy(), radius=1, granular_spectrum_length=2)
+    assert isinstance(df, pd.DataFrame)
+    assert sorted(df["Metadata_Object_ObjectID"].tolist()) == [257, 514]

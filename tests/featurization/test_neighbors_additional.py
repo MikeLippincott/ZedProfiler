@@ -3,11 +3,10 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 import pytest
-from beartype import beartype
-from pydantic import BaseModel, ConfigDict, field_validator
 
 from zedprofiler.featurization.neighbors import (
     calculate_centroid,
+    classify_cells_into_shells,
     compute_neighbors,
     create_results_dataframe,
     crop_3D_image,
@@ -18,56 +17,10 @@ from zedprofiler.featurization.neighbors import (
     plot_distance_distributions,
     visualize_organoid_shells,
 )
+from zedprofiler.IO.feature_writing_utils import format_morphology_feature_name
 
-
-class ImageSetLoaderModel(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-    image_set_name: str = "neighbors"
-
-
-class ObjectLoaderModel(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-    label_image: np.ndarray
-    object_ids: list[int]
-    image_set_loader: ImageSetLoaderModel
-    compartment: str = "Cell"
-    channel: str = "Ch1"
-
-    @field_validator("label_image", mode="before")
-    @classmethod
-    def to_array(_cls, v: object) -> np.ndarray:
-        return np.asarray(v)
-
-
-@beartype
-def make_two_labels(
-    shape: tuple[int, int, int], centers: list[tuple[int, int, int]]
-) -> np.ndarray:
-    lab = np.zeros(shape, dtype=int)
-    for i, (z, y, x) in enumerate(centers, start=1):
-        lab[z, y, x] = i
-    return lab
-
-
-@pytest.mark.parametrize(
-    "shape,centers",
-    [
-        ((10, 10, 10), [(3, 3, 3), (6, 6, 6)]),
-    ],
-)
-def test_compute_neighbors_counts(
-    shape: tuple[int, int, int], centers: list[tuple[int, int, int]]
-) -> None:
-    lab = make_two_labels(shape, centers)
-    imgset = ImageSetLoaderModel()
-    obj_ids = sorted(set(lab.ravel()) - {0})
-    loader = ObjectLoaderModel(
-        label_image=lab, object_ids=obj_ids, image_set_loader=imgset
-    )
-
-    df = compute_neighbors(loader, distance_threshold=5, anisotropy_factor=1)
-    assert isinstance(df, pd.DataFrame)
-    assert "Metadata_Object_ObjectID" in df.columns
+scipy = pytest.importorskip("scipy")
+skimage = pytest.importorskip("skimage")
 
 
 def test_neighbors_expand_box_bounds() -> None:
@@ -85,6 +38,38 @@ def test_crop_3d_image_basic() -> None:
     img = np.arange(27).reshape((3, 3, 3))
     cropped = crop_3D_image(img, (1, 0, 0, 3, 2, 2))
     assert cropped.shape == (2, 2, 2)
+
+
+def test_compute_neighbors_distance_counts() -> None:
+    # Create a label image with three objects: two nearby, one far
+    lab = np.zeros((12, 12, 12), dtype=int)
+    lab[2, 2, 2] = 1
+    lab[2, 2, 4] = 2
+    lab[10, 10, 10] = 3
+
+    class Dummy:
+        label_image = lab
+        object_ids = (1, 2, 3)
+        image_set_loader = type("ISL", (), {"image_set_name": "s"})()
+        compartment = "Cell"
+        channel = "Ch1"
+
+    df = compute_neighbors(Dummy(), distance_threshold=3, anisotropy_factor=1)
+    assert isinstance(df, pd.DataFrame)
+    # For object 1 and 2, distance-based neighbors should count each other
+    distance_threshold = 3
+    col = format_morphology_feature_name(
+        compartment="Cell",
+        channel="Ch1",
+        feature_type="Neighbors",
+        measurement=f"NeighborsCountByDistance-{distance_threshold}",
+    )
+    vals = df[col].tolist()
+    # find values for labels in order
+    assert vals[0] >= 1
+    assert vals[1] >= 1
+    # object 3 is far -> zero neighbors by distance
+    assert vals[2] == 0
 
 
 def test_get_coordinates_and_distances_and_centroid() -> None:
@@ -116,7 +101,6 @@ def test_mahalanobis_small_and_regularized_and_singular() -> None:
     assert np.allclose(md_small, ed_small)
 
     # regularized branch with many identical points -> singular covariance
-    # -> pseudo-inverse
     repeated_count = 30
     coords_singular = np.tile(np.array([1.0, 2.0, 3.0]), (repeated_count, 1))
     centroid2 = np.mean(coords_singular, axis=0)
@@ -126,6 +110,29 @@ def test_mahalanobis_small_and_regularized_and_singular() -> None:
     assert md_sing.shape[0] == repeated_count
     # distances should be zeros because all identical
     assert np.allclose(md_sing, 0.0)
+
+
+def test_classify_cells_into_shells_empty_and_reduction_and_methods() -> None:
+    # empty coords
+    res, cent = classify_cells_into_shells(
+        pd.DataFrame(columns=["Metadata_Object_ObjectID", "x", "y", "z"])
+    )
+    assert res["Metadata_Object_ObjectID"] == []
+    assert cent is None
+
+    # small set with requested large n_shells -> will reduce
+    coords = {
+        "Metadata_Object_ObjectID": [1, 2, 3, 4, 5, 6],
+        "x": [0, 1, 2, 3, 4, 5],
+        "y": [0, 1, 2, 3, 4, 5],
+        "z": [0, 1, 2, 3, 4, 5],
+    }
+    results, _centroid = classify_cells_into_shells(
+        coords, n_shells=10, method="euclidean", min_cells_per_shell=3
+    )
+    # max_shells = max(2, 6//3==2) -> will reduce to 2
+    expected_shells = 2
+    assert results["ShellsUsed"] == expected_shells
 
 
 def test_create_results_dataframe_and_errors_and_plots() -> None:

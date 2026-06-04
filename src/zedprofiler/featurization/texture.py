@@ -9,9 +9,12 @@ We want this module to be python api callable and scalable.
 
 import mahotas
 import numpy
+import pandas
 import skimage
 import skimage.measure
 
+from zedprofiler.contracts import validate_column_name_schema
+from zedprofiler.IO.feature_writing_utils import format_morphology_feature_name
 from zedprofiler.IO.loading_classes import ObjectLoader
 
 
@@ -56,7 +59,7 @@ def scale_image(image: numpy.ndarray, num_gray_levels: int = 256) -> numpy.ndarr
     )
 
 
-def compute_texture(
+def compute_texture(  # noqa: C901
     object_loader: ObjectLoader,
     distance: int = 1,
     grayscale: int = 256,
@@ -125,7 +128,7 @@ def compute_texture(
     n_directions = 13
 
     output_texture_dict = {
-        "object_id": [],
+        "Metadata_Object_ObjectID": [],
         "texture_name": [],
         "texture_value": [],
     }
@@ -183,9 +186,50 @@ def compute_texture(
         direction_str = f"{direction:02d}"
         for feature_name, feature in zip(feature_names, direction_features):
             for object_id, feature_value in zip(labels, feature):
-                output_texture_dict["object_id"].append(object_id)
+                output_texture_dict["Metadata_Object_ObjectID"].append(object_id)
                 output_texture_dict["texture_name"].append(
                     f"{feature_name}-{distance}-{direction_str}-{grayscale}"
                 )
                 output_texture_dict["texture_value"].append(feature_value)
-    return output_texture_dict
+    final_df = pandas.DataFrame(output_texture_dict)
+
+    final_df = final_df.pivot(
+        index="Metadata_Object_ObjectID",
+        columns="texture_name",
+        values="texture_value",
+    )
+    final_df.reset_index(inplace=True)
+    final_df.rename(
+        columns={
+            col: format_morphology_feature_name(
+                compartment=object_loader.compartment,
+                channel=object_loader.channel,
+                feature_type="Texture",
+                measurement=col,
+            )
+            if col != "Metadata_Object_ObjectID"
+            else col
+            for col in final_df.columns
+        },
+        inplace=True,
+    )
+    final_df.insert(
+        0,
+        "Metadata_Experiment_ImageSet",
+        object_loader.image_set_loader.image_set_name,
+    )
+    final_df.columns.name = None
+
+    # validate column names against schema
+    result = final_df.to_dict(orient="list")
+    for col in list(result.keys()):
+        try:
+            validate_column_name_schema(
+                column_name=col,
+                compartments=[object_loader.compartment],
+                channels=[f"{object_loader.channel}"],
+            )
+        except ValueError as e:
+            raise ValueError(f"Column name {col} does not conform to schema: {e}")
+
+    return final_df

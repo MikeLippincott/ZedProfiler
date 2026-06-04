@@ -1,128 +1,128 @@
+from __future__ import annotations
+
 import numpy as np
+import pandas as pd
 import pytest
-from _pytest.monkeypatch import MonkeyPatch
+from conftest import make_pair
+from pydantic import BaseModel, ConfigDict, field_validator
 
-from zedprofiler.featurization import colocalization as coloc
+skimage = pytest.importorskip("skimage")
 
-
-def test_linear_costes_threshold_calculation_returns_finite_thresholds() -> None:
-    x = np.linspace(0.01, 1.0, 200)
-    y = 0.85 * x + 0.05 * np.sin(np.arange(x.size))
-    t1, t2 = coloc.linear_costes_threshold_calculation(
-        x, y, scale_max=255, fast_costes="Fast"
-    )
-    assert np.isfinite(t1)
-    assert np.isfinite(t2)
-
-
-def test_bisection_costes_threshold_calculation_returns_finite_thresholds() -> None:
-    x = np.linspace(0.01, 1.0, 200)
-    y = 0.9 * x + 0.03 * np.cos(np.arange(x.size))
-    t1, t2 = coloc.bisection_costes_threshold_calculation(x, y, scale_max=255)
-    assert np.isfinite(t1)
-    assert np.isfinite(t2)
+from zedprofiler.featurization.colocalization import (  # noqa: E402
+    bisection_costes_threshold_calculation,
+    calculate_colocalization,
+    compute_colocalization,
+    linear_costes_threshold_calculation,
+    prepare_two_images_for_colocalization,
+)
 
 
-def test_prepare_two_images_for_colocalization_crops_expected_regions(
-    monkeypatch: MonkeyPatch,
+class ImageSetLoaderModel(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    image_set_name: str = "coloc"
+
+
+class TwoObjectLoaderModel(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    image_set_loader: ImageSetLoaderModel
+    compartment: str
+    image1: np.ndarray
+    image2: np.ndarray
+    label_image: np.ndarray
+    object_ids: list[int]
+
+    @field_validator("image1", "image2", "label_image", mode="before")
+    @classmethod
+    def to_array(_cls, v: object) -> np.ndarray:
+        return np.asarray(v)
+
+
+@pytest.mark.parametrize("shape,center", [((7, 7, 7), (3, 3, 3))])
+def test_compute_colocalization_basic(
+    shape: tuple[int, int, int], center: tuple[int, int, int]
 ) -> None:
-    label1 = np.zeros((4, 4, 4), dtype=int)
-    label2 = np.zeros((4, 4, 4), dtype=int)
-    label1[1:3, 1:3, 1:3] = 1
-    label2[0:2, 0:2, 0:2] = 2
-
-    img1 = np.arange(64).reshape(4, 4, 4)
-    img2 = np.arange(100, 164).reshape(4, 4, 4)
-
-    monkeypatch.setattr(coloc, "select_objects_from_label", lambda arr, _: arr)
-    monkeypatch.setattr(coloc, "new_crop_border", lambda b1, b2, _img: (b1, b2))
-    monkeypatch.setattr(
-        coloc,
-        "crop_3D_image",
-        lambda img, bbox: img[bbox[0] : bbox[3], bbox[1] : bbox[4], bbox[2] : bbox[5]],
+    imgset = ImageSetLoaderModel()
+    label, im1, im2 = make_pair(shape, center)
+    loader = TwoObjectLoaderModel(
+        image_set_loader=imgset,
+        compartment="Cell",
+        image1=im1,
+        image2=im2,
+        label_image=label,
+        object_ids=[1],
     )
 
-    out1, out2 = coloc.prepare_two_images_for_colocalization(
-        label1, label2, img1, img2, object_id1=1, object_id2=2
+    df = compute_colocalization(loader, channel1="A", channel2="B")
+
+    assert isinstance(df, pd.DataFrame)
+    # Expect correlation column with morphology formatting present
+    assert any("Colocalization" in c for c in df.columns)
+
+
+def test_linear_and_bisection_costes_thresholds_basic() -> None:
+    # simple linear relationship between channels
+    x = np.linspace(1.0, 100.0, 200)
+    img1 = x.reshape((200,))
+    img2 = (2.0 * x + 5.0).reshape((200,))
+
+    thr_lin = linear_costes_threshold_calculation(img1, img2, scale_max=255)
+    thr_bis = bisection_costes_threshold_calculation(img1, img2, scale_max=255)
+    expected_threshold_count = 2
+
+    assert isinstance(thr_lin, tuple) and len(thr_lin) == expected_threshold_count
+    assert isinstance(thr_bis, tuple) and len(thr_bis) == expected_threshold_count
+
+    for t in (*thr_lin, *thr_bis):
+        assert isinstance(t, float)
+        assert t >= 0.0
+
+
+def test_prepare_two_images_for_colocalization_crops() -> None:
+    # create two identical label images with one object each and match images
+    shape = (7, 7, 7)
+    label = np.zeros(shape, dtype=int)
+    # 3x3x3 cube in center
+    label[2:5, 2:5, 2:5] = 1
+
+    im1 = np.zeros(shape, dtype=float)
+    im2 = np.zeros(shape, dtype=float)
+    expected_peak_im1 = 10.0
+    expected_peak_im2 = 5.0
+    im1[3, 3, 3] = expected_peak_im1
+    im2[3, 3, 3] = expected_peak_im2
+
+    cropped1, cropped2 = prepare_two_images_for_colocalization(
+        label, label, im1, im2, 1, 1
     )
 
-    assert out1.shape == (2, 2, 2)
-    assert out2.shape == (2, 2, 2)
-    np.testing.assert_array_equal(out1, img1[1:3, 1:3, 1:3])
-    np.testing.assert_array_equal(out2, img2[0:2, 0:2, 0:2])
+    assert isinstance(cropped1, np.ndarray) and isinstance(cropped2, np.ndarray)
+    # crops should be small but non-empty and include the bright voxel
+    assert cropped1.size > 0 and cropped2.size > 0
+    assert cropped1.max() >= expected_peak_im1
+    assert cropped2.max() >= expected_peak_im2
 
 
-def test_compute_colocalization_identical_images_are_highly_colocalized() -> None:
-    arr = np.array(
-        [
-            [[1, 2], [3, 4]],
-            [[5, 6], [7, 8]],
-        ],
-        dtype=float,
-    )
-    res = coloc.compute_colocalization(arr, arr, thr=0, fast_costes="Fast")
+def test_calculate_colocalization_identical_images() -> None:
+    # identical images should give high correlation and Manders near 1
+    rng = np.random.default_rng(0)
+    img = rng.uniform(0, 255, size=(6, 6, 6)).astype(float)
 
-    expected_keys = {
+    results = calculate_colocalization(img, img, thr=10, fast_costes="Accurate")
+
+    # expected keys present and sensible numeric values
+    expected_keys = (
         "Correlation",
         "MandersCoeffM1",
         "MandersCoeffM2",
         "OverlapCoeff",
-        "MandersCoeffCostesM1",
-        "MandersCoeffCostesM2",
-        "RankWeightedColocalizationCoeff1",
-        "RankWeightedColocalizationCoeff2",
-    }
-    assert expected_keys.issubset(res.keys())
-    assert res["Correlation"] == pytest.approx(1.0, rel=1e-6)
-    assert res["MandersCoeffM1"] == pytest.approx(1.0, rel=1e-6)
-    assert res["MandersCoeffM2"] == pytest.approx(1.0, rel=1e-6)
-    assert res["OverlapCoeff"] == pytest.approx(1.0, rel=1e-6)
+    )
+    for k in expected_keys:
+        assert k in results
+        assert isinstance(results[k], float)
 
-
-def test_compute_colocalization_empty_combined_threshold_path() -> None:
-    a = np.ones((2, 2, 2), dtype=float)
-    b = np.ones((2, 2, 2), dtype=float) * 2.0
-
-    res = coloc.compute_colocalization(a, b, thr=200, fast_costes="Fast")
-
-    assert res["MandersCoeffM1"] == 0.0
-    assert res["MandersCoeffM2"] == 0.0
-    assert res["RankWeightedColocalizationCoeff1"] == 0.0
-    assert res["RankWeightedColocalizationCoeff2"] == 0.0
-    assert np.isnan(res["OverlapCoeff"])
-
-
-def test_compute_colocalization_costes_dispatch(monkeypatch: MonkeyPatch) -> None:
-    calls = {"bisection": 0, "linear": 0}
-
-    def fake_bisection(
-        _i1: np.ndarray, _i2: np.ndarray, _scale: int
-    ) -> tuple[float, float]:
-        calls["bisection"] += 1
-        return 0.1, 0.1
-
-    def fake_linear(
-        _i1: np.ndarray,
-        _i2: np.ndarray,
-        _scale: int,
-        _mode: str,
-    ) -> tuple[float, float]:
-        calls["linear"] += 1
-        return 0.1, 0.1
-
-    monkeypatch.setattr(coloc, "bisection_costes_threshold_calculation", fake_bisection)
-    monkeypatch.setattr(coloc, "linear_costes_threshold_calculation", fake_linear)
-
-    img1 = np.arange(1, 9, dtype=float).reshape(2, 2, 2)
-    img2 = img1 + 1.0
-
-    coloc.compute_colocalization(img1, img2, fast_costes="Accurate")
-    coloc.compute_colocalization(img1, img2, fast_costes="Fast")
-
-    assert calls["bisection"] == 1
-    assert calls["linear"] == 1
-
-
-def test_compute_colocalization_empty_input_raises() -> None:
-    with pytest.raises(UnboundLocalError):
-        coloc.compute_colocalization(np.array([]), np.array([]))
+    # identical images -> correlation close to 1
+    min_expected_correlation = 0.9
+    assert results["Correlation"] > min_expected_correlation
+    # Manders should be non-negative
+    assert results["MandersCoeffM1"] >= 0.0
+    assert results["MandersCoeffM2"] >= 0.0

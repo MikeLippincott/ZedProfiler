@@ -8,8 +8,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from zedprofiler.exceptions import ZedProfilerError
-from zedprofiler.featurization import areasizeshape
+from zedprofiler.featurization import volumesizeshape
 from zedprofiler.IO.feature_writing_utils import (
     FeatureMetadata,
     format_morphology_feature_name,
@@ -33,7 +32,7 @@ class TestIntegrationWorkflows:
             # Create sample features
             features_df = pd.DataFrame(
                 {
-                    "object_id": [1, 2, 3],
+                    "Metadata_Object_ObjectID": [1, 2, 3],
                     "volume": [100.5, 200.3, 150.7],
                     "diameter": [10.2, 12.5, 11.8],
                 }
@@ -104,7 +103,7 @@ class TestIntegrationWorkflows:
             # Create empty dataframe with proper schema
             empty_df = pd.DataFrame(
                 {
-                    "object_id": pd.Series([], dtype="int64"),
+                    "Metadata_Object_ObjectID": pd.Series([], dtype="int64"),
                     "feature1": pd.Series([], dtype="float64"),
                     "feature2": pd.Series([], dtype="float64"),
                 }
@@ -133,16 +132,11 @@ class TestIntegrationWorkflows:
         assert isinstance(name1, str)
         assert len(name1) > 0
 
-    def test_areasizeshape_schema_consistency(self) -> None:
-        """Test that areasizeshape maintains consistent output schema."""
-        try:
-            result1 = areasizeshape.compute()
-            result2 = areasizeshape.compute()
-            result3 = areasizeshape.compute()
-        except ZedProfilerError as exc:
-            if "not implemented yet" in str(exc):
-                pytest.skip("areasizeshape.compute placeholder in current branch")
-            raise
+    def test_volumesizeshape_schema_consistency(self) -> None:
+        """Test that volumesizeshape maintains consistent output schema."""
+        result1 = volumesizeshape.compute_volume_size_shape()
+        result2 = volumesizeshape.compute_volume_size_shape()
+        result3 = volumesizeshape.compute_volume_size_shape()
 
         # All calls should return same keys in same order
         assert list(result1.keys()) == list(result2.keys())

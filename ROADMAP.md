@@ -46,8 +46,8 @@ The roadmap is intended to be a living document and may be updated as needed.
 
 3. PR 3: RFC2119 naming specification and validators
 
-- [ ] Port and adapt naming conventions into this repository.
-- [ ] Add runtime and CI naming validation helpers and conformance tests.
+- [x] Port and adapt naming conventions into this repository.
+- [x] Add runtime and CI naming validation helpers and conformance tests.
 
 ### Phase 2: Feature modules and tests (PR 4-9)
 
@@ -79,7 +79,7 @@ The roadmap is intended to be a living document and may be updated as needed.
 
 10. PR 10: Integration matrix and parallelization guidance
 
-- [ ] Cross-module integration tests and explicit non-goal docs for internal parallelization.
+- [x] Cross-module integration tests and explicit non-goal docs for internal parallelization.
 
 11. PR 11: Example notebooks and public dataset references
 
@@ -100,8 +100,8 @@ The roadmap is intended to be a living document and may be updated as needed.
 
 ## Verification Gates
 
-- [ ] Run full unit and integration tests on Linux with coverage >=85%.
-- [ ] Run naming validation tests for all emitted feature names.
+- [x] Run full unit and integration tests on Linux with coverage >=85%.
+- [x] Run naming validation tests for all emitted feature names.
 - [ ] Build Sphinx docs in CI with warnings treated as errors.
 - [ ] Execute example notebooks in a clean environment.
 - [ ] Validate install/import from both wheel and sdist.
