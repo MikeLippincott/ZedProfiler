@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 import pytest
-from beartype import beartype
+from conftest import make_pair
 from pydantic import BaseModel, ConfigDict, field_validator
 
 skimage = pytest.importorskip("skimage")
@@ -35,21 +35,6 @@ class TwoObjectLoaderModel(BaseModel):
     @classmethod
     def to_array(_cls, v: object) -> np.ndarray:
         return np.asarray(v)
-
-
-@beartype
-def make_pair(
-    shape: tuple[int, int, int], center: tuple[int, int, int]
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    label = np.zeros(shape, dtype=int)
-    z, y, x = center
-    label[z - 1 : z + 2, y - 1 : y + 2, x - 1 : x + 2] = 1
-    im1 = np.zeros(shape, dtype=float)
-    im2 = np.zeros(shape, dtype=float)
-    # overlapping bright blob
-    im1[z, y, x] = 100.0
-    im2[z, y, x] = 80.0
-    return label, im1, im2
 
 
 @pytest.mark.parametrize("shape,center", [((7, 7, 7), (3, 3, 3))])

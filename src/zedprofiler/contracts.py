@@ -37,6 +37,14 @@ FIVE_OR_MORE_DIMENSIONS = 5
 NON_METADATA_UNDERSCORE_SEPARATED_PARTS = 4
 METADATA_UNDERSCORE_SEPARATED_PARTS = 3
 REQUIRED_RETURN_KEYS = ("image_array", "features", "metadata")
+FEATURES = [
+    "Colocalization",
+    "Granularity",
+    "Texture",
+    "Intensity",
+    "Neighbors",
+    "VolumeSizeShape",
+]
 
 # Pandera schema for validating numpy arrays with expected dimensionality
 ImageArraySchema = pa.DataFrameSchema(
@@ -486,14 +494,8 @@ class ExpectedFeatureNameValues(BaseModel):
         if self.features is not None and len(self.features) > 0:
             self.features = list(set(self.features))
         else:
-            self.features = [
-                "Colocalization",
-                "Granularity",
-                "Texture",
-                "Intensity",
-                "Neighbors",
-                "VolumeSizeShape",
-            ]
+            self.features = FEATURES
+
         self.expected_values_dict = {
             "compartments": self.compartments,
             "channels": self.channels,
