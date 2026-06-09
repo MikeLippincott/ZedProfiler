@@ -15,7 +15,20 @@ readme
 
 ```{toctree}
 :maxdepth: 2
-:caption: Features
+:caption: Tutorials
+notebooks/walkthrough.ipynb
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: Feature Schema
+
+features/Feature_Naming_Convention
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: Feature Modules
 
 features/areasizeshape
 features/colocalization
@@ -23,13 +36,6 @@ features/granularity
 features/intensity
 features/neighbors
 features/texture
-features/Feature_Naming_Convention
-```
-
-```{toctree}
-:maxdepth: 2
-:caption: Tutorials
-notebooks/walkthrough.ipynb
 ```
 
 ```{toctree}
