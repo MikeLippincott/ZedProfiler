@@ -1,0 +1,19 @@
+name: readthedocs-preview
+on:
+  pull_request_target:
+    types:
+      - opened
+    paths:
+      - "docs/**"
+      - uv.lock
+
+permissions:
+  pull-requests: write
+
+jobs:
+  pull-request-links:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: readthedocs/actions/preview@v1
+        with:
+          project-slug: "zedprofiler"
