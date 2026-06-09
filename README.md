@@ -1,13 +1,13 @@
-# ZedProfiler [![Documentation](https://img.shields.io/badge/documentation-available-brightgreen)](https://zedprofiler.readthedocs.io/en/latest/) ![License](https://img.shields.io/badge/license-BSD%203--Clause-blue)[![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)](#quality-gates)
+# ZEDprofiler [![Documentation](https://img.shields.io/badge/documentation-available-brightgreen)](https://zedprofiler.readthedocs.io/en/latest/) ![License](https://img.shields.io/badge/license-BSD%203--Clause-blue)[![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)](#quality-gates)
 
-[![ZedProfiler](https://github.com/WayScience/ZedProfiler/raw/main/logo/with-text-for-dark-bg.png)](https://github.com/WayScience/ZedProfiler)
+[![ZEDprofiler](https://github.com/WayScience/ZEDprofiler/raw/main/logo/with-text-for-dark-bg.png)](https://github.com/WayScience/ZEDprofiler)
 
 CPU-first 3D image feature extraction toolkit for high-content and high-throughput image-based profiling.
 
 This repository is used for image-based feature extraction of objects in 3D microscopy images.
 In this use case we extract features from single cells in 3D volumetric microscopy images.
-We developed ZedProfiler to be used on high-content and high-throughput microscopy images, which are often large in size and require efficient processing.
-ZedProfiler is extensible to any fluorescence microscopy image modality, and is designed to be modular.
+We developed ZEDprofiler to be used on high-content and high-throughput microscopy images, which are often large in size and require efficient processing.
+ZEDprofiler is extensible to any fluorescence microscopy image modality, and is designed to be modular.
 
 ## Install environment
 

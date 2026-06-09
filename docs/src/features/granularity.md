@@ -1,4 +1,4 @@
-# Granularity features
+# Granularity
 
 ## Description
 

@@ -1,16 +1,26 @@
-# Feature naming schema specification
+# Feature schema
 
-**Status:** experimental
-**Version:** 0.0.1
-**Date:** April 9th, 2026
-**Authors:** ZedProfiler development team
-**Keywords:** feature naming, schema, morphology, 3D image analysis, standardization, interoperability, RFC 2119
+**Status:** experimental | **Version:** 0.0.1 | **Date:** April 9th, 2026 | **Authors:** ZEDprofiler development team
+
+```{important}
+Every feature column produced by ZEDprofiler follows this naming pattern:
+
+**`{Compartment}_{Channel}_{FeatureType}_{Measurement}`**
+
+Examples: `Nuclei_DNA_Intensity_MeanIntensity`, `Cell_DNA-Mito_Colocalization_Correlation`
+
+Metadata columns use a separate prefix:
+
+**`Metadata_{Category}_{Name}`**
+
+Examples: `Metadata_Experiment_ImageSet`, `Metadata_Object_ObjectID`
+```
 
 ______________________________________________________________________
 
 ## Abstract
 
-This document specifies the naming specification and schema for morphological features extracted using ZedProfiler. The specification defines requirements for feature identifiers, data structures, and formatting rules to ensure consistency, interoperability, and maintainability across pipelines.
+This document specifies the naming specification and schema for morphological features extracted using ZEDprofiler. The specification defines requirements for feature identifiers, data structures, and formatting rules to ensure consistency, interoperability, and maintainability across pipelines.
 
 ______________________________________________________________________
 

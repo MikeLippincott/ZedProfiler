@@ -1,4 +1,4 @@
-# Intensity features
+# Intensity
 
 ## Description
 

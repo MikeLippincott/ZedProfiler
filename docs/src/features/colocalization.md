@@ -1,4 +1,4 @@
-# Colocalization features
+# Colocalization
 
 ## Description
 

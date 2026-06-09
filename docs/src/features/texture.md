@@ -1,4 +1,4 @@
-# Texture features
+# Texture
 
 ## Description
 

@@ -1,4 +1,4 @@
-# Volume.size.shape features
+# Volume.size.shape
 
 ## Description
 

@@ -1,4 +1,4 @@
-# Neighbors features
+# Neighbors
 
 ## Description
 
