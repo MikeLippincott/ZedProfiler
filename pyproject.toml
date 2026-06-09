@@ -43,6 +43,7 @@ dev = [
   "ruff>=0.15.10",
 ]
 docs = [
+  "itables>=2.0",
   "myst-nb>=1.4",
   "pydata-sphinx-theme>=0.17",
   "sphinx>=9.1",
