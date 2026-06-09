@@ -59,7 +59,8 @@ def compute_volume_size_shape(
 ) -> dict[str, list[float]]:
     """Compute volume/size/shape features for one object loader.
 
-    This supports two invocation modes:
+    Supports two invocation modes:
+
     - no arguments: returns an empty deterministic schema so dispatchers can
       call the function without crashing.
     - both loaders provided: executes feature extraction.
