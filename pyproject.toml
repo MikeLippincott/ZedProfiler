@@ -29,6 +29,8 @@ dependencies = [
   "pyarrow>=23.0.1",
   "pydantic>=2.10",
   "scikit-image>=0.26",
+  "sphinx-conestack-theme>=1.1.1",
+  "sphinx-rtd-theme>=3.1",
   "tomli>=2.4.1",
 ]
 scripts.ZedProfiler = "ZedProfiler.cli:trigger"
@@ -54,10 +56,10 @@ notebooks = [
 ]
 
 [tool.setuptools_scm]
-root = "."
+version_file = "src/ZedProfiler/_version.py"
 version_scheme = "no-guess-dev"
 local_scheme = "no-local-version"
-version_file = "src/ZedProfiler/_version.py"
+root = "."
 
 [tool.ruff]
 target-version = "py311"
@@ -89,15 +91,15 @@ lint.select = [
 # Ignore `F401` (unused imports) for `__init__.py` file
 lint.per-file-ignores."__init__.py" = [ "F401" ]
 
+[tool.vulture]
+paths = [ "src/zedprofiler", "tests" ]
+min_confidence = 90
+
 [tool.pytest]
 ini_options.pythonpath = [ "." ]
 
 [tool.jupytext]
 formats = "ipynb,py:light"
-
-[tool.vulture]
-min_confidence = 90
-paths = [ "src/zedprofiler", "tests" ]
 
 [tool.poe]
 # tasks for development environments
