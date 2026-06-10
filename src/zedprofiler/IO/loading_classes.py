@@ -136,20 +136,6 @@ class ImageSetLoader:
     compartments : list
         A list of compartment names in the image set.
 
-    Methods
-    -------
-    retrieve_image_attributes()
-        Retrieve unique object IDs for each label in the image set.
-    get_unique_objects_in_compartments()
-        Retrieve unique object IDs for each compartment in the image set.
-    get_image(key)
-        Retrieve the image corresponding to the specified key.
-    get_image_names()
-        Retrieve the names of images in the image set.
-    get_compartments()
-        Retrieve the names of compartments in the image set.
-    get_anisotropy()
-        Retrieve the anisotropy factor.
     """
 
     def __init__(  # noqa: PLR0913

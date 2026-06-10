@@ -1,7 +1,8 @@
 """Top-level package for ZedProfiler.
 
-Selected featurizers are promoted for convenient imports, while the full
-module tree remains available under ``zedprofiler.featurization``.
+Selected featurizers and IO classes are promoted for convenient imports,
+while the full module tree remains available under ``zedprofiler.featurization``
+and ``zedprofiler.IO``.
 """
 
 from zedprofiler._version import __version__

@@ -43,15 +43,12 @@ repos:
     hooks:
     -   id: ruff-format
     -   id: ruff-check
+        exclude: ^docs/src/notebooks/walkthrough\.ipynb$
+
 -   repo: https://github.com/rhysd/actionlint
     rev: v1.7.12
     hooks:
     -   id: actionlint
--   repo: https://gitlab.com/vojko.pribudic.foss/pre-commit-update
-    rev: v0.6.0
-    hooks:
-    -   id: pre-commit-update
-        args: ["--keep", "mdformat", "--keep", "pre-commit-update", "--keep", "cffconvert"]
 -   repo: https://github.com/jendrikseipp/vulture
     rev: 'v2.16'
     hooks:
@@ -61,11 +58,3 @@ repos:
     hooks:
     -   id: shellcheck
 #       args: ["--severity=warning"]  # Optionally only show errors and warnings
--   repo: local
-    hooks:
-    -   id: just-all
-        name: just-all
-        entry: just all
-        language: system
-        pass_filenames: false
-        always_run: true

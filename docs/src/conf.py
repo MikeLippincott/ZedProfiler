@@ -19,10 +19,8 @@ sys.path.insert(0, basedir)
 
 # -- Project information -----------------------------------------------------
 
-project = "ZedProfiler"
-# is used here due to sphinx decision-making: https://github.com/sphinx-doc/sphinx/issues/8132
-copyright = "2024, DBMI Community"  # noqa: A001
-author = "DBMI Community"
+project = "ZEDprofiler"
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -48,33 +46,16 @@ exclude_patterns = []  # type: ignore
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "pydata_sphinx_theme"
-
+html_theme = "sphinx_rtd_theme"
 html_theme_options = {
-    "header_links_before_dropdown": 5,
-    "icon_links": [
-        {
-            "name": "GitHub",
-            "url": "https://github.com/WayScience/ZedProfiler",
-            "icon": "fa-brands fa-github",
-        },
-    ],
-    "logo": {"text": "ZedProfiler"},
-    "use_edit_page_button": False,
-    "show_toc_level": 1,
-    "navbar_align": "left",
-    "navbar_center": ["navbar-nav"],
-    "footer_start": ["copyright"],
-    "footer_center": ["sphinx-version"],
-    "secondary_sidebar_items": {
-        "**/*": ["page-toc", "edit-this-page", "sourcelink"],
-    },
+    "collapse_navigation": False,
+    "sticky_navigation": True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
+html_static_path = ["_static", "../../logo"]
 html_css_files = ["custom.css"]
 
 # set option to avoid rendering default variables

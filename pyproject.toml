@@ -23,12 +23,14 @@ dependencies = [
   "fire>=0.7.1",
   "jinja2>=3.1.6",
   "mahotas>=1.4.18",
-  "matplotlib>=3.10.8",
+  "matplotlib>=3.10.9",
   "pandas>=3.0.2",
   "pandera>=0.31.1",
   "pyarrow>=23.0.1",
   "pydantic>=2.10",
   "scikit-image>=0.26",
+  "sphinx-conestack-theme>=1.1.1",
+  "sphinx-rtd-theme>=3.1",
   "tomli>=2.4.1",
 ]
 scripts.ZedProfiler = "ZedProfiler.cli:trigger"
@@ -41,7 +43,11 @@ dev = [
   "ruff>=0.15.10",
 ]
 docs = [
+  "itables>=2",
+  "matplotlib>=3.10.9",
   "myst-nb>=1.4",
+  "plotly>=6.8",
+  "pycytominer>=1.6",
   "pydata-sphinx-theme>=0.17",
   "sphinx>=9.1",
 ]
@@ -54,10 +60,10 @@ notebooks = [
 ]
 
 [tool.setuptools_scm]
-root = "."
+version_file = "src/ZedProfiler/_version.py"
 version_scheme = "no-guess-dev"
 local_scheme = "no-local-version"
-version_file = "src/ZedProfiler/_version.py"
+root = "."
 
 [tool.ruff]
 target-version = "py311"
@@ -86,18 +92,22 @@ lint.select = [
   "SIM",
   "W",
 ]
-# Ignore `F401` (unused imports) for `__init__.py` file
-lint.per-file-ignores."__init__.py" = [ "F401" ]
+# Ignore `E501` (line too long) for Jupyter notebooks
+lint.per-file-ignores."*.ipynb" = [ "C408", "E402", "E501" ]
+lint.per-file-ignores."src/**/__init__.py" = [ "F401" ]
+
+[tool.codespell]
+ignore-words-list = "inout"
+
+[tool.vulture]
+paths = [ "src/zedprofiler", "tests" ]
+min_confidence = 90
 
 [tool.pytest]
 ini_options.pythonpath = [ "." ]
 
 [tool.jupytext]
 formats = "ipynb,py:light"
-
-[tool.vulture]
-min_confidence = 90
-paths = [ "src/zedprofiler", "tests" ]
 
 [tool.poe]
 # tasks for development environments
