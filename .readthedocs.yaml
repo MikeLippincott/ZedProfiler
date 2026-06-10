@@ -5,17 +5,15 @@ build:
   os: ubuntu-24.04
   tools:
     python: "3.13"
-  commands:
-    - git fetch --unshallow || true
-    - pip install uv
-    - uv sync --group docs
-    - >-
-      uv run python -m sphinx
-      -T -j auto -b html
-      -d $READTHEDOCS_OUTPUT/doctrees
-      -D language=en
-      docs/src
-      $READTHEDOCS_OUTPUT/html
+  jobs:
+    post_checkout:
+      - git fetch --unshallow || true
+    post_create_environment:
+      - pip install uv
+    post_install:
+      - uv export --group docs --no-hashes --no-emit-project |
+        uv pip install -r -
 
 sphinx:
+  builder: html
   configuration: docs/src/conf.py
