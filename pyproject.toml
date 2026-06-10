@@ -93,7 +93,8 @@ lint.select = [
   "W",
 ]
 # Ignore `E501` (line too long) for Jupyter notebooks
-lint.per-file-ignores."*.ipynb" = [ "E501" ]
+lint.per-file-ignores."*.ipynb" = [ "C408", "E402", "E501" ]
+lint.per-file-ignores."src/**/__init__.py" = [ "F401" ]
 
 [tool.codespell]
 ignore-words-list = "inout"
