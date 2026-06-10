@@ -11,6 +11,7 @@ build:
     post_create_environment:
       - pip install uv
     post_install:
+      - uv pip install -e .
       - uv export --group docs --no-hashes --no-emit-project |
         uv pip install -r -
 
