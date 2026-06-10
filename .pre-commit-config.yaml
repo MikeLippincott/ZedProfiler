@@ -63,17 +63,3 @@ repos:
     hooks:
     -   id: shellcheck
 #       args: ["--severity=warning"]  # Optionally only show errors and warnings
--   repo: local
-    hooks:
-    -   id: just-lint
-        name: just-lint
-        entry: just lint
-        language: system
-        pass_filenames: false
-        always_run: true
-    -   id: just-test
-        name: just-test
-        entry: just test
-        language: system
-        pass_filenames: false
-        always_run: true
