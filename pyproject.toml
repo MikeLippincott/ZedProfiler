@@ -4,18 +4,26 @@ requires = [ "setuptools>=82.0.1", "setuptools-scm>=10.0.5" ]
 
 [project]
 name = "zedprofiler"
-version = "0.0.1"
 description = "CPU-first handcrafted 3D featurization toolkit for high-throughput profiling"
 readme = "README.md"
+license = { file = "LICENSE" }
 authors = [
-  { name = "Your NameWay Lab" },
+  { name = "Mike Lippincott" },
+  { name = "Dave Bunten" },
+  { name = "Jenna Tomkinson" },
+  { name = "Vincent Rubinetti" },
+  { name = "Gregory Way" },
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.11,<3.15"
 classifiers = [
+  "License :: OSI Approved :: BSD License",
   "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
 ]
+dynamic = [ "version" ]
 dependencies = [
   "beartype>=0.19",
   "bioio>=3.3",
@@ -29,10 +37,10 @@ dependencies = [
   "pyarrow>=23.0.1",
   "pydantic>=2.10",
   "scikit-image>=0.26",
-  "sphinx-conestack-theme>=1.1.1",
-  "sphinx-rtd-theme>=3.1",
   "tomli>=2.4.1",
 ]
+urls.Homepage = "https://zedprofiler.readthedocs.io"
+urls.Repository = "https://github.com/WayScience/ZedProfiler"
 scripts.ZedProfiler = "ZedProfiler.cli:trigger"
 
 [dependency-groups]
@@ -48,8 +56,8 @@ docs = [
   "myst-nb>=1.4",
   "plotly>=6.8",
   "pycytominer>=1.6",
-  "pydata-sphinx-theme>=0.17",
-  "sphinx>=9.1",
+  "sphinx>=7",
+  "sphinx-rtd-theme>=3.1",
 ]
 notebooks = [
   "black>=26.3.1",
@@ -60,7 +68,7 @@ notebooks = [
 ]
 
 [tool.setuptools_scm]
-version_file = "src/ZedProfiler/_version.py"
+version_file = "src/zedprofiler/_version.py"
 version_scheme = "no-guess-dev"
 local_scheme = "no-local-version"
 root = "."
