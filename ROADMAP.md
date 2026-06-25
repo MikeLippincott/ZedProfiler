@@ -9,7 +9,7 @@ The roadmap is intended to be a living document and may be updated as needed.
 - [ ] Pick between pandas and polars for dataframe handling.
 - [ ] Optional mask output mode.
 - [ ] Expanded benchmark strategy.
-- [ ] Cytomining V2 support.
+- [ ] ome-arrow and iceberg-bioimage support.
 - [ ] Support for additional image formats (e.g., TIFF, JPEG, OME-arrow).
 - [ ] Support multi-channel image loading (lazily).
 - [ ] Support loading of shapes, vectors, outlines, and contours.
