@@ -14,6 +14,6 @@ The roadmap is intended to be a living document and may be updated as needed.
 - [ ] Support multi-channel image loading (lazily).
 - [ ] Support loading of shapes, vectors, outlines, and contours.
 - [ ] Integration with cloud storage solutions (e.g., AWS S3, Google Cloud Storage).
-- [ ] Support with DeepProfiler image handoff (thin arrow flight, but simplified for the use case of image handoff).
+- [ ] Support DeepProfiler integration.
 - [ ] Support for additional feature extraction methods (e.g., mesh, graph-based features, point-clouds, polygons).
 - [ ] Feature-extraction time estimation and optimization.
