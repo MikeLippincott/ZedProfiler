@@ -13,7 +13,7 @@ The roadmap is intended to be a living document and may be updated as needed.
 - [ ] Support for additional image formats (e.g., TIFF, JPEG, OME-arrow).
 - [ ] Support multi-channel image loading (lazily).
 - [ ] Support loading of shapes, vectors, outlines, and contours.
-- [ ] Integration with cloud storage solutions (e.g., AWS S3, Google Cloud Storage).
+- [ ] Integration with object storage solutions (e.g., AWS S3, Google Cloud Storage).
 - [ ] Support DeepProfiler integration.
 - [ ] Support for additional feature extraction methods (e.g., mesh, graph-based features, point-clouds, polygons).
 - [ ] Feature-extraction time estimation and optimization.
