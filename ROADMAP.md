@@ -10,7 +10,6 @@ The roadmap is intended to be a living document and may be updated as needed.
 - [ ] Optional mask output mode.
 - [ ] Expanded benchmark strategy.
 - [ ] ome-arrow and iceberg-bioimage support.
-- [ ] Support for additional image formats (e.g., TIFF, JPEG, OME-arrow).
 - [ ] Support multi-channel image loading (lazily).
 - [ ] Support loading of shapes, vectors, outlines, and contours.
 - [ ] Integration with object storage solutions (e.g., AWS S3, Google Cloud Storage).
