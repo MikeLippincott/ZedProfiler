@@ -6,11 +6,12 @@ The roadmap is intended to be a living document and may be updated as needed.
 
 ## Future Plans
 
-- [ ] Pick between pandas and polars for dataframe handling.
+- [ ] Migrate topolars for dataframe handling.
 - [ ] Optional mask output mode.
 - [ ] Expanded benchmark strategy.
 - [ ] ome-arrow and iceberg-bioimage support.
 - [ ] Support multi-channel image loading (lazily).
+- [ ] Support lazy loading of images and masks at featurization time.
 - [ ] Support loading of shapes, vectors, outlines, and contours.
 - [ ] Integration with object storage solutions (e.g., AWS S3, Google Cloud Storage).
 - [ ] Support DeepProfiler integration.
