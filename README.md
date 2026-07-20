@@ -1,4 +1,4 @@
-# ZEDprofiler [![Documentation](https://img.shields.io/badge/documentation-available-brightgreen)](https://zedprofiler.readthedocs.io/en/latest/) ![License](https://img.shields.io/badge/license-BSD%203--Clause-blue)[![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)](#quality-gates)
+# ZEDprofiler [![Documentation](https://img.shields.io/badge/documentation-available-brightgreen)](https://zedprofiler.readthedocs.io/en/latest/) ![License](https://img.shields.io/badge/license-BSD%203--Clause-blue)[![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen)](#quality-gates)
 
 [![ZEDprofiler](https://github.com/WayScience/ZEDprofiler/raw/main/logo/with-text-for-dark-bg.png)](https://github.com/WayScience/ZEDprofiler)
 

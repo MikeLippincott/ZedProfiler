@@ -39,7 +39,8 @@ class ObjectLoaderModel(BaseModel):
 
 @beartype
 def make_image_and_label(
-    shape: tuple[int, int, int], center: tuple[int, int, int]
+    shape: tuple[int, int, int],
+    center: tuple[int, int, int],
 ) -> tuple[np.ndarray, np.ndarray]:
     image = np.zeros(shape, dtype=float)
     label = np.zeros(shape, dtype=int)
@@ -51,7 +52,8 @@ def make_image_and_label(
 
 @pytest.mark.parametrize("shape,center", [((12, 12, 12), (6, 6, 6))])
 def test_compute_granularity_basic(
-    shape: tuple[int, int, int], center: tuple[int, int, int]
+    shape: tuple[int, int, int],
+    center: tuple[int, int, int],
 ) -> None:
     img, lab = make_image_and_label(shape, center)
     imgset = ImageSetLoaderModel()
@@ -154,7 +156,10 @@ def test_compute_granularity_mask_handling_and_zero_volume_skips() -> None:
 
     # With mask excluding pixels, function should still run and return DataFrame
     df = compute_granularity(
-        Dummy(), radius=1, granular_spectrum_length=3, image_mask=mask
+        Dummy(),
+        radius=1,
+        granular_spectrum_length=3,
+        image_mask=mask,
     )
     assert isinstance(df, pd.DataFrame)
 

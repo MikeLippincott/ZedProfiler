@@ -31,7 +31,8 @@ class ObjectLoaderModel(BaseModel):
 
 @beartype
 def make_label_and_image(
-    shape: tuple[int, int, int], center: tuple[int, int, int]
+    shape: tuple[int, int, int],
+    center: tuple[int, int, int],
 ) -> tuple[np.ndarray, np.ndarray]:
     image = np.zeros(shape, dtype=float)
     label = np.zeros(shape, dtype=int)
@@ -43,7 +44,8 @@ def make_label_and_image(
 
 @pytest.mark.parametrize("shape,center", [((6, 6, 6), (3, 3, 3))])
 def test_compute_intensity_basic(
-    shape: tuple[int, int, int], center: tuple[int, int, int]
+    shape: tuple[int, int, int],
+    center: tuple[int, int, int],
 ) -> None:
     img, lab = make_label_and_image(shape, center)
     imgset = ImageSetLoaderModel()

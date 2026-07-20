@@ -16,8 +16,7 @@ from zedprofiler.IO.loading_classes import ObjectLoader
 
 
 def get_outline(mask: numpy.ndarray) -> numpy.ndarray:
-    """
-    Get the outline of a 3D mask.
+    """Get the outline of a 3D mask.
 
     Parameters
     ----------
@@ -28,18 +27,18 @@ def get_outline(mask: numpy.ndarray) -> numpy.ndarray:
     -------
     numpy.ndarray
         The outline of the mask.
+
     """
     outline = numpy.zeros_like(mask)
     for z in range(mask.shape[0]):
-        outline[z] = skimage.segmentation.find_boundaries(mask[z])
+        outline[z] = skimage.segmentation.find_boundaries(mask[z], mode="inner")
     return outline
 
 
 def compute_intensity(  # noqa: PLR0915
     object_loader: ObjectLoader,
 ) -> pandas.DataFrame:
-    """
-    Measure the intensity of objects in a 3D image.
+    """Measure the intensity of objects in a 3D image.
 
     Parameters
     ----------
@@ -48,15 +47,18 @@ def compute_intensity(  # noqa: PLR0915
 
     Returns
     -------
-    dict
-        A dictionary containing the measurements for each object.
-        The keys are the measurement names and the values are the corresponding values.
+    pandas.DataFrame
+        Wide-format DataFrame with one row per object and one column per
+        intensity measurement, plus Metadata columns.
+
     """
+    if object_loader.label_image is None or object_loader.image is None:
+        return pandas.DataFrame()
     image_object = object_loader.image
     label_object = object_loader.label_image
     labels = object_loader.object_ids
 
-    output_dict = {
+    output_dict: dict[str, list] = {
         "Metadata_Object_ObjectID": [],
         "feature_name": [],
         "channel": [],
@@ -86,10 +88,14 @@ def compute_intensity(  # noqa: PLR0915
 
         # Crop to bounding box for efficiency
         cropped_label = selected_label_object[
-            min_z : max_z + 1, min_y : max_y + 1, min_x : max_x + 1
+            min_z : max_z + 1,
+            min_y : max_y + 1,
+            min_x : max_x + 1,
         ]
         cropped_image = selected_image_object[
-            min_z : max_z + 1, min_y : max_y + 1, min_x : max_x + 1
+            min_z : max_z + 1,
+            min_y : max_y + 1,
+            min_x : max_x + 1,
         ]
 
         # Create coordinate grids for the bounding box
@@ -186,10 +192,7 @@ def compute_intensity(  # noqa: PLR0915
         }
 
         for feature_name, measurement_value in measurements_dict.items():
-            if measurement_value.dtype != numpy.float32:
-                coerced_value = numpy.float32(measurement_value)
-            else:
-                coerced_value = measurement_value
+            coerced_value = numpy.float32(measurement_value)
             output_dict["Metadata_Object_ObjectID"].append(numpy.int32(label))
             output_dict["feature_name"].append(feature_name)
             output_dict["channel"].append(object_loader.channel)

@@ -33,7 +33,8 @@ class ObjectLoaderModel(BaseModel):
 
 @beartype
 def make_texture_image(
-    shape: tuple[int, int, int], center: tuple[int, int, int]
+    shape: tuple[int, int, int],
+    center: tuple[int, int, int],
 ) -> tuple[np.ndarray, np.ndarray]:
     image = np.zeros(shape, dtype=int)
     label = np.zeros(shape, dtype=int)
@@ -45,12 +46,16 @@ def make_texture_image(
 
 @pytest.mark.parametrize("shape,center", [((15, 15, 15), (7, 7, 7))])
 def test_compute_texture_basic(
-    shape: tuple[int, int, int], center: tuple[int, int, int]
+    shape: tuple[int, int, int],
+    center: tuple[int, int, int],
 ) -> None:
     image, label = make_texture_image(shape, center)
     imgset = ImageSetLoaderModel()
     loader = ObjectLoaderModel(
-        image=image, label_image=label, object_ids=[1], image_set_loader=imgset
+        image=image,
+        label_image=label,
+        object_ids=[1],
+        image_set_loader=imgset,
     )
 
     df = compute_texture(loader, distance=1, grayscale=256)
