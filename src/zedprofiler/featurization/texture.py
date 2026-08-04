@@ -151,9 +151,12 @@ def compute_texture(  # noqa: C901
         )
     # loop through each label and get the bounding box
     # to compute features for the object
-    for _, label in enumerate(labels):
+    label_to_idx = {int(lbl): i for i, lbl in enumerate(labels)}
+    features = numpy.full((n_directions, 13, len(labels)), numpy.nan)
+    for label in labels:
         if int(label) == 0:
             continue
+        idx = label_to_idx[int(label)]
         bbox = label_to_bbox.get(int(label))
         if bbox is None:
             continue
@@ -167,30 +170,31 @@ def compute_texture(  # noqa: C901
         if not numpy.any(object_mask):
             continue
         image_object[~object_mask] = 0
-        features = numpy.empty((n_directions, 13, max(labels)))
         image_object = scale_image(image_object, num_gray_levels=grayscale)
         try:
             # calculates 13 Haralick features for each direction (13)
             #  and each object, and stores them in a 3D array
-            features[:, :, label - 1] = mahotas.features.haralick(
+            features[:, :, idx] = mahotas.features.haralick(
                 ignore_zeros=True,
                 f=image_object,
                 distance=distance,
                 compute_14th_feature=False,
             )
         except ValueError:
-            features = numpy.full(len(feature_names), numpy.nan, dtype=float)
+            features[:, :, idx] = numpy.nan
     # iterate through the direction, feature, and object dimensions
     # of the features array to populate the output dictionary
     for direction, direction_features in enumerate(features):
         direction_str = f"{direction:02d}"
         for feature_name, feature in zip(feature_names, direction_features):
-            for object_id, feature_value in zip(labels, feature):
-                output_texture_dict["Metadata_Object_ObjectID"].append(object_id)
+            for label in labels:
+                output_texture_dict["Metadata_Object_ObjectID"].append(label)
                 output_texture_dict["texture_name"].append(
                     f"{feature_name}-{distance}-{direction_str}-{grayscale}"
                 )
-                output_texture_dict["texture_value"].append(feature_value)
+                output_texture_dict["texture_value"].append(
+                    feature[label_to_idx[int(label)]]
+                )
     final_df = pandas.DataFrame(output_texture_dict)
 
     final_df = final_df.pivot(
