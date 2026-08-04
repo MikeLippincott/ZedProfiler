@@ -41,7 +41,8 @@ class TwoObjectLoaderModel(BaseModel):
 
 @pytest.mark.parametrize("shape,center", [((7, 7, 7), (3, 3, 3))])
 def test_compute_colocalization_basic(
-    shape: tuple[int, int, int], center: tuple[int, int, int]
+    shape: tuple[int, int, int],
+    center: tuple[int, int, int],
 ) -> None:
     imgset = ImageSetLoaderModel()
     label, im1, im2 = make_pair(shape, center)
@@ -94,7 +95,12 @@ def test_prepare_two_images_for_colocalization_crops() -> None:
     im2[3, 3, 3] = expected_peak_im2
 
     cropped1, cropped2 = prepare_two_images_for_colocalization(
-        label, label, im1, im2, 1, 1
+        label,
+        label,
+        im1,
+        im2,
+        1,
+        1,
     )
 
     assert isinstance(cropped1, np.ndarray) and isinstance(cropped2, np.ndarray)

@@ -8,11 +8,12 @@ fluorescence channels using the Costes automatic thresholding method.
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Dict, Protocol, Tuple
+from typing import Protocol
 
 import numpy
 import pandas
 import scipy.ndimage
+import scipy.stats
 import skimage
 
 from zedprofiler.contracts import validate_column_name_schema
@@ -32,10 +33,16 @@ UINT8_MAX = 255
 UINT16_MAX = 65535
 
 
+class _SupportsImageSetName(Protocol):
+    """Minimal image-set-loader interface for name access."""
+
+    image_set_name: str | None
+
+
 class SupportsTwoObjectLoader(Protocol):
     """Minimal loader interface required for paired-object colocalization."""
 
-    image_set_loader: object
+    image_set_loader: _SupportsImageSetName
     compartment: str
     image1: numpy.ndarray
     image2: numpy.ndarray
@@ -47,7 +54,7 @@ def _require_scipy() -> None:
     if scipy is None:
         raise ModuleNotFoundError(
             "scipy is required for colocalization features. "
-            "Install zedprofiler with scipy."
+            "Install zedprofiler with scipy.",
         )
 
 
@@ -55,18 +62,17 @@ def _require_skimage() -> None:
     if skimage is None:
         raise ModuleNotFoundError(
             "scikit-image is required for colocalization features. "
-            "Install zedprofiler with scikit-image."
+            "Install zedprofiler with scikit-image.",
         )
 
 
-def linear_costes_threshold_calculation(
+def linear_costes_threshold_calculation(  # noqa: C901
     first_image: numpy.ndarray,
     second_image: numpy.ndarray,
     scale_max: int = 255,
     fast_costes: str = "Accurate",
-) -> Tuple[float, float]:
-    """
-    Finds the Costes Automatic Threshold for colocalization using a linear algorithm.
+) -> tuple[float, float]:
+    """Finds the Costes Automatic Threshold for colocalization using a linear algorithm.
     Candidate thresholds are gradually decreased until Pearson R falls below 0.
     If "Fast" mode is enabled the "steps" between tested thresholds will be increased
     when Pearson R is much greater than 0. The other mode is "Accurate" which
@@ -87,10 +93,13 @@ def linear_costes_threshold_calculation(
     -------
     Tuple[float, float]
         The calculated thresholds for the first and second images.
+
     """
     _require_scipy()
     i_step = 1 / scale_max  # Step size for the threshold as a float
     non_zero = (first_image > 0) | (second_image > 0)
+    if non_zero.sum() < MIN_PEARSON_POINTS:
+        return 0.0, 0.0
     xvar = numpy.var(first_image[non_zero], axis=0, ddof=1)
     yvar = numpy.var(second_image[non_zero], axis=0, ddof=1)
 
@@ -103,8 +112,10 @@ def linear_costes_threshold_calculation(
     covar = 0.5 * (zvar - (xvar + yvar))
 
     denom = 2 * covar
+    if denom == 0:
+        return 0.0, 0.0
     num = (yvar - xvar) + numpy.sqrt(
-        (yvar - xvar) * (yvar - xvar) + 4 * (covar * covar)
+        (yvar - xvar) * (yvar - xvar) + 4 * (covar * covar),
     )
     a = num / denom
     b = ymean - a * xmean
@@ -129,13 +140,14 @@ def linear_costes_threshold_calculation(
             # Only run pearsonr if the input has changed.
             if (positives := numpy.count_nonzero(combt)) != num_true:
                 costReg, _ = scipy.stats.pearsonr(
-                    first_image[combt], second_image[combt]
+                    first_image[combt],
+                    second_image[combt],
                 )
                 num_true = positives
 
             if costReg <= 0:
                 break
-            elif fast_costes == "Accurate" or i < i_step * 10:
+            if fast_costes == "Accurate" or i < i_step * 10:
                 i -= i_step
             elif costReg > COSTES_R_FAR_THRESHOLD:
                 # We're way off, step down 10x
@@ -154,10 +166,11 @@ def linear_costes_threshold_calculation(
 
 
 def bisection_costes_threshold_calculation(
-    first_image: numpy.ndarray, second_image: numpy.ndarray, scale_max: int = 255
+    first_image: numpy.ndarray,
+    second_image: numpy.ndarray,
+    scale_max: int = 255,
 ) -> tuple[float, float]:
-    """
-    Finds the Costes Automatic Threshold for colocalization using a bisection algorithm.
+    """Find the Costes Automatic Threshold for colocalization via bisection.
     Candidate thresholds are selected from within a window of possible intensities,
     this window is narrowed based on the R value of each tested candidate.
     We're looking for the first point at 0, and R value can become highly variable
@@ -178,10 +191,13 @@ def bisection_costes_threshold_calculation(
     -------
     Tuple[float, float]
         The calculated thresholds for the first and second images.
+
     """
     _require_scipy()
 
     non_zero = (first_image > 0) | (second_image > 0)
+    if non_zero.sum() < MIN_PEARSON_POINTS:
+        return 0.0, 0.0
     xvar = numpy.var(first_image[non_zero], axis=0, ddof=1)
     yvar = numpy.var(second_image[non_zero], axis=0, ddof=1)
 
@@ -194,6 +210,8 @@ def bisection_costes_threshold_calculation(
     covar = 0.5 * (zvar - (xvar + yvar))
 
     denom = 2 * covar
+    if denom == 0:
+        return 0.0, 0.0
     num = (yvar - xvar) + numpy.sqrt((yvar - xvar) * (yvar - xvar) + 4 * (covar**2))
     a = num / denom
     b = ymean - a * xmean
@@ -201,7 +219,7 @@ def bisection_costes_threshold_calculation(
     # Initialize variables
     left = 1
     right = scale_max
-    mid = ((right - left) // (6 / 5)) + left
+    mid = (right - left) * 5 // 6 + left
     lastmid = 0
     # Marks the value with the last positive R value.
     valid = 1
@@ -220,7 +238,8 @@ def bisection_costes_threshold_calculation(
         else:
             try:
                 costReg, _ = scipy.stats.pearsonr(
-                    first_image[combt], second_image[combt]
+                    first_image[combt],
+                    second_image[combt],
                 )
                 if costReg < 0:
                     left = mid - 1
@@ -232,7 +251,7 @@ def bisection_costes_threshold_calculation(
                 left = mid - 1
         lastmid = mid
         if right - left > WIDE_BISECTION_WINDOW:
-            mid = ((right - left) // (6 / 5)) + left
+            mid = (right - left) * 5 // 6 + left
         else:
             mid = ((right - left) // 2) + left
 
@@ -249,9 +268,8 @@ def prepare_two_images_for_colocalization(  # noqa: PLR0913
     image_object2: numpy.ndarray,
     object_id1: int,
     object_id2: int,
-) -> Tuple[numpy.ndarray, numpy.ndarray]:
-    """
-    Prepare two images for colocalization analysis by cropping to object bbox.
+) -> tuple[numpy.ndarray, numpy.ndarray]:
+    """Prepare two images for colocalization analysis by cropping to object bbox.
     It selects objects from label images, calculates their bounding boxes,
     and crops both images accordingly.
 
@@ -274,6 +292,7 @@ def prepare_two_images_for_colocalization(  # noqa: PLR0913
     -------
     Tuple[numpy.ndarray, numpy.ndarray]
         The two cropped images for colocalization analysis.
+
     """
     _require_skimage()
     label_object1 = select_objects_from_label(label_object1, object_id1)
@@ -311,9 +330,8 @@ def calculate_colocalization(  # noqa: PLR0912, PLR0915, C901
     cropped_image_2: numpy.ndarray,
     thr: int = 15,
     fast_costes: str = "Accurate",
-) -> Dict[str, float]:
-    """
-    This function calculates the colocalization coefficients between two images.
+) -> dict[str, float]:
+    """This function calculates the colocalization coefficients between two images.
     It computes the correlation coefficient, Manders' coefficients, overlap coefficient,
     and Costes' coefficients. The results are returned as a dictionary.
 
@@ -339,6 +357,7 @@ def calculate_colocalization(  # noqa: PLR0912, PLR0915, C901
     -------
     Dict[str, float]
         The output features for colocalization analysis.
+
     """
     _require_scipy()
     results = {}
@@ -360,7 +379,8 @@ def calculate_colocalization(  # noqa: PLR0912, PLR0915, C901
     std2 = numpy.sqrt(numpy.sum((cropped_image_2 - mean2) ** 2))
     x = cropped_image_1 - mean1  # x is not the same as the x dimension here
     y = cropped_image_2 - mean2  # y is not the same as the y dimension here
-    corr = numpy.sum(x * y) / (std1 * std2)
+    denom = std1 * std2
+    corr = numpy.sum(x * y) / denom if denom > 0 else 0.0
 
     ################################################################################################
     # Calculate the Manders' coefficients
@@ -373,11 +393,6 @@ def calculate_colocalization(  # noqa: PLR0912, PLR0915, C901
     try:
         tff = (thr / 100) * numpy.max(cropped_image_1)
         tss = (thr / 100) * numpy.max(cropped_image_2)
-        # Ensure thresholds are at least 1 to avoid zero thresholding
-        # if an errors occurs this is probably due to empty images
-        # or images where the bbox is incredibly small and inconsistent
-        # or the bbox is on the border of the image
-        # in which case we want to remove anyway
     except ValueError:
         M1, M2 = 0.0, 0.0
     else:
@@ -391,7 +406,7 @@ def calculate_colocalization(  # noqa: PLR0912, PLR0915, C901
             cropped_image_1[cropped_image_1 >= tff],
         )
         tot_second_image_thr = scipy.ndimage.sum(
-            cropped_image_2[cropped_image_2 >= tss]
+            cropped_image_2[cropped_image_2 >= tss],
         )
 
         if tot_first_image_thr > 0 and tot_second_image_thr > 0:
@@ -547,9 +562,8 @@ def compute_colocalization(  # noqa: C901, PLR0912
     fast_costes: str = "Accurate",
     channel1: str | None = None,
     channel2: str | None = None,
-) -> dict[str, list[float]]:
-    """
-    Compute colocalization features for pairs of objects from two channels.
+) -> pandas.DataFrame:
+    """Compute colocalization features for pairs of objects from two channels.
 
     Parameters
     ----------
@@ -574,9 +588,10 @@ def compute_colocalization(  # noqa: C901, PLR0912
 
     Returns
     -------
-    dict[str, list[float]]
-        A dictionary containing lists of colocalization feature values for
-        each object pair.
+    pandas.DataFrame
+        Wide-format DataFrame with one row per object pair and one column per
+        colocalization metric, plus Metadata columns.
+
     """
     if channel1 is None or channel2 is None:
         raise ValueError("channel1 and channel2 must be provided for feature naming.")
@@ -627,7 +642,7 @@ def compute_colocalization(  # noqa: C901, PLR0912
 
     # Convert list of row-dicts into a dict-of-lists with stable ordering
     if not list_of_dfs:
-        return {}
+        return pandas.DataFrame()
 
     # Collect other metric keys preserving first-seen ordering
     other_keys: list[str] = []

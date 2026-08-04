@@ -1,6 +1,6 @@
 """Neighbors featurization module."""
 
-from typing import Dict, Tuple, Union
+import warnings
 
 import matplotlib.pyplot as plt
 import numpy
@@ -12,20 +12,19 @@ from zedprofiler.contracts import validate_column_name_schema
 from zedprofiler.IO.feature_writing_utils import format_morphology_feature_name
 from zedprofiler.IO.loading_classes import ObjectLoader
 
-BBoxCoord = Union[int, float]
-BBox3D = Tuple[BBoxCoord, BBoxCoord, BBoxCoord, BBoxCoord, BBoxCoord, BBoxCoord]
+BBoxCoord = int
+BBox3D = tuple[BBoxCoord, BBoxCoord, BBoxCoord, BBoxCoord, BBoxCoord, BBoxCoord]
 SMALL_SAMPLE_THRESHOLD = 20
 
 
 def neighbors_expand_box(
-    min_coor: Union[int, float],
-    max_coord: Union[int, float],
-    current_min: Union[int, float],
-    current_max: Union[int, float],
+    min_coor: int,
+    max_coord: int,
+    current_min: int,
+    current_max: int,
     expand_by: int,
-) -> Tuple[Union[int, float], Union[int, float]]:
-    """
-    Expand the bounding box of the object by a specified distance in each direction.
+) -> tuple[int, int]:
+    """Expand the bounding box of the object by a specified distance in each direction.
 
     Parameters
     ----------
@@ -44,6 +43,7 @@ def neighbors_expand_box(
     -------
     Tuple[Union[int, float], Union[int, float]]
         The new minimum and maximum coordinates of the bounding box.
+
     """
     if current_min - expand_by < min_coor:
         current_min = min_coor
@@ -61,8 +61,7 @@ def crop_3D_image(
     image: numpy.ndarray,
     bbox: BBox3D,
 ) -> numpy.ndarray:
-    """
-    Crop the 3D image to the bounding box of the object.
+    """Crop the 3D image to the bounding box of the object.
 
     Parameters
     ----------
@@ -75,6 +74,7 @@ def crop_3D_image(
     -------
     numpy.ndarray
         The cropped 3D image.
+
     """
     z1, y1, x1, z2, y2, x2 = bbox
     return image[z1:z2, y1:y2, x1:x2]
@@ -84,9 +84,8 @@ def compute_neighbors(
     object_loader: ObjectLoader,
     distance_threshold: int = 10,
     anisotropy_factor: int = 10,
-) -> Dict[str, list]:
-    """
-    This function calculates the number of neighbors for each object in a 3D image.
+) -> pandas.DataFrame:
+    """This function calculates the number of neighbors for each object in a 3D image.
 
     Parameters
     ----------
@@ -101,10 +100,13 @@ def compute_neighbors(
 
     Returns
     -------
-    Dict[str, list]
-        A dictionary containing the object ID and the number of neighbors for
-        each object.
+    pandas.DataFrame
+        Wide-format DataFrame with one row per object and columns for
+        NeighborsCountAdjacent and NeighborsCountByDistance, plus Metadata columns.
+
     """
+    if object_loader.label_image is None:
+        return pandas.DataFrame()
     label_object = object_loader.label_image
     labels = object_loader.object_ids
     # set image global min and max coordinates
@@ -115,16 +117,15 @@ def compute_neighbors(
     image_global_max_coord_y = label_object.shape[1]
     image_global_max_coord_x = label_object.shape[2]
 
-    neighbors_out_dict = {
+    neighbors_out_dict: dict[str, list] = {
         "Metadata_Object_ObjectID": [],
         "NeighborsCountAdjacent": [],
         f"NeighborsCountByDistance-{distance_threshold}": [],
     }
     for index, label in enumerate(labels):
-        selected_label_object = label_object.copy()
-        selected_label_object[selected_label_object != label] = 0
         props_label = skimage.measure.regionprops_table(
-            selected_label_object, properties=["bbox"]
+            (label_object == label).astype(numpy.uint8),
+            properties=["bbox"],
         )
         # get the number of neighbors for each object
         distance_x_y = distance_threshold
@@ -179,7 +180,7 @@ def compute_neighbors(
         neighbors_out_dict["Metadata_Object_ObjectID"].append(label)
         neighbors_out_dict["NeighborsCountAdjacent"].append(n_neighbors_adjacent)
         neighbors_out_dict[f"NeighborsCountByDistance-{distance_threshold}"].append(
-            n_neighbors_by_distance
+            n_neighbors_by_distance,
         )
     final_df = pandas.DataFrame(neighbors_out_dict)
     # rename
@@ -220,10 +221,10 @@ def compute_neighbors(
 
 
 def get_coordinates(
-    nuclei_mask: numpy.ndarray, object_ids: list | None = None
+    nuclei_mask: numpy.ndarray,
+    object_ids: list | None = None,
 ) -> pandas.DataFrame:
-    """
-    Extract coordinates from a labeled mask.
+    """Extract coordinates from a labeled mask.
 
     Parameters
     ----------
@@ -236,10 +237,16 @@ def get_coordinates(
     -------
     coords : pandas.DataFrame
         DataFrame with columns: object_id, x, y, z
+
     """
     if object_ids is None:
         object_ids = []
-    coords = {"Metadata_Object_ObjectID": [], "x": [], "y": [], "z": []}
+    coords: dict[str, list] = {
+        "Metadata_Object_ObjectID": [],
+        "x": [],
+        "y": [],
+        "z": [],
+    }
 
     for obj_id in object_ids:
         z, y, x = numpy.where(nuclei_mask == obj_id)
@@ -258,7 +265,8 @@ def calculate_centroid(coords: pandas.DataFrame) -> numpy.ndarray:
 
 
 def euclidean_distance_from_centroid(
-    coords: numpy.ndarray, centroid: numpy.ndarray
+    coords: numpy.ndarray,
+    centroid: numpy.ndarray,
 ) -> numpy.ndarray:
     """Calculate Euclidean distance from centroid for each cell."""
     coords = numpy.asarray(coords, dtype=float)
@@ -267,10 +275,11 @@ def euclidean_distance_from_centroid(
 
 
 def mahalanobis_distance_from_centroid(
-    coords: numpy.ndarray, centroid: numpy.ndarray, min_cells_threshold: int = 50
+    coords: numpy.ndarray,
+    centroid: numpy.ndarray,
+    min_cells_threshold: int = 50,
 ) -> numpy.ndarray:
-    """
-    Calculate Mahalanobis distance from centroid for each cell.
+    """Calculate Mahalanobis distance from centroid for each cell.
     This accounts for the covariance structure (shape) of the organoid.
 
     For small sample sizes (<50 cells), uses regularization or falls back to Euclidean.
@@ -288,6 +297,7 @@ def mahalanobis_distance_from_centroid(
     -------
     distances : ndarray
         Mahalanobis distances for each cell
+
     """
     coords = numpy.asarray(coords, dtype=float)
     centroid = numpy.asarray(centroid, dtype=float)
@@ -296,9 +306,9 @@ def mahalanobis_distance_from_centroid(
 
     # For very small samples, use Euclidean distance instead
     if n_cells < SMALL_SAMPLE_THRESHOLD:
-        print(
-            f"  WARNING: Only {n_cells} cells. Using Euclidean distance "
-            f"instead of Mahalanobis."
+        warnings.warn(
+            f"Only {n_cells} cells. Using Euclidean distance instead of Mahalanobis.",
+            stacklevel=2,
         )
         return euclidean_distance_from_centroid(coords, centroid)
 
@@ -310,9 +320,10 @@ def mahalanobis_distance_from_centroid(
         # Regularization strength inversely proportional to sample size
         reg_strength = (min_cells_threshold - n_cells) / min_cells_threshold * 0.1
         cov_matrix += numpy.eye(3) * reg_strength * numpy.trace(cov_matrix) / 3
-        print(
-            f"  WARNING: Only {n_cells} cells. Using regularized covariance "
-            f"(λ={reg_strength:.3f})"
+        warnings.warn(
+            f"Only {n_cells} cells. Using regularized covariance "
+            f"(λ={reg_strength:.3f})",
+            stacklevel=2,
         )
     else:
         # Standard small regularization for numerical stability
@@ -322,8 +333,7 @@ def mahalanobis_distance_from_centroid(
     try:
         inv_cov = numpy.linalg.inv(cov_matrix)
     except numpy.linalg.LinAlgError:
-        # Fallback to pseudo-inverse if singular
-        print("  WARNING: Singular covariance matrix. Using pseudo-inverse.")
+        warnings.warn("Singular covariance matrix. Using pseudo-inverse.", stacklevel=2)
         inv_cov = numpy.linalg.pinv(cov_matrix)
 
     # Calculate Mahalanobis distance for each point
@@ -338,10 +348,9 @@ def classify_cells_into_shells(
     n_shells: int = 5,
     method: str = "mahalanobis",
     min_cells_per_shell: int = 3,
-    centroid: numpy.ndarray = None,
-) -> dict:
-    """
-    Classify cells into radial shells based on distance from centroid.
+    centroid: numpy.ndarray | None = None,
+) -> tuple[dict, numpy.ndarray | None]:
+    """Classify cells into radial shells based on distance from centroid.
 
     Automatically adjusts n_shells for small organoids to ensure meaningful statistics.
 
@@ -366,6 +375,7 @@ def classify_cells_into_shells(
         - 'DistancesFromCenter': Distance from centroid for each cell
         - 'DistancesFromExterior': Distance from exterior for each cell
         - 'NormalizedDistancesFromCenter': Normalized distances (0-1)
+
     """
     # Handle both DataFrame and dict input
     if isinstance(coords, pandas.DataFrame):
@@ -375,16 +385,15 @@ def classify_cells_into_shells(
         object_ids = numpy.array(coords["Metadata_Object_ObjectID"])
         coords_array = numpy.column_stack([coords["x"], coords["y"], coords["z"]])
     if len(coords_array) == 0:
-        results = {
+        results: dict = {
             "Metadata_Object_ObjectID": [],
             "ShellAssignments": [],
             "DistancesFromCenter": [],
             "DistancesFromExterior": [],
             "NormalizedDistancesFromCenter": [],
-            "MaxShellsUsed": [],
+            "ShellsUsed": [],
         }
-        centroid = None
-        return results, centroid
+        return results, None
     n_cells = len(coords_array)
     if centroid is None:
         centroid = calculate_centroid(coords_array)
@@ -392,11 +401,11 @@ def classify_cells_into_shells(
     # Adjust number of shells for small organoids
     max_shells = max(2, n_cells // min_cells_per_shell)
     if n_shells > max_shells:
-        print(
-            f"  WARNING: {n_cells} cells with {n_shells} shells = "
-            f"{n_cells / n_shells:.1f} cells/shell"
+        warnings.warn(
+            f"{n_cells} cells with {n_shells} shells = {n_cells / n_shells:.1f} "
+            f"cells/shell; reducing to {max_shells} shells for statistical reliability",
+            stacklevel=2,
         )
-        print(f"           Reducing to {max_shells} shells for statistical reliability")
         n_shells = max_shells
 
     # Calculate distances based on method
@@ -407,7 +416,8 @@ def classify_cells_into_shells(
 
     # Normalize distances to 0-1 range
     max_distance = numpy.percentile(
-        distances, 95
+        distances,
+        95,
     )  # Use 95 percentile to avoid outliers
     if max_distance == 0:
         # All cells are at the same location; assign all to shell 0
@@ -437,8 +447,7 @@ def classify_cells_into_shells(
 
 
 def create_results_dataframe(results: dict) -> pandas.DataFrame:
-    """
-    Create a pandas DataFrame with all cell information.
+    """Create a pandas DataFrame with all cell information.
 
     Parameters
     ----------
@@ -449,13 +458,14 @@ def create_results_dataframe(results: dict) -> pandas.DataFrame:
     -------
     df : pandas.DataFrame
         DataFrame with cell information
+
     """
     # Handle both DataFrame and dict input
     if isinstance(results, dict):
         df = pandas.DataFrame.from_dict(results)
     else:
         raise ValueError(
-            "Input must be a results dictionary from classify_cells_into_shells."
+            "Input must be a results dictionary from classify_cells_into_shells.",
         )
 
     return df
@@ -465,10 +475,9 @@ def visualize_organoid_shells(
     coords: pandas.DataFrame,
     classification_results: dict,
     title: str = "Organoid Shell Classification",
-    centroid: numpy.ndarray = None,
-) -> plt.figure:
-    """
-    Create 3D visualization of organoid with shell coloring.
+    centroid: numpy.ndarray | None = None,
+) -> plt.Figure:
+    """Create 3D visualization of organoid with shell coloring.
 
     Parameters
     ----------
@@ -478,6 +487,7 @@ def visualize_organoid_shells(
         Results from classify_cells_into_shells
     title : str
         Plot title
+
     """
     # Handle both DataFrame and dict input
     if isinstance(coords, pandas.DataFrame):
@@ -496,16 +506,17 @@ def visualize_organoid_shells(
 
     shell_assignments = classification_results["ShellAssignments"]
     n_shells = classification_results.get(
-        "ShellsUsed", len(numpy.unique(shell_assignments))
+        "ShellsUsed",
+        len(numpy.unique(shell_assignments)),
     )
 
     # Red to blue color gradient
-    colors = plt.cm.RdYlBu_r(numpy.linspace(0, 1, n_shells))
+    colors = plt.cm.RdYlBu_r(numpy.linspace(0, 1, n_shells))  # type: ignore[attr-defined]
 
     for shell in range(n_shells):
         mask = shell_assignments == shell
         if numpy.sum(mask) > 0:  # Only plot if shell has cells
-            ax1.scatter(
+            ax1.scatter(  # type: ignore[misc]
                 x_coords[mask],
                 y_coords[mask],
                 z_coords[mask],
@@ -518,7 +529,7 @@ def visualize_organoid_shells(
             )
 
     if centroid is not None:
-        ax1.scatter(
+        ax1.scatter(  # type: ignore[misc]
             *centroid,
             c="black",
             s=200,
@@ -530,7 +541,7 @@ def visualize_organoid_shells(
 
     ax1.set_xlabel("X")
     ax1.set_ylabel("Y")
-    ax1.set_zlabel("Z")
+    ax1.set_zlabel("Z")  # type: ignore[attr-defined]
     ax1.set_title(title)
     ax1.legend(loc="upper right", fontsize=8)
 
@@ -538,7 +549,11 @@ def visualize_organoid_shells(
     ax2 = fig.add_subplot(122)
     shell_counts = [numpy.sum(shell_assignments == i) for i in range(n_shells)]
     bars = ax2.bar(
-        range(1, n_shells + 1), shell_counts, color=colors, alpha=0.7, edgecolor="black"
+        range(1, n_shells + 1),
+        shell_counts,
+        color=colors,
+        alpha=0.7,
+        edgecolor="black",
     )
     ax2.set_xlabel("Shell Number")
     ax2.set_ylabel("Number of Cells")
@@ -575,10 +590,10 @@ def visualize_organoid_shells(
 
 
 def plot_distance_distributions(
-    classification_results: dict, n_shells: int | None = None
-) -> plt.figure:
-    """
-    Plot distance distributions for each shell.
+    classification_results: dict,
+    n_shells: int | None = None,
+) -> plt.Figure:
+    """Plot distance distributions for each shell.
 
     Parameters
     ----------
@@ -586,6 +601,7 @@ def plot_distance_distributions(
         Results from classify_cells_into_shells
     n_shells : int, optional
         Number of shells (will use ShellsUsed from results if not provided)
+
     """
     if n_shells is None:
         n_shells = classification_results.get(
@@ -599,7 +615,7 @@ def plot_distance_distributions(
     distances_from_center = classification_results["DistancesFromCenter"]
     distances_from_exterior = classification_results["DistancesFromExterior"]
 
-    colors = plt.cm.RdYlBu_r(numpy.linspace(0, 1, n_shells))
+    colors = plt.cm.RdYlBu_r(numpy.linspace(0, 1, n_shells))  # type: ignore[attr-defined]
 
     # Distance from center
     for shell in range(n_shells):
