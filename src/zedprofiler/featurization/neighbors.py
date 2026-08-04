@@ -5,7 +5,6 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy
 import pandas
-import scipy.ndimage
 import skimage.measure
 import skimage.morphology
 
