@@ -7,6 +7,7 @@ import numpy
 import pandas
 import scipy.ndimage
 import skimage.measure
+import skimage.morphology
 
 from zedprofiler.contracts import validate_column_name_schema
 from zedprofiler.IO.feature_writing_utils import format_morphology_feature_name
@@ -163,14 +164,13 @@ def compute_neighbors(
         )
         bbox = (new_z_min, new_y_min, new_x_min, new_z_max, new_y_max, new_x_max)
         croppped_neighbor_image = crop_3D_image(image=label_object, bbox=bbox)
-
-        # Adjacent neighbors: dilate the object mask by 1 voxel and find labels
-        # that overlap the dilated region (excluding self and background).
-        # The tight-bbox crop misses neighbors that only touch the outer face.
-        object_mask = label_object == label
-        dilated_mask = scipy.ndimage.binary_dilation(object_mask)
-        touching = numpy.unique(label_object[dilated_mask & ~object_mask])
-        n_neighbors_adjacent = int(numpy.sum(touching > 0))
+        binary_mask = label_object == label
+        dilated_mask = skimage.morphology.dilation(binary_mask)
+        labels_in_dilation = label_object[dilated_mask]
+        adjacent_labels = numpy.unique(labels_in_dilation)
+        n_neighbors_adjacent = int(
+            numpy.sum((adjacent_labels != 0) & (adjacent_labels != label))
+        )
 
         # find all the unique values in the expanded cropped image of the
         # object of interest

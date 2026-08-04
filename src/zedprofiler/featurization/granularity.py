@@ -294,9 +294,12 @@ def compute_granularity(  # noqa: C901, PLR0912, PLR0913, PLR0915
             0 : new_shape[1],
             0 : new_shape[2],
         ].astype(float)
-        k *= float(back_shape[0] - 1) / float(new_shape[0] - 1)
-        i *= float(back_shape[1] - 1) / float(new_shape[1] - 1)
-        j *= float(back_shape[2] - 1) / float(new_shape[2] - 1)
+        if new_shape[0] > 1:
+            k *= float(back_shape[0] - 1) / float(new_shape[0] - 1)
+        if new_shape[1] > 1:
+            i *= float(back_shape[1] - 1) / float(new_shape[1] - 1)
+        if new_shape[2] > 1:
+            j *= float(back_shape[2] - 1) / float(new_shape[2] - 1)
         back_pixels = scipy.ndimage.map_coordinates(back_pixels, (k, i, j), order=1)
 
     # Subtract background
