@@ -139,12 +139,13 @@ def compute_texture(  # noqa: C901
             int(props["bbox-4"][i]),
             int(props["bbox-5"][i]),
         )
-    # Allocate once before the loop so each label's slot persists
-    features = numpy.full((n_directions, 13, max(labels, default=0) or 1), numpy.nan)
     # loop through each label and get the bounding box
     # to compute features for the object
     label_to_idx = {int(lbl): i for i, lbl in enumerate(labels)}
+
+    # Allocate once before the loop so each label's slot persists
     features = numpy.full((n_directions, 13, len(labels)), numpy.nan)
+
     for label in labels:
         if int(label) == 0:
             continue
