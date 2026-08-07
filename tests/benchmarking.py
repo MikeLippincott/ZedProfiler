@@ -45,6 +45,14 @@ class BenchmarkImageSet:
 
     image_set_name: str = "benchmark-level"
     anisotropy_spacing: tuple[float, float, float] = (10.0, 1.0, 1.0)
+    # Mirrors ImageSetLoader.image_id, which falls back to image_set_name when
+    # no identifier fields are set. Kept as a separate field so benchmarks can
+    # exercise a custom image_id when needed.
+    image_id: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.image_id is None:
+            self.image_id = self.image_set_name
 
 
 @dataclass

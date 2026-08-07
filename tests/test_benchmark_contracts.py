@@ -16,15 +16,15 @@ from benchmarking import (
 )
 
 EXPECTED_SIGNATURES = {
-    "intensity": ("351f6508dcfc0978c8d5bfc1891847cfe0090c42d8243baf0acb0f528f3061c0"),
+    "intensity": ("570a8f4bcd0a253a7c45d163b5cde172f287b7f089976cc17657f2d44b06917f"),
     "volume_size_shape": (
-        "1fc7482eb490256eca01cc6d54d4b96956d132cdf0a6a27a934eba37dbf83f39"
+        "429504786716107bd10ed72c624578c76fc5f26338b7c1556f1f9c6b0dbb4ca2"
     ),
-    "neighbors": ("8f2b18e6023d656ec6fad41ffa0ff9b802f7b3eadb98ea315ea11cfa400644ec"),
-    "texture": ("e6ae19f7b6bc9e635fb6e199dd45452fca1a17246e027dcb8385478a95e913fa"),
-    "granularity": ("b46cd8ae17d0d1e8b47d24821c480975dd0464159744bc3913e619616dc94295"),
+    "neighbors": ("442ba04801300f09ba2796b44256aeed62bf34d1ec646aed4f9deb5ec1aa347b"),
+    "texture": ("08eee6b345b04793b2c1cff461015a092a91828c820e27c64d2c6a1b6a52c5dd"),
+    "granularity": ("44b746ca088be1f7b8a18282248dc3b7e36f744aa2d646e4c6580fb1218e5c55"),
     "colocalization": (
-        "8bf9495cabc617a5743614f8d57c3855283f6cc6aff9715d975fef416bc29d4a"
+        "304321e87776fce46e6231e4b121bc931d1bd9cc3c8724912dec460dc42b5b8b"
     ),
 }
 EXPECTED_OBJECT_ROWS = 2
