@@ -46,6 +46,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html">ZEDprofiler  </a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../readme.html#install-environment">Install environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../readme.html#data-contract">Data Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#command-line-interface">Command-line interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#arguments">Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#feature-types">Feature types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#outputs">Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#two-channel-colocalization-example">Two-channel colocalization example</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../readme.html#quality-gates">Quality Gates</a></li>
 </ul>
 </li>
@@ -217,6 +224,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.channel"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.channel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.compartment"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.compartment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.image_set_loader"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.image_set_loader</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.label_image"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.label_image</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.object_ids"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.object_ids</span></code></a></li>
 </ul>
@@ -248,9 +258,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.feature_writing_utils.remove_underscores_from_string"><code class="docutils literal notranslate"><span class="pre">remove_underscores_from_string()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.feature_writing_utils.save_features_as_parquet"><code class="docutils literal notranslate"><span class="pre">save_features_as_parquet()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.field_of_view"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.field_of_view</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.image_id"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.image_id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.image_set_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.image_set_name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.label_key_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.label_key_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.patient_tumor"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.patient_tumor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.plate"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.plate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.raw_image_key_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.raw_image_key_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.well"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.well</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader</span></code></a><ul>
@@ -262,6 +277,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.unique_compartment_objects"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.unique_compartment_objects</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.image_names"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.image_names</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.compartments"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.compartments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.from_image_dict"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.from_image_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_anisotropy"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_anisotropy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_compartments"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_compartments()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_image"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_image()</span></code></a></li>
@@ -273,6 +289,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.image_set_loader"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.image_set_loader</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.config"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.__init__"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.object_ids"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.object_ids</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.TwoObjectLoader"><code class="docutils literal notranslate"><span class="pre">TwoObjectLoader</span></code></a><ul>
@@ -287,12 +304,78 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#module-zedprofiler.contracts">Contracts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.channel"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.channel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.column_name"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.column_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.compartment"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.compartment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.feature"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.feature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.model_config"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.parse_column_name"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.parse_column_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.validate_is_string"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.validate_is_string()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.channels"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.channels</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.compartments"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.compartments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.expected_values_dict"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.expected_values_dict</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.features"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.features</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.model_config"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel.features"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.features</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel.model_config"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.validate_is_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.array"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.array</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.model_config"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.validate_array_dtype_and_shape"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.validate_array_dtype_and_shape()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.validate_array_type"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.validate_array_type()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel.metadata"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel.model_config"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.validate_is_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.model_config"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.result"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.result</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.validate_is_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.validate_keys_and_types"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.validate_keys_and_types()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.create_image_array_schema"><code class="docutils literal notranslate"><span class="pre">create_image_array_schema()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_column_name_schema"><code class="docutils literal notranslate"><span class="pre">validate_column_name_schema()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_column_name_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_column_name_with_pydantic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_image_array_shape_contracts"><code class="docutils literal notranslate"><span class="pre">validate_image_array_shape_contracts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_image_array_type_contracts"><code class="docutils literal notranslate"><span class="pre">validate_image_array_type_contracts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_image_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_image_with_pydantic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_return_schema_contract"><code class="docutils literal notranslate"><span class="pre">validate_return_schema_contract()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_return_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_return_with_pydantic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#module-zedprofiler.exceptions">Exceptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.exceptions.ContractError"><code class="docutils literal notranslate"><span class="pre">ContractError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.exceptions.ZedProfilerError"><code class="docutils literal notranslate"><span class="pre">ZedProfilerError</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">A Note on Scalability</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../scalability.html">ZEDprofiler scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarking.html">Benchmarking and Accuracy Locks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../benchmarking.html#accuracy-locks">Accuracy locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../benchmarking.html#benchmark-scorecard">Benchmark scorecard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../benchmarking.html#game-loop">Game loop</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -328,34 +411,29 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandera.pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">beartype</span><span class="w"> </span><span class="kn">import</span> <span class="n">beartype</span>
 
-<span class="n">FEATURE_NAME_COMPONENT_COLUMNS</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;compartment&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;channel&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;feature_type&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;measurement&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_coerce_dataframe_column_names_to_strings</span><span class="p">(</span>
     <span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Ensure DataFrame column labels are string-typed before writing.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure DataFrame column labels are string-typed before writing.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dataframe : pandas.DataFrame</span>
 <span class="sd">        The DataFrame whose column names should be coerced to strings.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pandas.DataFrame</span>
 <span class="sd">        A copy of the input DataFrame with all column names coerced to strings.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parsed_dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">parsed_dataframe</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">parsed_dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
@@ -366,8 +444,7 @@
 <a class="viewcode-back" href="../../../api.html#zedprofiler.IO.feature_writing_utils.remove_underscores_from_string">[docs]</a>
 <span class="nd">@beartype</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">remove_underscores_from_string</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Remove unwanted delimiters from a string and replace them with hyphens.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove unwanted delimiters from a string and replace them with hyphens.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -378,6 +455,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    str</span>
 <span class="sd">        The string with unwanted delimiters removed and replaced with hyphens.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -388,16 +466,7 @@
                 <span class="sa">f</span><span class="s2">&quot;Received input: </span><span class="si">{</span><span class="n">string</span><span class="si">!r}</span><span class="s2"> of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
-    <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span>
-        <span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;_&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;.&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span>
-                <span class="s2">&quot; &quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;/&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">)</span>
-    <span class="p">)</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s2">&quot;_. /&quot;</span><span class="p">,</span> <span class="s2">&quot;----&quot;</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">string</span></div>
 
@@ -406,25 +475,26 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_coerce_feature_name_components</span><span class="p">(</span>
     <span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Normalize feature-name components using shared delimiter cleanup.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize feature-name components using shared delimiter cleanup.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dataframe : pandas.DataFrame</span>
 <span class="sd">        The DataFrame containing feature name components to be normalized.</span>
 <span class="sd">        Expected to have columns corresponding to FEATURE NAME COMPONENT COLUMNS.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pandas.DataFrame</span>
 <span class="sd">        A copy of the input DataFrame with feature name components normalized by</span>
 <span class="sd">        removing unwanted delimiters and replacing them with hyphens.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parsed_dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">FEATURE_NAME_COMPONENT_COLUMNS</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">parsed_dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="n">parsed_dataframe</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed_dataframe</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
-                <span class="n">remove_underscores_from_string</span>
+                <span class="n">remove_underscores_from_string</span><span class="p">,</span>
             <span class="p">)</span>
     <span class="k">return</span> <span class="n">parsed_dataframe</span>
 
@@ -462,10 +532,12 @@
 <a class="viewcode-back" href="../../../api.html#zedprofiler.IO.feature_writing_utils.format_morphology_feature_name">[docs]</a>
 <span class="nd">@beartype</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">format_morphology_feature_name</span><span class="p">(</span>
-    <span class="n">compartment</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">feature_type</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">measurement</span><span class="p">:</span> <span class="nb">object</span>
+    <span class="n">compartment</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
+    <span class="n">channel</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
+    <span class="n">feature_type</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
+    <span class="n">measurement</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Format a morphology feature name in a consistent way across all morphology features.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format a morphology feature name consistently across all morphology features.</span>
 <span class="sd">    This format follows specification for the following:</span>
 <span class="sd">    https://github.com/WayScience/NF1_3D_organoid_profiling_pipeline/blob/main/docs/RFC-2119-Feature-Naming-Convention.md</span>
 
@@ -484,8 +556,8 @@
 <span class="sd">    -------</span>
 <span class="sd">    str</span>
 <span class="sd">        The formatted feature name.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">component_frame</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="p">[</span>
             <span class="p">{</span>
@@ -493,8 +565,8 @@
                 <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="n">channel</span><span class="p">,</span>
                 <span class="s2">&quot;feature_type&quot;</span><span class="p">:</span> <span class="n">feature_type</span><span class="p">,</span>
                 <span class="s2">&quot;measurement&quot;</span><span class="p">:</span> <span class="n">measurement</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">]</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
     <span class="p">)</span>
     <span class="n">coerced_components</span> <span class="o">=</span> <span class="n">FEATURE_NAME_COMPONENT_SCHEMA</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">component_frame</span><span class="p">)</span>
     <span class="n">parsed_row</span> <span class="o">=</span> <span class="n">coerced_components</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -526,6 +598,7 @@
     <span class="n">parent_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">FeatureMetadata</span><span class="p">,</span>
+    <span class="n">atomic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save features as parquet files in a consistent way.</span>
 
@@ -541,10 +614,17 @@
 <span class="sd">    metadata : FeatureMetadata</span>
 <span class="sd">        Metadata for the feature output (compartment, channel, feature_type,</span>
 <span class="sd">        cpu_or_gpu).</span>
+<span class="sd">    atomic : bool</span>
+<span class="sd">        When True, write to a sibling ``.tmp`` file then atomically replace</span>
+<span class="sd">        the destination via ``os.replace``. This prevents a crashed write</span>
+<span class="sd">        from leaving a partial parquet file that a restartable caller (using</span>
+<span class="sd">        ``--skip-existing``) could mistake for a complete one. Default False</span>
+<span class="sd">        preserves the existing direct-write behavior.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pathlib.Path</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">validated_df</span> <span class="o">=</span> <span class="n">FEATURE_OUTPUT_SCHEMA</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
     <span class="n">output_prefix</span> <span class="o">=</span> <span class="n">format_morphology_feature_name</span><span class="p">(</span>
@@ -554,7 +634,12 @@
         <span class="n">metadata</span><span class="o">.</span><span class="n">cpu_or_gpu</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">save_path</span> <span class="o">=</span> <span class="n">parent_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_prefix</span><span class="si">}</span><span class="s2">_features.parquet&quot;</span>
-    <span class="n">validated_df</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">atomic</span><span class="p">:</span>
+        <span class="n">tmp_path</span> <span class="o">=</span> <span class="n">save_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="n">save_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">+</span> <span class="s2">&quot;.tmp&quot;</span><span class="p">)</span>
+        <span class="n">validated_df</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="n">save_path</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">validated_df</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">save_path</span></div>
 
 </pre></div>

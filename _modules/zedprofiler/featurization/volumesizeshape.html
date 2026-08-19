@@ -46,6 +46,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html">ZEDprofiler  </a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../readme.html#install-environment">Install environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../readme.html#data-contract">Data Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#command-line-interface">Command-line interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#arguments">Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#feature-types">Feature types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#outputs">Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#two-channel-colocalization-example">Two-channel colocalization example</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../readme.html#quality-gates">Quality Gates</a></li>
 </ul>
 </li>
@@ -217,6 +224,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.channel"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.channel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.compartment"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.compartment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.image_set_loader"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.image_set_loader</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.label_image"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.label_image</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.object_ids"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.object_ids</span></code></a></li>
 </ul>
@@ -248,9 +258,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.feature_writing_utils.remove_underscores_from_string"><code class="docutils literal notranslate"><span class="pre">remove_underscores_from_string()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.feature_writing_utils.save_features_as_parquet"><code class="docutils literal notranslate"><span class="pre">save_features_as_parquet()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.field_of_view"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.field_of_view</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.image_id"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.image_id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.image_set_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.image_set_name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.label_key_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.label_key_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.patient_tumor"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.patient_tumor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.plate"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.plate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.raw_image_key_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.raw_image_key_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.well"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.well</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader</span></code></a><ul>
@@ -262,6 +277,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.unique_compartment_objects"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.unique_compartment_objects</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.image_names"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.image_names</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.compartments"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.compartments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.from_image_dict"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.from_image_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_anisotropy"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_anisotropy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_compartments"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_compartments()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_image"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_image()</span></code></a></li>
@@ -273,6 +289,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.image_set_loader"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.image_set_loader</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.config"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.__init__"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.object_ids"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.object_ids</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.TwoObjectLoader"><code class="docutils literal notranslate"><span class="pre">TwoObjectLoader</span></code></a><ul>
@@ -287,12 +304,78 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#module-zedprofiler.contracts">Contracts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.channel"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.channel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.column_name"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.column_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.compartment"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.compartment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.feature"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.feature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.model_config"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.parse_column_name"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.parse_column_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.validate_is_string"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.validate_is_string()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.channels"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.channels</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.compartments"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.compartments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.expected_values_dict"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.expected_values_dict</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.features"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.features</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.model_config"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel.features"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.features</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel.model_config"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.validate_is_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.array"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.array</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.model_config"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.validate_array_dtype_and_shape"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.validate_array_dtype_and_shape()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.validate_array_type"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.validate_array_type()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel.metadata"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel.model_config"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.validate_is_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.model_config"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.result"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.result</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.validate_is_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.validate_keys_and_types"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.validate_keys_and_types()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.create_image_array_schema"><code class="docutils literal notranslate"><span class="pre">create_image_array_schema()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_column_name_schema"><code class="docutils literal notranslate"><span class="pre">validate_column_name_schema()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_column_name_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_column_name_with_pydantic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_image_array_shape_contracts"><code class="docutils literal notranslate"><span class="pre">validate_image_array_shape_contracts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_image_array_type_contracts"><code class="docutils literal notranslate"><span class="pre">validate_image_array_type_contracts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_image_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_image_with_pydantic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_return_schema_contract"><code class="docutils literal notranslate"><span class="pre">validate_return_schema_contract()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_return_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_return_with_pydantic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#module-zedprofiler.exceptions">Exceptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.exceptions.ContractError"><code class="docutils literal notranslate"><span class="pre">ContractError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.exceptions.ZedProfilerError"><code class="docutils literal notranslate"><span class="pre">ZedProfilerError</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">A Note on Scalability</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../scalability.html">ZEDprofiler scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarking.html">Benchmarking and Accuracy Locks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../benchmarking.html#accuracy-locks">Accuracy locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../benchmarking.html#benchmark-scorecard">Benchmark scorecard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../benchmarking.html#game-loop">Game loop</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -326,6 +409,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModuleType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -346,6 +430,12 @@
 
 
 
+<span class="k">class</span><span class="w"> </span><span class="nc">_SupportsImageSetName</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimal image-set-loader interface for name access.&quot;&quot;&quot;</span>
+
+    <span class="n">image_set_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+
+
 <div class="viewcode-block" id="SupportsObjectLoader">
 <a class="viewcode-back" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SupportsObjectLoader</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
@@ -355,7 +445,10 @@
     <span class="c1"># where each object is represented by a unique integer label</span>
     <span class="c1"># (0 is typically reserved for background)</span>
     <span class="n">label_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
-    <span class="n">object_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></div>
+    <span class="n">object_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">compartment</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">image_set_loader</span><span class="p">:</span> <span class="n">_SupportsImageSetName</span></div>
 
 
 
@@ -386,7 +479,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_volume_size_shape</span><span class="p">(</span>
     <span class="n">image_set_loader</span><span class="p">:</span> <span class="n">SupportsImageSetLoader</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">object_loader</span><span class="p">:</span> <span class="n">SupportsObjectLoader</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute volume/size/shape features for one object loader.</span>
 
 <span class="sd">    Supports two invocation modes:</span>
@@ -396,11 +489,11 @@
 <span class="sd">    - both loaders provided: executes feature extraction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">image_set_loader</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">object_loader</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_empty_feature_result</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">_empty_feature_result</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">image_set_loader</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">object_loader</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ZedProfilerError</span><span class="p">(</span>
             <span class="s2">&quot;volumesizeshape.compute requires both image_set_loader and &quot;</span>
-            <span class="s2">&quot;object_loader for execution.&quot;</span>
+            <span class="s2">&quot;object_loader for execution.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">measure_3D_volume_size_shape</span><span class="p">(</span>
@@ -410,13 +503,13 @@
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_skimage_measure</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_skimage_measure</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">ModuleType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return `skimage.measure` or raise a user-facing dependency error.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;skimage.measure&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ZedProfilerError</span><span class="p">(</span>
-            <span class="s2">&quot;volumesizeshape requires scikit-image for area/size/shape computation.&quot;</span>
+            <span class="s2">&quot;volumesizeshape requires scikit-image for area/size/shape computation.&quot;</span><span class="p">,</span>
         <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
 
@@ -426,6 +519,7 @@
     <span class="n">label_object</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
     <span class="n">spacing</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate surface area for one labeled object using marching cubes.&quot;&quot;&quot;</span>
     <span class="n">measure</span> <span class="o">=</span> <span class="n">_get_skimage_measure</span><span class="p">()</span>
@@ -435,7 +529,7 @@
         <span class="nb">max</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;bbox-1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;bbox-4&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">label_object</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
         <span class="nb">max</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;bbox-2&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;bbox-5&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">label_object</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
     <span class="p">]</span>
-    <span class="n">volume_truths</span> <span class="o">=</span> <span class="n">volume</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="n">volume_truths</span> <span class="o">=</span> <span class="n">volume</span> <span class="o">==</span> <span class="n">label</span> <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">volume</span> <span class="o">&gt;</span> <span class="mi">0</span>
     <span class="n">verts</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">_normals</span><span class="p">,</span> <span class="n">_values</span> <span class="o">=</span> <span class="n">measure</span><span class="o">.</span><span class="n">marching_cubes</span><span class="p">(</span>
         <span class="n">volume_truths</span><span class="p">,</span>
         <span class="n">method</span><span class="o">=</span><span class="s2">&quot;lewiner&quot;</span><span class="p">,</span>
@@ -451,7 +545,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">measure_3D_volume_size_shape</span><span class="p">(</span>
     <span class="n">image_set_loader</span><span class="p">:</span> <span class="n">SupportsImageSetLoader</span><span class="p">,</span>
     <span class="n">object_loader</span><span class="p">:</span> <span class="n">SupportsObjectLoader</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Measure volume/size/shape features for each non-zero label object.&quot;&quot;&quot;</span>
     <span class="n">measure</span> <span class="o">=</span> <span class="n">_get_skimage_measure</span><span class="p">()</span>
 
@@ -462,6 +556,7 @@
     <span class="n">features_to_record</span> <span class="o">=</span> <span class="n">_empty_feature_result</span><span class="p">()</span>
 
     <span class="n">desired_properties</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">,</span>
         <span class="s2">&quot;area&quot;</span><span class="p">,</span>  <span class="c1"># for 3D it is volume but skimage uses &quot;area&quot; naming for the property</span>
         <span class="s2">&quot;bbox&quot;</span><span class="p">,</span>
         <span class="s2">&quot;centroid&quot;</span><span class="p">,</span>
@@ -470,20 +565,26 @@
         <span class="s2">&quot;euler_number&quot;</span><span class="p">,</span>
         <span class="s2">&quot;equivalent_diameter&quot;</span><span class="p">,</span>
     <span class="p">]</span>
+    <span class="n">all_props</span> <span class="o">=</span> <span class="n">measure</span><span class="o">.</span><span class="n">regionprops_table</span><span class="p">(</span>
+        <span class="n">label_object</span><span class="p">,</span>
+        <span class="n">properties</span><span class="o">=</span><span class="n">desired_properties</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">label_to_index</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">label</span><span class="p">):</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="p">[]))</span>
+    <span class="p">}</span>
+
     <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">unique_objects</span><span class="p">:</span>
         <span class="c1"># avoid the 0 index which is the background and not an object,</span>
         <span class="k">if</span> <span class="n">label</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="n">subset_lab_object</span> <span class="o">=</span> <span class="n">label_object</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="c1"># subset here means zeroing out all other objects except the</span>
-        <span class="c1"># one we want to measure, so that we can use</span>
-        <span class="c1"># skimage&#39;s regionprops_table to compute</span>
-        <span class="c1"># features for that object</span>
-        <span class="n">subset_lab_object</span><span class="p">[</span><span class="n">subset_lab_object</span> <span class="o">!=</span> <span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">props</span> <span class="o">=</span> <span class="n">measure</span><span class="o">.</span><span class="n">regionprops_table</span><span class="p">(</span>
-            <span class="n">subset_lab_object</span><span class="p">,</span>
-            <span class="n">properties</span><span class="o">=</span><span class="n">desired_properties</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">props_index</span> <span class="o">=</span> <span class="n">label_to_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">props_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">prop_name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">prop_values</span><span class="p">[</span><span class="n">props_index</span><span class="p">]])</span>
+            <span class="k">for</span> <span class="n">prop_name</span><span class="p">,</span> <span class="n">prop_values</span> <span class="ow">in</span> <span class="n">all_props</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prop_name</span> <span class="o">!=</span> <span class="s2">&quot;label&quot;</span>
+        <span class="p">}</span>
 
         <span class="n">features_to_record</span><span class="p">[</span><span class="s2">&quot;Metadata_Object_ObjectID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
         <span class="n">features_to_record</span><span class="p">[</span><span class="s2">&quot;Volume&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
@@ -500,7 +601,7 @@
         <span class="n">features_to_record</span><span class="p">[</span><span class="s2">&quot;Extent&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;extent&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
         <span class="n">features_to_record</span><span class="p">[</span><span class="s2">&quot;EulerNumber&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;euler_number&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
         <span class="n">features_to_record</span><span class="p">[</span><span class="s2">&quot;EquivalentDiameter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">props</span><span class="p">[</span><span class="s2">&quot;equivalent_diameter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">props</span><span class="p">[</span><span class="s2">&quot;equivalent_diameter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
         <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -509,7 +610,8 @@
                     <span class="n">label_object</span><span class="o">=</span><span class="n">label_object</span><span class="p">,</span>
                     <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span>
                     <span class="n">spacing</span><span class="o">=</span><span class="n">spacing</span><span class="p">,</span>
-                <span class="p">)</span>
+                    <span class="n">label</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">label</span><span class="p">),</span>
+                <span class="p">),</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">RuntimeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
             <span class="n">features_to_record</span><span class="p">[</span><span class="s2">&quot;SurfaceArea&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
@@ -532,6 +634,11 @@
         <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
+    <span class="n">final_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;Metadata_Imaging_ImageID&quot;</span><span class="p">,</span>
+        <span class="n">object_loader</span><span class="o">.</span><span class="n">image_set_loader</span><span class="o">.</span><span class="n">image_id</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">final_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
         <span class="mi">1</span><span class="p">,</span>
         <span class="s2">&quot;Metadata_Experiment_ImageSet&quot;</span><span class="p">,</span>

@@ -48,6 +48,13 @@
 <li class="toctree-l1"><a class="reference internal" href="readme.html">ZEDprofiler  </a><ul>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#install-environment">Install environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#data-contract">Data Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#command-line-interface">Command-line interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="readme.html#arguments">Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readme.html#feature-types">Feature types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readme.html#outputs">Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readme.html#two-channel-colocalization-example">Two-channel colocalization example</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#quality-gates">Quality Gates</a></li>
 </ul>
 </li>
@@ -219,6 +226,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.channel"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.channel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.compartment"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.compartment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.image_set_loader"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.image_set_loader</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.label_image"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.label_image</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.object_ids"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.object_ids</span></code></a></li>
 </ul>
@@ -250,9 +260,14 @@
 <li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.IO.feature_writing_utils.remove_underscores_from_string"><code class="docutils literal notranslate"><span class="pre">remove_underscores_from_string()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.IO.feature_writing_utils.save_features_as_parquet"><code class="docutils literal notranslate"><span class="pre">save_features_as_parquet()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetConfig"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetConfig.field_of_view"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.field_of_view</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetConfig.image_id"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.image_id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetConfig.image_set_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.image_set_name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetConfig.label_key_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.label_key_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetConfig.patient_tumor"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.patient_tumor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetConfig.plate"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.plate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetConfig.raw_image_key_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.raw_image_key_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetConfig.well"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.well</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetLoader"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader</span></code></a><ul>
@@ -264,6 +279,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetLoader.unique_compartment_objects"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.unique_compartment_objects</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetLoader.image_names"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.image_names</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetLoader.compartments"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.compartments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetLoader.from_image_dict"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.from_image_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_anisotropy"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_anisotropy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_compartments"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_compartments()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_image"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_image()</span></code></a></li>
@@ -275,6 +291,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ObjectLoader.image_set_loader"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.image_set_loader</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ObjectLoader.config"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ObjectLoader.__init__"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.ObjectLoader.object_ids"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.object_ids</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.IO.loading_classes.TwoObjectLoader"><code class="docutils literal notranslate"><span class="pre">TwoObjectLoader</span></code></a><ul>
@@ -289,12 +306,78 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-zedprofiler.contracts">Contracts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.ColumnNameModel"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ColumnNameModel.channel"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.channel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ColumnNameModel.column_name"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.column_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ColumnNameModel.compartment"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.compartment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ColumnNameModel.feature"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.feature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ColumnNameModel.model_config"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ColumnNameModel.parse_column_name"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.parse_column_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ColumnNameModel.validate_is_string"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.validate_is_string()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.ExpectedFeatureNameValues"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ExpectedFeatureNameValues.channels"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.channels</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ExpectedFeatureNameValues.compartments"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.compartments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ExpectedFeatureNameValues.expected_values_dict"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.expected_values_dict</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ExpectedFeatureNameValues.features"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.features</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ExpectedFeatureNameValues.model_config"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.FeatureDictModel"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.FeatureDictModel.features"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.features</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.FeatureDictModel.model_config"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.FeatureDictModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.validate_is_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.ImageArrayModel"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ImageArrayModel.array"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.array</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ImageArrayModel.model_config"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ImageArrayModel.validate_array_dtype_and_shape"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.validate_array_dtype_and_shape()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ImageArrayModel.validate_array_type"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.validate_array_type()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.MetadataDictModel"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.MetadataDictModel.metadata"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.MetadataDictModel.model_config"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.MetadataDictModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.validate_is_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.ReturnSchemaModel"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ReturnSchemaModel.model_config"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ReturnSchemaModel.result"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.result</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ReturnSchemaModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.validate_is_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#zedprofiler.contracts.ReturnSchemaModel.validate_keys_and_types"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.validate_keys_and_types()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.create_image_array_schema"><code class="docutils literal notranslate"><span class="pre">create_image_array_schema()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.validate_column_name_schema"><code class="docutils literal notranslate"><span class="pre">validate_column_name_schema()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.validate_column_name_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_column_name_with_pydantic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.validate_image_array_shape_contracts"><code class="docutils literal notranslate"><span class="pre">validate_image_array_shape_contracts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.validate_image_array_type_contracts"><code class="docutils literal notranslate"><span class="pre">validate_image_array_type_contracts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.validate_image_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_image_with_pydantic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.validate_return_schema_contract"><code class="docutils literal notranslate"><span class="pre">validate_return_schema_contract()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.contracts.validate_return_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_return_with_pydantic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-zedprofiler.exceptions">Exceptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.exceptions.ContractError"><code class="docutils literal notranslate"><span class="pre">ContractError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#zedprofiler.exceptions.ZedProfilerError"><code class="docutils literal notranslate"><span class="pre">ZedProfilerError</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">A Note on Scalability</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="scalability.html">ZEDprofiler scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarking.html">Benchmarking and Accuracy Locks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="benchmarking.html#accuracy-locks">Accuracy locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarking.html#benchmark-scorecard">Benchmark scorecard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarking.html#game-loop">Game loop</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -323,8 +406,8 @@
              
   <!-- include contents from the root readme -->
 <section id="zedprofiler">
-<h1>ZEDprofiler <a class="reference external" href="https://zedprofiler.readthedocs.io/en/latest/"><img alt="Documentation" src="https://img.shields.io/badge/documentation-available-brightgreen" /></a> <img alt="License" src="https://img.shields.io/badge/license-BSD%203--Clause-blue" /><a class="reference internal" href="#quality-gates"><img alt="Coverage" src="https://img.shields.io/badge/coverage-92%25-brightgreen" /></a><a class="headerlink" href="#zedprofiler" title="Link to this heading"></a></h1>
-<img height="100" src="https://github.com/WayScience/ZEDprofiler/raw/main/logo/with-text-for-light-bg.png" />
+<h1>ZEDprofiler <a class="reference external" href="https://zedprofiler.readthedocs.io/en/latest/"><img alt="Documentation" src="https://img.shields.io/badge/documentation-available-brightgreen" /></a> <img alt="License" src="https://img.shields.io/badge/license-BSD%203--Clause-blue" /><a class="reference external" href="https://codecov.io/gh/WayScience/ZedProfiler"><img alt="Coverage" src="https://codecov.io/gh/WayScience/ZedProfiler/branch/main/graph/badge.svg" /></a><a class="headerlink" href="#zedprofiler" title="Link to this heading"></a></h1>
+<img height="100" src="https://github.com/WayScience/ZedProfiler/raw/main/logo/with-text-for-light-bg.png" />
 <p>CPU-first 3D image feature extraction toolkit for high-content and high-throughput image-based profiling.</p>
 <p>This repository is used for image-based feature extraction of objects in 3D microscopy images.
 In this use case we extract features from single cells in 3D volumetric microscopy images.
@@ -332,7 +415,7 @@ We developed ZEDprofiler to be used on high-content and high-throughput microsco
 ZEDprofiler is extensible to any fluorescence microscopy image modality, and is designed to be modular.</p>
 <section id="install-environment">
 <h2>Install environment<a class="headerlink" href="#install-environment" title="Link to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>env
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>dev<span class="w"> </span>--group<span class="w"> </span>docs<span class="w"> </span>--group<span class="w"> </span>notebooks
 </pre></div>
 </div>
 </section>
@@ -344,14 +427,112 @@ ZEDprofiler is extensible to any fluorescence microscopy image modality, and is 
 <li><p><code class="docutils literal notranslate"><span class="pre">y</span></code> is the height of the image in pixels</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">z</span></code> is the depth of the image in pixels</p></li>
 </ul>
-<p>Though I have reservations about width, height, and depth being used to describe the dimensions of an image.
-Different fields use different dimensions for different meanings.
+<p>Different fields use different dimensions for different meanings.
 We use <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> to refer to the same dimensions captured in a 2D image, and <code class="docutils literal notranslate"><span class="pre">z</span></code> to refer to the “depth” dimension in a 3D image if looking down into the image stack.
 The <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, and <code class="docutils literal notranslate"><span class="pre">z</span></code> dimensions are less description and more absolute while <code class="docutils literal notranslate"><span class="pre">depth</span></code> is relative to angle of observation.</p>
 <p>Accepted image formats (order matters):</p>
 <ul class="simple">
 <li><p>Single channel: <code class="docutils literal notranslate"><span class="pre">(z,</span> <span class="pre">y,</span> <span class="pre">x)</span></code></p></li>
 </ul>
+</section>
+<section id="command-line-interface">
+<h2>Command-line interface<a class="headerlink" href="#command-line-interface" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ZedProfiler</span> <span class="pre">run</span></code> extracts features for a single well/field-of-view (FOV) shard: it loads one image set from explicit file paths, runs a selected subset of featurizers, and writes one Parquet per feature table to an output directory. It is the command a workflow manager (for example Nextflow via SLURM <code class="docutils literal notranslate"><span class="pre">sbatch</span></code>) dispatches once per shard.</p>
+<p>After <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">sync</span></code> (or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.</span></code>) the <code class="docutils literal notranslate"><span class="pre">ZedProfiler</span></code> console script is available; from a checkout you can also use <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">ZedProfiler</span> <span class="pre">run</span> <span class="pre">...</span></code>. Run <code class="docutils literal notranslate"><span class="pre">ZedProfiler</span> <span class="pre">run</span> <span class="pre">--help</span></code> for the authoritative, up-to-date list of arguments.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ZedProfiler<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--image<span class="o">=</span><span class="nv">DNA</span><span class="o">=</span>/path/to/channel1.tif<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--label<span class="o">=</span><span class="nv">Nuclei</span><span class="o">=</span>/path/to/nuclei_mask.tiff<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--anisotropy-spacing<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--patient-tumor<span class="w"> </span>NF0014_T1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--plate<span class="w"> </span>PLATE01<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--well<span class="w"> </span>A1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--fov<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--out-dir<span class="w"> </span>./shard_output<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--features<span class="w"> </span>Intensity
+</pre></div>
+</div>
+<section id="arguments">
+<h3>Arguments<a class="headerlink" href="#arguments" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Argument</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--image=NAME=PATH</span></code></p></td>
+<td><p>yes (&gt;=1, repeatable)</p></td>
+<td><p>A channel image as <code class="docutils literal notranslate"><span class="pre">NAME=PATH</span></code>. Repeat for multi-channel shards.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--label=NAME=PATH</span></code></p></td>
+<td><p>yes (&gt;=1, repeatable)</p></td>
+<td><p>A compartment label mask as <code class="docutils literal notranslate"><span class="pre">NAME=PATH</span></code>. Repeat for multiple compartments.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--anisotropy-spacing</span> <span class="pre">Z</span> <span class="pre">Y</span> <span class="pre">X</span></code></p></td>
+<td><p>yes</p></td>
+<td><p>Z, Y, X voxel spacing (three floats).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--patient-tumor</span></code></p></td>
+<td><p>yes</p></td>
+<td><p>Patient-tumor identifier (e.g. <code class="docutils literal notranslate"><span class="pre">NF0014_T1</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--plate</span></code></p></td>
+<td><p>yes</p></td>
+<td><p>Plate identifier.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--well</span></code></p></td>
+<td><p>yes</p></td>
+<td><p>Well identifier (e.g. <code class="docutils literal notranslate"><span class="pre">A1</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--fov</span></code></p></td>
+<td><p>yes</p></td>
+<td><p>Field-of-view index or identifier.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--out-dir</span></code></p></td>
+<td><p>yes</p></td>
+<td><p>Shard output directory (created if needed).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--features</span></code></p></td>
+<td><p>no</p></td>
+<td><p>Comma-separated feature types to run (selector). With no <code class="docutils literal notranslate"><span class="pre">--feature</span></code> flags, runs these types over the channel x compartment cross-product; with <code class="docutils literal notranslate"><span class="pre">--feature</span></code> flags, restricts those requests by type. Default: all single-channel types, plus <code class="docutils literal notranslate"><span class="pre">Colocalization</span></code> when &gt;=2 channels are declared.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--feature=TYPE[,key=value,...]</span></code></p></td>
+<td><p>no (repeatable)</p></td>
+<td><p>An explicit feature request, e.g. <code class="docutils literal notranslate"><span class="pre">Intensity,channel=DNA,compartment=Nuclei</span></code> or <code class="docutils literal notranslate"><span class="pre">Colocalization,channel1=DNA1,channel2=DNA2,compartment=Nuclei,fast_costes=Faster</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--skip-existing</span></code></p></td>
+<td><p>no</p></td>
+<td><p>Skip a feature request whose output Parquet already exists.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--force</span></code></p></td>
+<td><p>no</p></td>
+<td><p>Overwrite even when the output exists (writes are still atomic).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="feature-types">
+<h3>Feature types<a class="headerlink" href="#feature-types" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">VolumeSizeShape</span></code>, <code class="docutils literal notranslate"><span class="pre">Intensity</span></code>, <code class="docutils literal notranslate"><span class="pre">Neighbors</span></code>, <code class="docutils literal notranslate"><span class="pre">Texture</span></code>, and <code class="docutils literal notranslate"><span class="pre">Granularity</span></code> are single-channel features run per channel x compartment. <code class="docutils literal notranslate"><span class="pre">Colocalization</span></code> is a two-channel feature run per ordered channel pair x compartment.</p>
+</section>
+<section id="outputs">
+<h3>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h3>
+<p>Each request writes <code class="docutils literal notranslate"><span class="pre">{compartment}_{channel}_{feature_type}_cpu_features.parquet</span></code> into <code class="docutils literal notranslate"><span class="pre">--out-dir</span></code>. Every table carries <code class="docutils literal notranslate"><span class="pre">Metadata_Imaging_ImageID</span></code> (deterministically built from the patient-tumor, plate, well, and FOV coordinates) and <code class="docutils literal notranslate"><span class="pre">Metadata_Experiment_ImageSet</span></code> so downstream tables can rejoin. Writes are atomic (temp file + replace), so a crashed shard never leaves a partial file that <code class="docutils literal notranslate"><span class="pre">--skip-existing</span></code> would mistake for a complete one.</p>
+</section>
+<section id="two-channel-colocalization-example">
+<h3>Two-channel colocalization example<a class="headerlink" href="#two-channel-colocalization-example" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ZedProfiler<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--image<span class="o">=</span><span class="nv">DNA1</span><span class="o">=</span>/path/to/channel1.tif<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--image<span class="o">=</span><span class="nv">DNA2</span><span class="o">=</span>/path/to/channel2.tif<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--label<span class="o">=</span><span class="nv">Nuclei</span><span class="o">=</span>/path/to/nuclei_mask.tiff<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--anisotropy-spacing<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--patient-tumor<span class="w"> </span>NF0014_T1<span class="w"> </span>--plate<span class="w"> </span>PLATE01<span class="w"> </span>--well<span class="w"> </span>A1<span class="w"> </span>--fov<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--out-dir<span class="w"> </span>./shard_output<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--feature<span class="o">=</span>Colocalization,channel1<span class="o">=</span>DNA1,channel2<span class="o">=</span>DNA2,compartment<span class="o">=</span>Nuclei,fast_costes<span class="o">=</span>Faster
+</pre></div>
+</div>
+</section>
 </section>
 <section id="quality-gates">
 <h2>Quality Gates<a class="headerlink" href="#quality-gates" title="Link to this heading"></a></h2>
@@ -362,6 +543,7 @@ The <code class="docutils literal notranslate"><span class="pre">x</span></code>
 <li class="toctree-l1"><a class="reference internal" href="readme.html">ZEDprofiler  </a><ul>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#install-environment">Install environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#data-contract">Data Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#command-line-interface">Command-line interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#quality-gates">Quality Gates</a></li>
 </ul>
 </li>
@@ -455,6 +637,8 @@ The <code class="docutils literal notranslate"><span class="pre">x</span></code>
 <li class="toctree-l2"><a class="reference internal" href="api.html#module-zedprofiler.featurization.colocalization">Featurization utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#module-zedprofiler.image_utils.image_utils">Image utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#module-zedprofiler.IO.feature_writing_utils">IO utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-zedprofiler.contracts">Contracts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-zedprofiler.exceptions">Exceptions</a></li>
 </ul>
 </li>
 </ul>
@@ -463,6 +647,12 @@ The <code class="docutils literal notranslate"><span class="pre">x</span></code>
 <p class="caption" role="heading"><span class="caption-text">A Note on Scalability</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="scalability.html">ZEDprofiler scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarking.html">Benchmarking and Accuracy Locks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="benchmarking.html#accuracy-locks">Accuracy locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarking.html#benchmark-scorecard">Benchmark scorecard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarking.html#game-loop">Game loop</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>

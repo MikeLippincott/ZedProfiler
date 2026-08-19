@@ -46,6 +46,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html">ZEDprofiler  </a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../readme.html#install-environment">Install environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../readme.html#data-contract">Data Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#command-line-interface">Command-line interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#arguments">Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#feature-types">Feature types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#outputs">Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#two-channel-colocalization-example">Two-channel colocalization example</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../readme.html#quality-gates">Quality Gates</a></li>
 </ul>
 </li>
@@ -217,6 +224,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.channel"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.channel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.compartment"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.compartment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.image_set_loader"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.image_set_loader</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.label_image"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.label_image</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.featurization.volumesizeshape.SupportsObjectLoader.object_ids"><code class="docutils literal notranslate"><span class="pre">SupportsObjectLoader.object_ids</span></code></a></li>
 </ul>
@@ -248,9 +258,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.feature_writing_utils.remove_underscores_from_string"><code class="docutils literal notranslate"><span class="pre">remove_underscores_from_string()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.feature_writing_utils.save_features_as_parquet"><code class="docutils literal notranslate"><span class="pre">save_features_as_parquet()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.field_of_view"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.field_of_view</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.image_id"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.image_id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.image_set_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.image_set_name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.label_key_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.label_key_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.patient_tumor"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.patient_tumor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.plate"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.plate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.raw_image_key_name"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.raw_image_key_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetConfig.well"><code class="docutils literal notranslate"><span class="pre">ImageSetConfig.well</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader</span></code></a><ul>
@@ -262,6 +277,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.unique_compartment_objects"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.unique_compartment_objects</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.image_names"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.image_names</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.compartments"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.compartments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.from_image_dict"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.from_image_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_anisotropy"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_anisotropy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_compartments"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_compartments()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ImageSetLoader.get_image"><code class="docutils literal notranslate"><span class="pre">ImageSetLoader.get_image()</span></code></a></li>
@@ -273,6 +289,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.image_set_loader"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.image_set_loader</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.config"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.__init__"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.ObjectLoader.object_ids"><code class="docutils literal notranslate"><span class="pre">ObjectLoader.object_ids</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.IO.loading_classes.TwoObjectLoader"><code class="docutils literal notranslate"><span class="pre">TwoObjectLoader</span></code></a><ul>
@@ -287,12 +304,78 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#module-zedprofiler.contracts">Contracts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.channel"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.channel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.column_name"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.column_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.compartment"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.compartment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.feature"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.feature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.model_config"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.parse_column_name"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.parse_column_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ColumnNameModel.validate_is_string"><code class="docutils literal notranslate"><span class="pre">ColumnNameModel.validate_is_string()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.channels"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.channels</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.compartments"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.compartments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.expected_values_dict"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.expected_values_dict</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.features"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.features</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ExpectedFeatureNameValues.model_config"><code class="docutils literal notranslate"><span class="pre">ExpectedFeatureNameValues.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel.features"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.features</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel.model_config"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.FeatureDictModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">FeatureDictModel.validate_is_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.array"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.array</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.model_config"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.validate_array_dtype_and_shape"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.validate_array_dtype_and_shape()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ImageArrayModel.validate_array_type"><code class="docutils literal notranslate"><span class="pre">ImageArrayModel.validate_array_type()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel.metadata"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel.model_config"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.MetadataDictModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">MetadataDictModel.validate_is_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.model_config"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.result"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.result</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.validate_is_dict"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.validate_is_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.ReturnSchemaModel.validate_keys_and_types"><code class="docutils literal notranslate"><span class="pre">ReturnSchemaModel.validate_keys_and_types()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.create_image_array_schema"><code class="docutils literal notranslate"><span class="pre">create_image_array_schema()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_column_name_schema"><code class="docutils literal notranslate"><span class="pre">validate_column_name_schema()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_column_name_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_column_name_with_pydantic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_image_array_shape_contracts"><code class="docutils literal notranslate"><span class="pre">validate_image_array_shape_contracts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_image_array_type_contracts"><code class="docutils literal notranslate"><span class="pre">validate_image_array_type_contracts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_image_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_image_with_pydantic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_return_schema_contract"><code class="docutils literal notranslate"><span class="pre">validate_return_schema_contract()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.contracts.validate_return_with_pydantic"><code class="docutils literal notranslate"><span class="pre">validate_return_with_pydantic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#module-zedprofiler.exceptions">Exceptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.exceptions.ContractError"><code class="docutils literal notranslate"><span class="pre">ContractError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api.html#zedprofiler.exceptions.ZedProfilerError"><code class="docutils literal notranslate"><span class="pre">ZedProfilerError</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">A Note on Scalability</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../scalability.html">ZEDprofiler scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarking.html">Benchmarking and Accuracy Locks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../benchmarking.html#accuracy-locks">Accuracy locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../benchmarking.html#benchmark-scorecard">Benchmark scorecard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../benchmarking.html#game-loop">Game loop</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -330,6 +413,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.ndimage</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">skimage.measure</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">skimage.segmentation</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">zedprofiler.contracts</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_column_name_schema</span>
@@ -340,8 +424,7 @@
 <div class="viewcode-block" id="get_outline">
 <a class="viewcode-back" href="../../../api.html#zedprofiler.featurization.intensity.get_outline">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_outline</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the outline of a 3D mask.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the outline of a 3D mask.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -352,21 +435,21 @@
 <span class="sd">    -------</span>
 <span class="sd">    numpy.ndarray</span>
 <span class="sd">        The outline of the mask.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">outline</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="n">outline</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="n">skimage</span><span class="o">.</span><span class="n">segmentation</span><span class="o">.</span><span class="n">find_boundaries</span><span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">z</span><span class="p">])</span>
+        <span class="n">outline</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="n">skimage</span><span class="o">.</span><span class="n">segmentation</span><span class="o">.</span><span class="n">find_boundaries</span><span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">z</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">outline</span></div>
 
 
 
 <div class="viewcode-block" id="compute_intensity">
 <a class="viewcode-back" href="../../../api.html#zedprofiler.featurization.intensity.compute_intensity">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_intensity</span><span class="p">(</span>  <span class="c1"># noqa: PLR0915</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_intensity</span><span class="p">(</span>  <span class="c1"># noqa: C901, PLR0915</span>
     <span class="n">object_loader</span><span class="p">:</span> <span class="n">ObjectLoader</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Measure the intensity of objects in a 3D image.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Measure the intensity of objects in a 3D image.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -375,68 +458,100 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    dict</span>
-<span class="sd">        A dictionary containing the measurements for each object.</span>
-<span class="sd">        The keys are the measurement names and the values are the corresponding values.</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Wide-format DataFrame with one row per object and one column per</span>
+<span class="sd">        intensity measurement, plus Metadata columns.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">object_loader</span><span class="o">.</span><span class="n">label_image</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">object_loader</span><span class="o">.</span><span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     <span class="n">image_object</span> <span class="o">=</span> <span class="n">object_loader</span><span class="o">.</span><span class="n">image</span>
     <span class="n">label_object</span> <span class="o">=</span> <span class="n">object_loader</span><span class="o">.</span><span class="n">label_image</span>
     <span class="n">labels</span> <span class="o">=</span> <span class="n">object_loader</span><span class="o">.</span><span class="n">object_ids</span>
 
-    <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">output_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;Metadata_Object_ObjectID&quot;</span><span class="p">:</span> <span class="p">[],</span>
         <span class="s2">&quot;feature_name&quot;</span><span class="p">:</span> <span class="p">[],</span>
         <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="p">[],</span>
         <span class="s2">&quot;compartment&quot;</span><span class="p">:</span> <span class="p">[],</span>
         <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">[],</span>
     <span class="p">}</span>
-    <span class="c1"># loop through each object and calculate measurements</span>
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
-        <span class="n">selected_label_object</span> <span class="o">=</span> <span class="n">label_object</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">selected_image_object</span> <span class="o">=</span> <span class="n">image_object</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="n">selected_label_object</span><span class="p">[</span><span class="n">selected_label_object</span> <span class="o">!=</span> <span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">selected_label_object</span><span class="p">[</span><span class="n">selected_label_object</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="mi">1</span>  <span class="c1"># binarize the label for volume calcs</span>
+    <span class="n">props</span> <span class="o">=</span> <span class="n">skimage</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">regionprops_table</span><span class="p">(</span>
+        <span class="n">label_object</span><span class="p">,</span>
+        <span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;bbox&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">label_to_bbox</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">label</span><span class="p">):</span> <span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;bbox-0&quot;</span><span class="p">][</span><span class="n">index</span><span class="p">]),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;bbox-1&quot;</span><span class="p">][</span><span class="n">index</span><span class="p">]),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;bbox-2&quot;</span><span class="p">][</span><span class="n">index</span><span class="p">]),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;bbox-3&quot;</span><span class="p">][</span><span class="n">index</span><span class="p">]),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;bbox-4&quot;</span><span class="p">][</span><span class="n">index</span><span class="p">]),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;bbox-5&quot;</span><span class="p">][</span><span class="n">index</span><span class="p">]),</span>
         <span class="p">)</span>
-        <span class="n">selected_image_object</span><span class="p">[</span><span class="n">selected_label_object</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">non_zero_pixels_object</span> <span class="o">=</span> <span class="n">selected_image_object</span><span class="p">[</span><span class="n">selected_image_object</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="p">[]))</span>
+    <span class="p">}</span>
+
+    <span class="c1"># loop through each object and calculate measurements</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+        <span class="n">bbox</span> <span class="o">=</span> <span class="n">label_to_bbox</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">bbox</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">bbox_min_z</span><span class="p">,</span> <span class="n">bbox_min_y</span><span class="p">,</span> <span class="n">bbox_min_x</span><span class="p">,</span> <span class="n">bbox_max_z</span><span class="p">,</span> <span class="n">bbox_max_y</span><span class="p">,</span> <span class="n">bbox_max_x</span> <span class="o">=</span> <span class="n">bbox</span>
+        <span class="c1"># regionprops bbox max coords are exclusive (half-open [min, max)),</span>
+        <span class="c1"># so the slices below need no +1. (The old code computed the bbox with</span>
+        <span class="c1"># numpy.max, which is an inclusive last index and required +1; the two</span>
+        <span class="c1"># produce the identical cropped region.)</span>
+        <span class="n">cropped_label_values</span> <span class="o">=</span> <span class="n">label_object</span><span class="p">[</span>
+            <span class="n">bbox_min_z</span><span class="p">:</span><span class="n">bbox_max_z</span><span class="p">,</span>
+            <span class="n">bbox_min_y</span><span class="p">:</span><span class="n">bbox_max_y</span><span class="p">,</span>
+            <span class="n">bbox_min_x</span><span class="p">:</span><span class="n">bbox_max_x</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">cropped_image_values</span> <span class="o">=</span> <span class="n">image_object</span><span class="p">[</span>
+            <span class="n">bbox_min_z</span><span class="p">:</span><span class="n">bbox_max_z</span><span class="p">,</span>
+            <span class="n">bbox_min_y</span><span class="p">:</span><span class="n">bbox_max_y</span><span class="p">,</span>
+            <span class="n">bbox_min_x</span><span class="p">:</span><span class="n">bbox_max_x</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="c1"># The bbox always bounds at least one voxel of ``label`` because it was</span>
+        <span class="c1"># derived from regionprops for that exact label, so ``object_mask`` is</span>
+        <span class="c1"># never empty here. Kept as a defensive guard; excluded from coverage.</span>
+        <span class="n">object_mask</span> <span class="o">=</span> <span class="n">cropped_label_values</span> <span class="o">==</span> <span class="n">label</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">object_mask</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">continue</span>  <span class="c1"># pragma: no cover</span>
+
+        <span class="n">object_pixels</span> <span class="o">=</span> <span class="n">cropped_image_values</span><span class="p">[</span><span class="n">object_mask</span><span class="p">]</span>
+        <span class="n">non_zero_pixels_object</span> <span class="o">=</span> <span class="n">object_pixels</span><span class="p">[</span><span class="n">object_pixels</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">non_zero_pixels_object</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">non_zero_pixels_object</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">mask_outlines</span> <span class="o">=</span> <span class="n">get_outline</span><span class="p">(</span><span class="n">selected_label_object</span><span class="p">)</span>
 
-        <span class="c1"># Extract only coordinates where object exists</span>
-        <span class="n">z_indices</span><span class="p">,</span> <span class="n">y_indices</span><span class="p">,</span> <span class="n">x_indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">selected_label_object</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">min_z</span><span class="p">,</span> <span class="n">max_z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">z_indices</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z_indices</span><span class="p">)</span>
-        <span class="n">min_y</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y_indices</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_indices</span><span class="p">)</span>
-        <span class="n">min_x</span><span class="p">,</span> <span class="n">max_x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_indices</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_indices</span><span class="p">)</span>
+        <span class="n">cropped_label</span> <span class="o">=</span> <span class="n">object_mask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">cropped_image</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">object_mask</span><span class="p">,</span> <span class="n">cropped_image_values</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-        <span class="c1"># Crop to bounding box for efficiency</span>
-        <span class="n">cropped_label</span> <span class="o">=</span> <span class="n">selected_label_object</span><span class="p">[</span>
-            <span class="n">min_z</span> <span class="p">:</span> <span class="n">max_z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">min_y</span> <span class="p">:</span> <span class="n">max_y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">min_x</span> <span class="p">:</span> <span class="n">max_x</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="p">]</span>
-        <span class="n">cropped_image</span> <span class="o">=</span> <span class="n">selected_image_object</span><span class="p">[</span>
-            <span class="n">min_z</span> <span class="p">:</span> <span class="n">max_z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">min_y</span> <span class="p">:</span> <span class="n">max_y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">min_x</span> <span class="p">:</span> <span class="n">max_x</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="p">]</span>
+        <span class="n">padded_label</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">cropped_label</span><span class="p">,</span> <span class="n">pad_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span>
+        <span class="n">mask_outlines</span> <span class="o">=</span> <span class="n">get_outline</span><span class="p">(</span><span class="n">padded_label</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="c1"># Create coordinate grids for the bounding box</span>
+        <span class="c1"># Create coordinate grids for the bounding box. Same exclusive</span>
+        <span class="c1"># bbox convention as the crops above: regionprops max coords are</span>
+        <span class="c1"># half-open [min, max), so no +1 is needed here either.</span>
         <span class="n">mesh_z</span><span class="p">,</span> <span class="n">mesh_y</span><span class="p">,</span> <span class="n">mesh_x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span>
-            <span class="n">min_z</span> <span class="p">:</span> <span class="n">max_z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># + 1 to include the max index</span>
-            <span class="n">min_y</span> <span class="p">:</span> <span class="n">max_y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="n">min_x</span> <span class="p">:</span> <span class="n">max_x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">bbox_min_z</span><span class="p">:</span><span class="n">bbox_max_z</span><span class="p">,</span>
+            <span class="n">bbox_min_y</span><span class="p">:</span><span class="n">bbox_max_y</span><span class="p">,</span>
+            <span class="n">bbox_min_x</span><span class="p">:</span><span class="n">bbox_max_x</span><span class="p">,</span>
         <span class="p">]</span>
 
         <span class="c1"># calculate the integrated intensity</span>
-        <span class="n">integrated_intensity</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
-            <span class="n">selected_image_object</span><span class="p">,</span>
-            <span class="n">selected_label_object</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">integrated_intensity</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">object_pixels</span><span class="p">)</span>
         <span class="c1"># calculate the volume</span>
-        <span class="n">volume</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">selected_label_object</span><span class="p">)</span>
+        <span class="n">volume</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">object_mask</span><span class="p">)</span>
 
-        <span class="c1"># Skip if volume is zero to avoid division by zero</span>
-        <span class="k">if</span> <span class="n">volume</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">integrated_intensity</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">continue</span>
+        <span class="c1"># Skip if volume is zero to avoid division by zero. Unreachable in</span>
+        <span class="c1"># practice because ``object_mask`` (label voxels within the bbox)</span>
+        <span class="c1"># always has at least one True voxel — the bbox is derived from</span>
+        <span class="c1"># regionprops for this exact label. Kept as a defensive guard;</span>
+        <span class="c1"># excluded from coverage.</span>
+        <span class="k">if</span> <span class="n">volume</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">continue</span>  <span class="c1"># pragma: no cover</span>
 
         <span class="c1"># calculate the mean intensity</span>
         <span class="n">mean_intensity</span> <span class="o">=</span> <span class="n">integrated_intensity</span> <span class="o">/</span> <span class="n">volume</span>
@@ -452,13 +567,16 @@
         <span class="n">upper_quartile_intensity</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">non_zero_pixels_object</span><span class="p">,</span> <span class="mi">75</span><span class="p">)</span>
         <span class="c1"># median intensity</span>
         <span class="n">median_intensity</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">non_zero_pixels_object</span><span class="p">)</span>
-        <span class="c1"># max intensity location</span>
-        <span class="n">max_z</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">max_x</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">maximum_position</span><span class="p">(</span>
-            <span class="n">selected_image_object</span><span class="p">,</span>
-        <span class="p">)</span>  <span class="c1"># z, y, x</span>
+        <span class="c1"># location of maximum intensity pixel (z, y, x)</span>
+        <span class="n">max_position</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">cropped_image</span><span class="p">),</span>
+            <span class="n">cropped_image</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">max_intensity_z</span> <span class="o">=</span> <span class="n">bbox_min_z</span> <span class="o">+</span> <span class="n">max_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">max_intensity_y</span> <span class="o">=</span> <span class="n">bbox_min_y</span> <span class="o">+</span> <span class="n">max_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">max_intensity_x</span> <span class="o">=</span> <span class="n">bbox_min_x</span> <span class="o">+</span> <span class="n">max_position</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
         <span class="c1"># Calculate center of mass (geometric center) using cropped arrays</span>
-        <span class="n">object_mask</span> <span class="o">=</span> <span class="n">cropped_label</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="n">cm_x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mesh_x</span><span class="p">[</span><span class="n">object_mask</span><span class="p">])</span>
         <span class="n">cm_y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mesh_y</span><span class="p">[</span><span class="n">object_mask</span><span class="p">])</span>
         <span class="n">cm_z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mesh_z</span><span class="p">[</span><span class="n">object_mask</span><span class="p">])</span>
@@ -471,9 +589,15 @@
         <span class="n">i_y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">intensity_y_coord</span><span class="p">[</span><span class="n">object_mask</span><span class="p">])</span>
         <span class="n">i_z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">intensity_z_coord</span><span class="p">[</span><span class="n">object_mask</span><span class="p">])</span>
         <span class="c1"># calculate the center of mass</span>
-        <span class="n">cmi_x</span> <span class="o">=</span> <span class="n">i_x</span> <span class="o">/</span> <span class="n">integrated_intensity</span>
-        <span class="n">cmi_y</span> <span class="o">=</span> <span class="n">i_y</span> <span class="o">/</span> <span class="n">integrated_intensity</span>
-        <span class="n">cmi_z</span> <span class="o">=</span> <span class="n">i_z</span> <span class="o">/</span> <span class="n">integrated_intensity</span>
+        <span class="c1"># No signal to weight by -- the intensity-weighted center (and thus</span>
+        <span class="c1"># mass displacement) is genuinely undefined, not 0. Report NaN rather</span>
+        <span class="c1"># than asserting a false &quot;signal is symmetric&quot; reading.</span>
+        <span class="k">if</span> <span class="n">integrated_intensity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cmi_x</span> <span class="o">=</span> <span class="n">i_x</span> <span class="o">/</span> <span class="n">integrated_intensity</span>
+            <span class="n">cmi_y</span> <span class="o">=</span> <span class="n">i_y</span> <span class="o">/</span> <span class="n">integrated_intensity</span>
+            <span class="n">cmi_z</span> <span class="o">=</span> <span class="n">i_z</span> <span class="o">/</span> <span class="n">integrated_intensity</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cmi_x</span> <span class="o">=</span> <span class="n">cmi_y</span> <span class="o">=</span> <span class="n">cmi_z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
         <span class="c1"># calculate the center of mass distance</span>
         <span class="n">diff_x</span> <span class="o">=</span> <span class="n">cm_x</span> <span class="o">-</span> <span class="n">cmi_x</span>
         <span class="n">diff_y</span> <span class="o">=</span> <span class="n">cm_y</span> <span class="o">-</span> <span class="n">cmi_y</span>
@@ -483,11 +607,12 @@
         <span class="c1"># mean absolute deviation</span>
         <span class="n">mad_intensity</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">non_zero_pixels_object</span> <span class="o">-</span> <span class="n">mean_intensity</span><span class="p">))</span>
         <span class="n">edge_count</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask_outlines</span><span class="p">)</span>
-        <span class="n">integrated_intensity_edge</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">selected_image_object</span><span class="p">[</span><span class="n">mask_outlines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">edge_pixels</span> <span class="o">=</span> <span class="n">cropped_image</span><span class="p">[</span><span class="n">mask_outlines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">integrated_intensity_edge</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">edge_pixels</span><span class="p">)</span>
         <span class="n">mean_intensity_edge</span> <span class="o">=</span> <span class="n">integrated_intensity_edge</span> <span class="o">/</span> <span class="n">edge_count</span>
-        <span class="n">std_intensity_edge</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">selected_image_object</span><span class="p">[</span><span class="n">mask_outlines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
-        <span class="n">min_intensity_edge</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">selected_image_object</span><span class="p">[</span><span class="n">mask_outlines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
-        <span class="n">max_intensity_edge</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">selected_image_object</span><span class="p">[</span><span class="n">mask_outlines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">std_intensity_edge</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">edge_pixels</span><span class="p">)</span>
+        <span class="n">min_intensity_edge</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">edge_pixels</span><span class="p">)</span>
+        <span class="n">max_intensity_edge</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">edge_pixels</span><span class="p">)</span>
         <span class="n">measurements_dict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;IntegratedIntensity&quot;</span><span class="p">:</span> <span class="n">integrated_intensity</span><span class="p">,</span>
             <span class="s2">&quot;MeanIntensity&quot;</span><span class="p">:</span> <span class="n">mean_intensity</span><span class="p">,</span>
@@ -504,19 +629,16 @@
             <span class="s2">&quot;StdIntensityEdge&quot;</span><span class="p">:</span> <span class="n">std_intensity_edge</span><span class="p">,</span>
             <span class="s2">&quot;MinIntensityEdge&quot;</span><span class="p">:</span> <span class="n">min_intensity_edge</span><span class="p">,</span>
             <span class="s2">&quot;MaxIntensityEdge&quot;</span><span class="p">:</span> <span class="n">max_intensity_edge</span><span class="p">,</span>
-            <span class="s2">&quot;MaxZ&quot;</span><span class="p">:</span> <span class="n">max_z</span><span class="p">,</span>
-            <span class="s2">&quot;MaxY&quot;</span><span class="p">:</span> <span class="n">max_y</span><span class="p">,</span>
-            <span class="s2">&quot;MaxX&quot;</span><span class="p">:</span> <span class="n">max_x</span><span class="p">,</span>
+            <span class="s2">&quot;MaxZ&quot;</span><span class="p">:</span> <span class="n">max_intensity_z</span><span class="p">,</span>
+            <span class="s2">&quot;MaxY&quot;</span><span class="p">:</span> <span class="n">max_intensity_y</span><span class="p">,</span>
+            <span class="s2">&quot;MaxX&quot;</span><span class="p">:</span> <span class="n">max_intensity_x</span><span class="p">,</span>
             <span class="s2">&quot;CMI.X&quot;</span><span class="p">:</span> <span class="n">cmi_x</span><span class="p">,</span>
             <span class="s2">&quot;CMI.Y&quot;</span><span class="p">:</span> <span class="n">cmi_y</span><span class="p">,</span>
             <span class="s2">&quot;CMI.Z&quot;</span><span class="p">:</span> <span class="n">cmi_z</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="k">for</span> <span class="n">feature_name</span><span class="p">,</span> <span class="n">measurement_value</span> <span class="ow">in</span> <span class="n">measurements_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">measurement_value</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
-                <span class="n">coerced_value</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">measurement_value</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">coerced_value</span> <span class="o">=</span> <span class="n">measurement_value</span>
+            <span class="n">coerced_value</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">measurement_value</span><span class="p">)</span>
             <span class="n">output_dict</span><span class="p">[</span><span class="s2">&quot;Metadata_Object_ObjectID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
             <span class="n">output_dict</span><span class="p">[</span><span class="s2">&quot;feature_name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature_name</span><span class="p">)</span>
             <span class="n">output_dict</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">object_loader</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
@@ -544,6 +666,11 @@
         <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
+    <span class="n">final_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;Metadata_Imaging_ImageID&quot;</span><span class="p">,</span>
+        <span class="n">object_loader</span><span class="o">.</span><span class="n">image_set_loader</span><span class="o">.</span><span class="n">image_id</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">final_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
         <span class="mi">0</span><span class="p">,</span>
         <span class="s2">&quot;Metadata_Experiment_ImageSet&quot;</span><span class="p">,</span>
