@@ -43,7 +43,7 @@ def adjacency_footprint(anisotropy_factor: float) -> numpy.ndarray:
 
     """
     z_radius = 1
-    xy_radius = int(numpy.ceil(max(1, anisotropy_factor)))
+    xy_radius = max(1, int(numpy.ceil(anisotropy_factor)))
     footprint = numpy.zeros(
         (2 * z_radius + 1, 2 * xy_radius + 1, 2 * xy_radius + 1),
         dtype=bool,

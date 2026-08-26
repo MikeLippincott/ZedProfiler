@@ -62,7 +62,7 @@ def scale_image(image: numpy.ndarray, num_gray_levels: int = 256) -> numpy.ndarr
 def resample_to_isotropic(
     image: numpy.ndarray,
     anisotropy_factor: float,
-    order: int = 1,
+    order: int = 3,
 ) -> numpy.ndarray:
     """Resample a (z, y, x) volume to isotropic voxel spacing along z.
 
@@ -91,6 +91,11 @@ def resample_to_isotropic(
     """
     if anisotropy_factor == 1:
         return image
+
+    input_dtype = image.dtype
+    if numpy.issubdtype(input_dtype, numpy.integer):
+        image = image.astype(numpy.float32)
+
     return scipy.ndimage.zoom(
         image,
         zoom=(anisotropy_factor, 1.0, 1.0),
@@ -205,10 +210,36 @@ def compute_texture(  # noqa: C901
         if not numpy.any(object_mask):
             continue
         image_object[~object_mask] = 0
+
+        # order of operations here are as follows:
+        # 1. resample to isotropic voxel spacing
+        # a. this will interpolate the image, which will bleed over
+        # the object edges into the background, so we need to remask
+        # the image after resampling
+        # 2. resample the mask to isotropic
+        # voxel spacing (nearest neighbor)
+        # 3. remask the resampled image to ensure background is zero
+        #    this removes the bleed over from the interpolation
+        # of the object edges
+        # 4. mahotas can now use the resampled image and mask to
+        # compute the Haralick features for this object
+
+        # resample to isotropic after getting the object,
+        # this avoid the need to interpolate the mask
         image_object = resample_to_isotropic(
             image_object,
             anisotropy_factor=anisotropy_factor,
+            # order is 3 (cubic) by default
         )
+        label_object = resample_to_isotropic(
+            object_mask,
+            anisotropy_factor=anisotropy_factor,
+            order=0,  # nearest neighbor for mask
+        )
+        # remask the resampled image to ensure background is zero
+        # this removes the bleed over from the interpolation of the object edges
+        image_object[~label_object.astype(bool)] = 0
+
         image_object = scale_image(image_object, num_gray_levels=grayscale)
         with contextlib.suppress(ValueError):
             # calculates 13 Haralick features for each direction (13)

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import math
+
 import numpy
 import pandas
 import scipy.ndimage
@@ -18,42 +20,48 @@ def anisotropic_ball(
 ) -> numpy.ndarray:
     """Build a spherical structuring element that is physically isotropic.
 
-    ``skimage.morphology.ball(radius)`` is a sphere in voxel-index space:
-    ``radius`` voxels in every axis. When z-spacing is coarser than
-    x/y-spacing, that voxel-space sphere is actually a flattened ellipsoid in
-    physical space, biasing morphological operations (erosion/dilation used
-    here for background removal and the granularity spectrum) toward
-    under-reaching in z relative to x/y. This scales each axis's voxel radius
-    so the structuring element covers the same physical distance in every
-    direction.
-
     Parameters
     ----------
     radius : int
-        Desired physical radius, expressed in x/y voxels (i.e. the radius
-        this would have if spacing were isotropic).
+        Radius of the structuring element in voxel units.
     spacing : tuple[float, float, float] or None
-        Physical voxel spacing in (z, y, x) order. If None or isotropic,
-        this returns exactly ``skimage.morphology.ball(radius, dtype=bool)``.
+        Physical spacing of the image in (z, y, x) order.
+        If None, the structuring element is isotropic in voxel space.
+        If provided, the structuring element will be isotropic
+        in physical space, taking into account the anisotropy
+        of the voxel spacing.
 
     Returns
     -------
     numpy.ndarray
-        Boolean structuring element of shape
-        ``(2*rz+1, 2*ry+1, 2*rx+1)``.
+        A boolean array representing the structuring element,
+        where True values indicate the presence of the struct
+        during element and False values indicate the absence.
 
+    ...
     """
     if spacing is None:
         return skimage.morphology.ball(radius, dtype=bool)
+
     z_spacing, y_spacing, x_spacing = spacing
-    min_spacing = min(z_spacing, y_spacing, x_spacing)
-    rz = max(1, round(radius * min_spacing / z_spacing))
-    ry = max(1, round(radius * min_spacing / y_spacing))
-    rx = max(1, round(radius * min_spacing / x_spacing))
-    if rz == ry == rx == radius:
+    if z_spacing == y_spacing == x_spacing:
         return skimage.morphology.ball(radius, dtype=bool)
+
+    min_spacing = min(z_spacing, y_spacing, x_spacing)
+    physical_radius = radius * min_spacing
+
+    # Largest voxel offset on each axis that can still land within the
+    # physical radius. floor() (not round()) so a coarse axis correctly
+    # collapses to 0 when even one voxel step overshoots the radius.
+    rz = math.floor(physical_radius / z_spacing)
+    ry = math.floor(physical_radius / y_spacing)
+    rx = math.floor(physical_radius / x_spacing)
+
     zz, yy, xx = numpy.ogrid[-rz : rz + 1, -ry : ry + 1, -rx : rx + 1]
-    return ((zz / rz) ** 2 + (yy / ry) ** 2 + (xx / rx) ** 2) <= 1
+    physical_dist_sq = (
+        (zz * z_spacing) ** 2 + (yy * y_spacing) ** 2 + (xx * x_spacing) ** 2
+    )
+    return physical_dist_sq <= physical_radius**2
 
 
 def _fix_scipy_ndimage_result(result: float | list | numpy.ndarray) -> numpy.ndarray:
