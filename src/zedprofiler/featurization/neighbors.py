@@ -17,6 +17,44 @@ BBox3D = tuple[BBoxCoord, BBoxCoord, BBoxCoord, BBoxCoord, BBoxCoord, BBoxCoord]
 SMALL_SAMPLE_THRESHOLD = 20
 
 
+def adjacency_footprint(anisotropy_factor: float) -> numpy.ndarray:
+    """Build a 6-connectivity dilation footprint sized to represent one
+    physical unit of "touching" distance in each direction.
+
+    ``skimage.morphology.dilation``'s default footprint expands 1 voxel in
+    every axis, which only means the same physical distance in every
+    direction when voxels are isotropic. When z-spacing is coarser than
+    x/y-spacing (``anisotropy_factor`` > 1), 1 z-voxel already represents
+    ``anisotropy_factor`` times more physical distance than 1 x/y-voxel, so
+    the x/y arms are extended by that same factor to match.
+
+    At ``anisotropy_factor == 1`` this reduces to exactly the same 6-connected
+    cross skimage uses by default.
+
+    Parameters
+    ----------
+    anisotropy_factor : float
+        Ratio of z-spacing to x/y-spacing.
+
+    Returns
+    -------
+    numpy.ndarray
+        Boolean footprint of shape ``(3, 2*xy_radius + 1, 2*xy_radius + 1)``.
+
+    """
+    z_radius = 1
+    xy_radius = max(1, anisotropy_factor)
+    footprint = numpy.zeros(
+        (2 * z_radius + 1, 2 * xy_radius + 1, 2 * xy_radius + 1),
+        dtype=bool,
+    )
+    cz, cy, cx = z_radius, xy_radius, xy_radius
+    footprint[:, cy, cx] = True
+    footprint[cz, :, cx] = True
+    footprint[cz, cy, :] = True
+    return footprint
+
+
 def neighbors_expand_box(
     min_coor: int,
     max_coord: int,
@@ -175,6 +213,7 @@ def compute_neighbors(
         bbox = (new_z_min, new_y_min, new_x_min, new_z_max, new_y_max, new_x_max)
         croppped_neighbor_image = crop_3D_image(image=label_object, bbox=bbox)
 
+        adjacency_xy_radius = max(1, anisotropy_factor)
         adjacent_z_min, adjacent_z_max = neighbors_expand_box(
             min_coor=image_global_min_coord_z,
             max_coord=image_global_max_coord_z,
@@ -187,14 +226,14 @@ def compute_neighbors(
             max_coord=image_global_max_coord_y,
             current_min=y_min,
             current_max=y_max,
-            expand_by=1,
+            expand_by=adjacency_xy_radius,
         )
         adjacent_x_min, adjacent_x_max = neighbors_expand_box(
             min_coor=image_global_min_coord_x,
             max_coord=image_global_max_coord_x,
             current_min=x_min,
             current_max=x_max,
-            expand_by=1,
+            expand_by=adjacency_xy_radius,
         )
         adjacent_bbox = (
             adjacent_z_min,
@@ -206,7 +245,10 @@ def compute_neighbors(
         )
         adjacent_label_crop = crop_3D_image(image=label_object, bbox=adjacent_bbox)
         binary_mask = adjacent_label_crop == label
-        dilated_mask = skimage.morphology.dilation(binary_mask)
+        dilated_mask = skimage.morphology.dilation(
+            binary_mask,
+            footprint=adjacency_footprint(anisotropy_factor),
+        )
         labels_in_dilation = adjacent_label_crop[dilated_mask]
         adjacent_labels = numpy.unique(labels_in_dilation)
         n_neighbors_adjacent = int(
@@ -314,10 +356,30 @@ def calculate_centroid(coords: pandas.DataFrame) -> numpy.ndarray:
 def euclidean_distance_from_centroid(
     coords: numpy.ndarray,
     centroid: numpy.ndarray,
+    spacing: tuple[float, float, float] | None = None,
 ) -> numpy.ndarray:
-    """Calculate Euclidean distance from centroid for each cell."""
+    """Calculate Euclidean distance from centroid for each cell.
+
+    Parameters
+    ----------
+    coords : ndarray
+        Cell coordinates (n_cells, 3), in (x, y, z) order.
+    centroid : ndarray
+        Centroid coordinates (3,), in (x, y, z) order.
+    spacing : tuple[float, float, float] or None
+        Physical voxel spacing in (x, y, z) order, matching ``coords``. If
+        None (default), coordinates are treated as already isotropic (all
+        axes weighted equally). Pass this whenever ``coords`` are raw voxel
+        indices from an anisotropic volume, so distances reflect physical
+        space rather than voxel counts.
+
+    """
     coords = numpy.asarray(coords, dtype=float)
     centroid = numpy.asarray(centroid, dtype=float)
+    if spacing is not None:
+        spacing_arr = numpy.asarray(spacing, dtype=float)
+        coords = coords * spacing_arr
+        centroid = centroid * spacing_arr
     return numpy.sqrt(numpy.sum((coords - centroid) ** 2, axis=1))
 
 
@@ -325,6 +387,7 @@ def mahalanobis_distance_from_centroid(
     coords: numpy.ndarray,
     centroid: numpy.ndarray,
     min_cells_threshold: int = 50,
+    spacing: tuple[float, float, float] | None = None,
 ) -> numpy.ndarray:
     """Calculate Mahalanobis distance from centroid for each cell.
     This accounts for the covariance structure (shape) of the organoid.
@@ -334,11 +397,17 @@ def mahalanobis_distance_from_centroid(
     Parameters
     ----------
     coords : ndarray
-        Cell coordinates (n_cells, 3)
+        Cell coordinates (n_cells, 3), in (x, y, z) order.
     centroid : ndarray
-        Centroid coordinates (3,)
+        Centroid coordinates (3,), in (x, y, z) order.
     min_cells_threshold : int
         Minimum cells needed for reliable Mahalanobis (default: 50)
+    spacing : tuple[float, float, float] or None
+        Physical voxel spacing in (x, y, z) order, matching ``coords``. If
+        None (default), coordinates are treated as already isotropic. Pass
+        this whenever ``coords`` are raw voxel indices from an anisotropic
+        volume, so both the covariance structure and the distance reflect
+        physical space rather than voxel counts.
 
     Returns
     -------
@@ -348,6 +417,10 @@ def mahalanobis_distance_from_centroid(
     """
     coords = numpy.asarray(coords, dtype=float)
     centroid = numpy.asarray(centroid, dtype=float)
+    if spacing is not None:
+        spacing_arr = numpy.asarray(spacing, dtype=float)
+        coords = coords * spacing_arr
+        centroid = centroid * spacing_arr
 
     n_cells = len(coords)
 
@@ -396,6 +469,7 @@ def classify_cells_into_shells(
     method: str = "mahalanobis",
     min_cells_per_shell: int = 3,
     centroid: numpy.ndarray | None = None,
+    spacing: tuple[float, float, float] | None = None,
 ) -> tuple[dict, numpy.ndarray | None]:
     """Classify cells into radial shells based on distance from centroid.
 
@@ -413,6 +487,11 @@ def classify_cells_into_shells(
         Minimum average cells per shell (default: 3)
     centroid : numpy.ndarray, optional
         Pre-calculated centroid (if None, will be calculated from coords)
+    spacing : tuple[float, float, float], optional
+        Physical voxel spacing in (x, y, z) order, matching ``coords``. Pass
+        this when the volume has anisotropic spacing so that distances (and
+        therefore shell assignments) reflect physical space rather than raw
+        voxel counts. Defaults to None (isotropic, all axes weighted equally).
 
     Returns
     -------
@@ -457,9 +536,17 @@ def classify_cells_into_shells(
 
     # Calculate distances based on method
     if method == "mahalanobis":
-        distances = mahalanobis_distance_from_centroid(coords_array, centroid)
+        distances = mahalanobis_distance_from_centroid(
+            coords_array,
+            centroid,
+            spacing=spacing,
+        )
     else:  # euclidean
-        distances = euclidean_distance_from_centroid(coords_array, centroid)
+        distances = euclidean_distance_from_centroid(
+            coords_array,
+            centroid,
+            spacing=spacing,
+        )
 
     # Normalize distances to 0-1 range
     max_distance = numpy.percentile(

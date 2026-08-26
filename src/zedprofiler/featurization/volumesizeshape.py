@@ -167,12 +167,22 @@ def measure_3D_volume_size_shape(
             if prop_name != "label"
         }
 
+        # regionprops' area/bbox_area/equivalent_diameter are all computed
+        # from raw voxel counts (implicitly assuming unit voxel volume), so
+        # they need to be rescaled by the physical voxel volume to be
+        # unit-consistent with SurfaceArea (which is already physical, via
+        # marching_cubes(spacing=...) below).
+        voxel_volume = spacing[0] * spacing[1] * spacing[2]
+        volume_physical = props["area"].item() * voxel_volume
+        bbox_volume_physical = props["bbox_area"].item() * voxel_volume
+        equivalent_diameter_physical = (6 * volume_physical / np.pi) ** (1 / 3)
+
         features_to_record["Metadata_Object_ObjectID"].append(label)
-        features_to_record["Volume"].append(props["area"].item())
+        features_to_record["Volume"].append(volume_physical)
         features_to_record["CenterX"].append(props["centroid-2"].item())
         features_to_record["CenterY"].append(props["centroid-1"].item())
         features_to_record["CenterZ"].append(props["centroid-0"].item())
-        features_to_record["BboxVolume"].append(props["bbox_area"].item())
+        features_to_record["BboxVolume"].append(bbox_volume_physical)
         features_to_record["MinX"].append(props["bbox-2"].item())
         features_to_record["MaxX"].append(props["bbox-5"].item())
         features_to_record["MinY"].append(props["bbox-1"].item())
@@ -181,9 +191,7 @@ def measure_3D_volume_size_shape(
         features_to_record["MaxZ"].append(props["bbox-3"].item())
         features_to_record["Extent"].append(props["extent"].item())
         features_to_record["EulerNumber"].append(props["euler_number"].item())
-        features_to_record["EquivalentDiameter"].append(
-            props["equivalent_diameter"].item(),
-        )
+        features_to_record["EquivalentDiameter"].append(equivalent_diameter_physical)
 
         try:
             features_to_record["SurfaceArea"].append(

@@ -20,6 +20,8 @@ class ImageSetLoaderModel(BaseModel):
     image_set_name: str = "texture"
     # mirrors ImageSetLoader.image_id (falls back to image_set_name)
     image_id: str = "texture"
+    # mirrors ImageSetLoader.anisotropy_spacing (z, y, x spacing)
+    anisotropy_spacing: tuple[float, float, float] = (1.0, 1.0, 1.0)
 
 
 class ObjectLoaderModel(BaseModel):

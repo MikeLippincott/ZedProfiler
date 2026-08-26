@@ -12,6 +12,7 @@ import contextlib
 import mahotas
 import numpy
 import pandas
+import scipy.ndimage
 import skimage
 import skimage.measure
 
@@ -58,6 +59,45 @@ def scale_image(image: numpy.ndarray, num_gray_levels: int = 256) -> numpy.ndarr
     )
 
 
+def resample_to_isotropic(
+    image: numpy.ndarray,
+    anisotropy_factor: float,
+    order: int = 1,
+) -> numpy.ndarray:
+    """Resample a (z, y, x) volume to isotropic voxel spacing along z.
+
+    mahotas.features.haralick's ``distance`` parameter is a voxel count, not
+    a physical length, and several of its 13 directions step along z. If z
+    spacing is coarser than x/y spacing (the common microscopy case), those
+    directions sample a larger physical distance than the in-plane
+    directions, which biases the resulting Haralick features. Stretching the
+    z axis by the anisotropy factor before computing texture makes "1 voxel"
+    represent the same physical distance in every direction.
+
+    Parameters
+    ----------
+    image : numpy.ndarray
+        3D array in (z, y, x) order.
+    anisotropy_factor : float
+        Ratio of z-spacing to x/y-spacing (assumes isotropic x/y spacing).
+    order : int, optional
+        Interpolation order for the resampling, by default 1 (linear).
+
+    Returns
+    -------
+    numpy.ndarray
+        The volume resampled so that voxels are isotropic in physical space.
+
+    """
+    if anisotropy_factor == 1:
+        return image
+    return scipy.ndimage.zoom(
+        image,
+        zoom=(anisotropy_factor, 1.0, 1.0),
+        order=order,
+    )
+
+
 def compute_texture(  # noqa: C901
     object_loader: ObjectLoader,
     distance: int = 1,
@@ -96,6 +136,11 @@ def compute_texture(  # noqa: C901
         return pandas.DataFrame()
     label_object = object_loader.label_image
     labels = object_loader.object_ids
+    # Haralick's `distance` is a voxel count, not a physical length, so
+    # anisotropic z-spacing must be corrected for before computing texture
+    # (see resample_to_isotropic).
+    z_spacing, y_spacing, _x_spacing = object_loader.image_set_loader.anisotropy_spacing
+    anisotropy_factor = z_spacing / y_spacing
     feature_names = [
         "AngularSecondMoment",
         "Contrast",
@@ -160,6 +205,10 @@ def compute_texture(  # noqa: C901
         if not numpy.any(object_mask):
             continue
         image_object[~object_mask] = 0
+        image_object = resample_to_isotropic(
+            image_object,
+            anisotropy_factor=anisotropy_factor,
+        )
         image_object = scale_image(image_object, num_gray_levels=grayscale)
         with contextlib.suppress(ValueError):
             # calculates 13 Haralick features for each direction (13)
