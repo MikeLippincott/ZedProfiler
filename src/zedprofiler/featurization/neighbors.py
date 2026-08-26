@@ -43,7 +43,7 @@ def adjacency_footprint(anisotropy_factor: float) -> numpy.ndarray:
 
     """
     z_radius = 1
-    xy_radius = max(1, anisotropy_factor)
+    xy_radius = int(numpy.ceil(max(1, anisotropy_factor)))
     footprint = numpy.zeros(
         (2 * z_radius + 1, 2 * xy_radius + 1, 2 * xy_radius + 1),
         dtype=bool,
@@ -213,7 +213,7 @@ def compute_neighbors(
         bbox = (new_z_min, new_y_min, new_x_min, new_z_max, new_y_max, new_x_max)
         croppped_neighbor_image = crop_3D_image(image=label_object, bbox=bbox)
 
-        adjacency_xy_radius = max(1, anisotropy_factor)
+        adjacency_xy_radius = int(numpy.ceil(max(1, anisotropy_factor)))
         adjacent_z_min, adjacent_z_max = neighbors_expand_box(
             min_coor=image_global_min_coord_z,
             max_coord=image_global_max_coord_z,
