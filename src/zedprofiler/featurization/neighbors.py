@@ -42,7 +42,11 @@ def adjacency_footprint(anisotropy_factor: float) -> numpy.ndarray:
         Boolean footprint of shape ``(3, 2*xy_radius + 1, 2*xy_radius + 1)``.
 
     """
-    z_radius = 1
+    z_radius = 1  # the next slice essentially represents the
+    # same physical distance as 1 z-voxel, so always expand by 1 in z
+    # if the objects are touching it will be caught in this discrete
+    # scale. No need to interpolate here
+
     xy_radius = max(1, int(numpy.ceil(anisotropy_factor)))
     footprint = numpy.zeros(
         (2 * z_radius + 1, 2 * xy_radius + 1, 2 * xy_radius + 1),
