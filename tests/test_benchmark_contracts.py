@@ -21,8 +21,8 @@ EXPECTED_SIGNATURES = {
         "7b89edcd8c1427a3a0f50770ad3d97fdb5a919708686b6442db68c9d41795cbd"
     ),
     "neighbors": ("442ba04801300f09ba2796b44256aeed62bf34d1ec646aed4f9deb5ec1aa347b"),
-    "texture": ("1c96ea84d35ff9362705bf9847ad49186751d15bbe1ff3f1bdb280804c2f218a"),
-    "granularity": ("2023c1109fc17d95a0d92df3310d886803a4f90ae44a0f5f813820758ddc1139"),
+    "texture": ("0e4cfe60a9da0ee358a17cd6c60f05d993b3eb9f229a7ff1ace029789abed8cb"),
+    "granularity": ("b66528d9302f4d63d6f24d6c21c147ea9b0f4cd34539ebc66aaac9dd9342eb8f"),
     "colocalization": (
         "304321e87776fce46e6231e4b121bc931d1bd9cc3c8724912dec460dc42b5b8b"
     ),

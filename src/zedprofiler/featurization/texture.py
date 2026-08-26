@@ -231,14 +231,14 @@ def compute_texture(  # noqa: C901
             anisotropy_factor=anisotropy_factor,
             # order is 3 (cubic) by default
         )
-        label_object = resample_to_isotropic(
+        resampled_mask = resample_to_isotropic(
             object_mask,
             anisotropy_factor=anisotropy_factor,
             order=0,  # nearest neighbor for mask
         )
         # remask the resampled image to ensure background is zero
         # this removes the bleed over from the interpolation of the object edges
-        image_object[~label_object.astype(bool)] = 0
+        image_object[~resampled_mask.astype(bool)] = 0
 
         image_object = scale_image(image_object, num_gray_levels=grayscale)
         with contextlib.suppress(ValueError):
