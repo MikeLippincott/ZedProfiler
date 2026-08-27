@@ -17,6 +17,13 @@ from zedprofiler.featurization.granularity import (
 
 scipy = pytest.importorskip("scipy")
 
+ANISOTROPY_SPACINGS = [
+    (1.0, 1.0, 1.0),
+    (2.0, 1.0, 1.0),
+    (5.0, 1.0, 1.0),
+    (10.0, 1.0, 1.0),
+]
+
 
 class ImageSetLoaderModel(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -56,12 +63,14 @@ def make_image_and_label(
 
 
 @pytest.mark.parametrize("shape,center", [((12, 12, 12), (6, 6, 6))])
+@pytest.mark.parametrize("anisotropy_spacing", ANISOTROPY_SPACINGS)
 def test_compute_granularity_basic(
     shape: tuple[int, int, int],
     center: tuple[int, int, int],
+    anisotropy_spacing: tuple[float, float, float],
 ) -> None:
     img, lab = make_image_and_label(shape, center)
-    imgset = ImageSetLoaderModel()
+    imgset = ImageSetLoaderModel(anisotropy_spacing=anisotropy_spacing)
     loader = ObjectLoaderModel(
         image=img,
         label_image=lab,
@@ -390,9 +399,11 @@ def test_compute_granularity_zero_objects_returns_empty_dataframe() -> None:
 
 
 @pytest.mark.parametrize("shape,center", [((24, 48, 48), (12, 22, 32))])
+@pytest.mark.parametrize("anisotropy_spacing", ANISOTROPY_SPACINGS)
 def test_compute_granularity_sparse_object_in_larger_image(
     shape: tuple[int, int, int],
     center: tuple[int, int, int],
+    anisotropy_spacing: tuple[float, float, float],
 ) -> None:
     """A small object far from the edges of a much larger, subsampled image.
 
@@ -403,7 +414,7 @@ def test_compute_granularity_sparse_object_in_larger_image(
     elsewhere in this file, where the object is a large fraction of the image.
     """
     img, lab = make_image_and_label(shape, center)
-    imgset = ImageSetLoaderModel()
+    imgset = ImageSetLoaderModel(anisotropy_spacing=anisotropy_spacing)
     loader = ObjectLoaderModel(
         image=img,
         label_image=lab,

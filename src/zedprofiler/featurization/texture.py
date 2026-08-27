@@ -16,7 +16,10 @@ import scipy.ndimage
 import skimage
 import skimage.measure
 
-from zedprofiler.contracts import validate_column_name_schema
+from zedprofiler.contracts import (
+    validate_anisotropy_factor_with_pydantic,
+    validate_column_name_schema,
+)
 from zedprofiler.IO.feature_writing_utils import format_morphology_feature_name
 from zedprofiler.IO.loading_classes import ObjectLoader
 
@@ -65,6 +68,12 @@ def resample_to_isotropic(
     order: int = 3,
 ) -> numpy.ndarray:
     """Resample a (z, y, x) volume to isotropic voxel spacing along z.
+    This function is written to be used for both the signal image
+    and the mask image.
+    The order parameter controls the interpolation 
+    for the resampling.
+    For the signal image, we use cubic spline interpolation (order=3).
+    For the mask image, we use nearest neighbor interpolation (order=0).
 
     mahotas.features.haralick's ``distance`` parameter is a voxel count, not
     a physical length, and several of its 13 directions step along z. If z
@@ -145,7 +154,9 @@ def compute_texture(  # noqa: C901
     # anisotropic z-spacing must be corrected for before computing texture
     # (see resample_to_isotropic).
     z_spacing, y_spacing, _x_spacing = object_loader.image_set_loader.anisotropy_spacing
-    anisotropy_factor = z_spacing / y_spacing
+    anisotropy_factor = validate_anisotropy_factor_with_pydantic(
+        z_spacing / y_spacing,
+    ).anisotropy_factor
     feature_names = [
         "AngularSecondMoment",
         "Contrast",
@@ -226,10 +237,13 @@ def compute_texture(  # noqa: C901
 
         # resample to isotropic after getting the object,
         # this avoid the need to interpolate the mask
+        # image interpolation is done with
+        # cubic spline interpolation (order=3)
+        # mask interpolation is done with nearest neighbor (order=0)
         image_object = resample_to_isotropic(
             image_object,
             anisotropy_factor=anisotropy_factor,
-            # order is 3 (cubic) by default
+            order=3,  # cubic spline interpolation for image
         )
         resampled_mask = resample_to_isotropic(
             object_mask,

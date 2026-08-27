@@ -217,7 +217,6 @@ def compute_neighbors(
         bbox = (new_z_min, new_y_min, new_x_min, new_z_max, new_y_max, new_x_max)
         croppped_neighbor_image = crop_3D_image(image=label_object, bbox=bbox)
 
-        adjacency_xy_radius = int(numpy.ceil(max(1, anisotropy_factor)))
         adjacent_z_min, adjacent_z_max = neighbors_expand_box(
             min_coor=image_global_min_coord_z,
             max_coord=image_global_max_coord_z,
@@ -230,14 +229,14 @@ def compute_neighbors(
             max_coord=image_global_max_coord_y,
             current_min=y_min,
             current_max=y_max,
-            expand_by=adjacency_xy_radius,
+            expand_by=1,
         )
         adjacent_x_min, adjacent_x_max = neighbors_expand_box(
             min_coor=image_global_min_coord_x,
             max_coord=image_global_max_coord_x,
             current_min=x_min,
             current_max=x_max,
-            expand_by=adjacency_xy_radius,
+            expand_by=1,
         )
         adjacent_bbox = (
             adjacent_z_min,
@@ -342,12 +341,14 @@ def get_coordinates(
     }
 
     for obj_id in object_ids:
+        if obj_id == 0:
+            continue  # skip background
         z, y, x = numpy.where(nuclei_mask == obj_id)
-        centroid = (numpy.mean(x), numpy.mean(y), numpy.mean(z))
+        centroid = (numpy.mean(z), numpy.mean(y), numpy.mean(x))
         coords["Metadata_Object_ObjectID"].append(obj_id)
-        coords["x"].append(centroid[0])
+        coords["z"].append(centroid[0])
         coords["y"].append(centroid[1])
-        coords["z"].append(centroid[2])
+        coords["x"].append(centroid[2])
 
     return pandas.DataFrame(coords)
 
@@ -367,11 +368,11 @@ def euclidean_distance_from_centroid(
     Parameters
     ----------
     coords : ndarray
-        Cell coordinates (n_cells, 3), in (x, y, z) order.
+        Cell coordinates (n_cells, 3), in (z, y, x) order.
     centroid : ndarray
-        Centroid coordinates (3,), in (x, y, z) order.
+        Centroid coordinates (3,), in (z, y, x) order.
     spacing : tuple[float, float, float] or None
-        Physical voxel spacing in (x, y, z) order, matching ``coords``. If
+        Physical voxel spacing in (z, y, x) order, matching ``coords``. If
         None (default), coordinates are treated as already isotropic (all
         axes weighted equally). Pass this whenever ``coords`` are raw voxel
         indices from an anisotropic volume, so distances reflect physical
@@ -401,13 +402,13 @@ def mahalanobis_distance_from_centroid(
     Parameters
     ----------
     coords : ndarray
-        Cell coordinates (n_cells, 3), in (x, y, z) order.
+        Cell coordinates (n_cells, 3), in (z, y, x) order.
     centroid : ndarray
-        Centroid coordinates (3,), in (x, y, z) order.
+        Centroid coordinates (3,), in (z, y, x) order.
     min_cells_threshold : int
         Minimum cells needed for reliable Mahalanobis (default: 50)
     spacing : tuple[float, float, float] or None
-        Physical voxel spacing in (x, y, z) order, matching ``coords``. If
+        Physical voxel spacing in (z, y, x) order, matching ``coords``. If
         None (default), coordinates are treated as already isotropic. Pass
         this whenever ``coords`` are raw voxel indices from an anisotropic
         volume, so both the covariance structure and the distance reflect
@@ -482,7 +483,7 @@ def classify_cells_into_shells(
     Parameters
     ----------
     coords : pandas.DataFrame or dict
-        Cell coordinates with /keys: object_id, x, y, z
+        Cell coordinates with /keys: object_id, z, y, x
     n_shells : int
         Number of concentric shells to create (will be adjusted if needed)
     method : str
@@ -492,7 +493,7 @@ def classify_cells_into_shells(
     centroid : numpy.ndarray, optional
         Pre-calculated centroid (if None, will be calculated from coords)
     spacing : tuple[float, float, float], optional
-        Physical voxel spacing in (x, y, z) order, matching ``coords``. Pass
+        Physical voxel spacing in (z, y, x) order, matching ``coords``. Pass
         this when the volume has anisotropic spacing so that distances (and
         therefore shell assignments) reflect physical space rather than raw
         voxel counts. Defaults to None (isotropic, all axes weighted equally).
@@ -510,10 +511,10 @@ def classify_cells_into_shells(
     # Handle both DataFrame and dict input
     if isinstance(coords, pandas.DataFrame):
         object_ids = coords["Metadata_Object_ObjectID"].to_numpy()
-        coords_array = coords[["x", "y", "z"]].to_numpy()
+        coords_array = coords[["z", "y", "x"]].to_numpy()
     else:
         object_ids = numpy.array(coords["Metadata_Object_ObjectID"])
-        coords_array = numpy.column_stack([coords["x"], coords["y"], coords["z"]])
+        coords_array = numpy.column_stack([coords["z"], coords["y"], coords["x"]])
     if len(coords_array) == 0:
         results: dict = {
             "Metadata_Object_ObjectID": [],
@@ -622,7 +623,7 @@ def visualize_organoid_shells(
     Parameters
     ----------
     coords : pandas.DataFrame or dict
-        Cell coordinates with columns/keys: object_id, x, y, z
+        Cell coordinates with columns/keys: object_id, z, y, x
     classification_results : dict
         Results from classify_cells_into_shells
     title : str
@@ -631,13 +632,13 @@ def visualize_organoid_shells(
     """
     # Handle both DataFrame and dict input
     if isinstance(coords, pandas.DataFrame):
-        x_coords = coords["x"].to_numpy()
-        y_coords = coords["y"].to_numpy()
         z_coords = coords["z"].to_numpy()
+        y_coords = coords["y"].to_numpy()
+        x_coords = coords["x"].to_numpy()
     else:
-        x_coords = numpy.array(coords["x"])
-        y_coords = numpy.array(coords["y"])
         z_coords = numpy.array(coords["z"])
+        y_coords = numpy.array(coords["y"])
+        x_coords = numpy.array(coords["x"])
 
     fig = plt.figure(figsize=(14, 6))
 
@@ -679,9 +680,9 @@ def visualize_organoid_shells(
             linewidths=2,
         )
 
-    ax1.set_xlabel("X")
+    ax1.set_xlabel("Z")
     ax1.set_ylabel("Y")
-    ax1.set_zlabel("Z")  # type: ignore[attr-defined]
+    ax1.set_zlabel("X")  # type: ignore[attr-defined]
     ax1.set_title(title)
     ax1.legend(loc="upper right", fontsize=8)
 

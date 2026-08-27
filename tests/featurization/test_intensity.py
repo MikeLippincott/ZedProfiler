@@ -8,6 +8,13 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 from zedprofiler.featurization.intensity import compute_intensity
 
+ANISOTROPY_SPACINGS = [
+    (1.0, 1.0, 1.0),
+    (2.0, 1.0, 1.0),
+    (5.0, 1.0, 1.0),
+    (10.0, 1.0, 1.0),
+]
+
 
 class ImageSetLoaderModel(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -140,12 +147,14 @@ def test_integrated_intensity_is_per_object_not_global() -> None:
 
 
 @pytest.mark.parametrize("shape,center", [((6, 6, 6), (3, 3, 3))])
+@pytest.mark.parametrize("anisotropy_spacing", ANISOTROPY_SPACINGS)
 def test_compute_intensity_basic(
     shape: tuple[int, int, int],
     center: tuple[int, int, int],
+    anisotropy_spacing: tuple[float, float, float],
 ) -> None:
     img, lab = make_label_and_image(shape, center)
-    imgset = ImageSetLoaderModel()
+    imgset = ImageSetLoaderModel(anisotropy_spacing=anisotropy_spacing)
     loader = ObjectLoaderModel(
         image=img,
         label_image=lab,
@@ -158,7 +167,10 @@ def test_compute_intensity_basic(
     assert "Metadata_Object_ObjectID" in df.columns
 
 
-def test_compute_intensity_skips_phantom_object_id_without_bbox() -> None:
+@pytest.mark.parametrize("anisotropy_spacing", ANISOTROPY_SPACINGS)
+def test_compute_intensity_skips_phantom_object_id_without_bbox(
+    anisotropy_spacing: tuple[float, float, float],
+) -> None:
     """Object ids absent from the label image are skipped, not crashed on.
 
     ``compute_intensity`` looks up each requested object id in the
@@ -174,7 +186,7 @@ def test_compute_intensity_skips_phantom_object_id_without_bbox() -> None:
     image[3:7, 3:7, 3:7] = 100.0
     label[3:7, 3:7, 3:7] = 1
 
-    imgset = ImageSetLoaderModel()
+    imgset = ImageSetLoaderModel(anisotropy_spacing=anisotropy_spacing)
     loader = ObjectLoaderModel(
         image=image,
         label_image=label,

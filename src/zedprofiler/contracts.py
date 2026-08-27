@@ -29,6 +29,7 @@ from pydantic import (
 
 from zedprofiler.exceptions import ContractError
 
+MIN_ANISOTROPY_FACTOR = 1
 EXPECTED_SPATIAL_DIMS = 3
 TWO_DIMENSIONAL = 2
 FOUR_DIMENSIONAL = 4
@@ -126,6 +127,28 @@ class ImageArrayModel(BaseModel):
                 f"Input array with dtype {arr.dtype} failed type contract validation.",
             )
         return arr
+
+
+class AnisotropyFactorModel(BaseModel):
+    """Pydantic model for validating the anisotropy factor.
+
+    Feature modules (e.g. texture, neighbors) assume the z-spacing is never
+    finer than the x/y-spacing, so ``anisotropy_factor`` (z_spacing /
+    y_spacing) must be 1 or greater.
+    """
+
+    anisotropy_factor: float
+
+    @field_validator("anisotropy_factor", mode="after")
+    @classmethod
+    def validate_at_least_one(_cls, value: float) -> float:
+        """Ensure the anisotropy factor is 1 or greater."""
+        if value < MIN_ANISOTROPY_FACTOR:
+            raise ValueError(
+                f"Anisotropy factor must be {MIN_ANISOTROPY_FACTOR} or greater, "
+                f"got {value}.",
+            )
+        return value
 
 
 class FeatureDictModel(BaseModel):
@@ -367,6 +390,37 @@ def validate_return_with_pydantic(
         msg = (
             "Return schema validation failed. Please ensure that the data "
             f"fit the expected schema: {e}"
+        )
+        raise ContractError(msg)
+
+
+def validate_anisotropy_factor_with_pydantic(
+    anisotropy_factor: float,
+) -> AnisotropyFactorModel:
+    """Validate the anisotropy factor using a Pydantic model.
+
+    Parameters
+    ----------
+    anisotropy_factor : float
+        Ratio of z-spacing to y-spacing to validate.
+
+    Returns
+    -------
+    AnisotropyFactorModel
+        Validated anisotropy factor model.
+
+    Raises
+    ------
+    ContractError
+        If the anisotropy factor is less than ``MIN_ANISOTROPY_FACTOR``.
+
+    """
+    try:
+        return AnisotropyFactorModel(anisotropy_factor=anisotropy_factor)
+    except Exception as e:
+        msg = (
+            "Anisotropy factor validation failed. Please ensure that the "
+            f"z-spacing is not finer than the y-spacing: {e}"
         )
         raise ContractError(msg)
 
