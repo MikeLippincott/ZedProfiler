@@ -18,12 +18,21 @@ from zedprofiler.featurization.granularity import (
 
 scipy = pytest.importorskip("scipy")
 
+ANISOTROPY_SPACINGS = [
+    (1.0, 1.0, 1.0),
+    (2.0, 1.0, 1.0),
+    (5.0, 1.0, 1.0),
+    (10.0, 1.0, 1.0),
+]
+
 
 class ImageSetLoaderModel(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     image_set_name: str = "gran"
     # mirrors ImageSetLoader.image_id (falls back to image_set_name)
     image_id: str = "gran"
+    # mirrors ImageSetLoader.anisotropy_spacing (z, y, x spacing)
+    anisotropy_spacing: tuple[float, float, float] = (1.0, 1.0, 1.0)
 
 
 class ObjectLoaderModel(BaseModel):
@@ -55,12 +64,14 @@ def make_image_and_label(
 
 
 @pytest.mark.parametrize("shape,center", [((12, 12, 12), (6, 6, 6))])
+@pytest.mark.parametrize("anisotropy_spacing", ANISOTROPY_SPACINGS)
 def test_compute_granularity_basic(
     shape: tuple[int, int, int],
     center: tuple[int, int, int],
+    anisotropy_spacing: tuple[float, float, float],
 ) -> None:
     img, lab = make_image_and_label(shape, center)
-    imgset = ImageSetLoaderModel()
+    imgset = ImageSetLoaderModel(anisotropy_spacing=anisotropy_spacing)
     loader = ObjectLoaderModel(
         image=img,
         label_image=lab,
@@ -124,7 +135,15 @@ def test_compute_granularity_subsample_size_ge_1_uses_copy() -> None:
         image = img
         label_image = lab
         object_ids: ClassVar[list[int]] = [1]
-        image_set_loader = type("ISL", (), {"image_set_name": "s", "image_id": "s"})()
+        image_set_loader = type(
+            "ISL",
+            (),
+            {
+                "image_set_name": "s",
+                "image_id": "s",
+                "anisotropy_spacing": (1.0, 1.0, 1.0),
+            },
+        )()
         compartment = "Cell"
         channel = "Ch1"
 
@@ -150,7 +169,15 @@ def test_compute_granularity_with_image_sample_size_background_path() -> None:
         image = img
         label_image = lab
         object_ids: ClassVar[list[int]] = [1]
-        image_set_loader = type("ISL", (), {"image_set_name": "s", "image_id": "s"})()
+        image_set_loader = type(
+            "ISL",
+            (),
+            {
+                "image_set_name": "s",
+                "image_id": "s",
+                "anisotropy_spacing": (1.0, 1.0, 1.0),
+            },
+        )()
         compartment = "Cell"
         channel = "Ch1"
 
@@ -180,7 +207,15 @@ def test_compute_granularity_mask_handling_and_zero_volume_skips() -> None:
         image = img
         label_image = lab
         object_ids: ClassVar[list[int]] = [1]
-        image_set_loader = type("ISL", (), {"image_set_name": "s", "image_id": "s"})()
+        image_set_loader = type(
+            "ISL",
+            (),
+            {
+                "image_set_name": "s",
+                "image_id": "s",
+                "anisotropy_spacing": (1.0, 1.0, 1.0),
+            },
+        )()
         compartment = "Cell"
         channel = "Ch1"
 
@@ -225,7 +260,15 @@ def test_granularity_no_crash_on_single_z_slice() -> None:
         image = img
         label_image = lab
         object_ids: ClassVar[list[int]] = [1]
-        image_set_loader = type("ISL", (), {"image_set_name": "s", "image_id": "s"})()
+        image_set_loader = type(
+            "ISL",
+            (),
+            {
+                "image_set_name": "s",
+                "image_id": "s",
+                "anisotropy_spacing": (1.0, 1.0, 1.0),
+            },
+        )()
         compartment = "Cell"
         channel = "Ch1"
 
@@ -252,7 +295,15 @@ def test_compute_granularity_preserves_sparse_label_ids() -> None:
         image = img
         label_image = lab
         object_ids: ClassVar[list[int]] = [257, 514]
-        image_set_loader = type("ISL", (), {"image_set_name": "s", "image_id": "s"})()
+        image_set_loader = type(
+            "ISL",
+            (),
+            {
+                "image_set_name": "s",
+                "image_id": "s",
+                "anisotropy_spacing": (1.0, 1.0, 1.0),
+            },
+        )()
         compartment = "Cell"
         channel = "Ch1"
 
@@ -354,7 +405,15 @@ def test_compute_granularity_zero_objects_returns_empty_dataframe() -> None:
         image = img
         label_image = lab
         object_ids: ClassVar[list[int]] = []
-        image_set_loader = type("ISL", (), {"image_set_name": "s", "image_id": "s"})()
+        image_set_loader = type(
+            "ISL",
+            (),
+            {
+                "image_set_name": "s",
+                "image_id": "s",
+                "anisotropy_spacing": (1.0, 1.0, 1.0),
+            },
+        )()
         compartment = "Cell"
         channel = "Ch1"
 
@@ -367,9 +426,11 @@ def test_compute_granularity_zero_objects_returns_empty_dataframe() -> None:
 
 
 @pytest.mark.parametrize("shape,center", [((24, 48, 48), (12, 22, 32))])
+@pytest.mark.parametrize("anisotropy_spacing", ANISOTROPY_SPACINGS)
 def test_compute_granularity_sparse_object_in_larger_image(
     shape: tuple[int, int, int],
     center: tuple[int, int, int],
+    anisotropy_spacing: tuple[float, float, float],
 ) -> None:
     """A small object far from the edges of a much larger, subsampled image.
 
@@ -380,7 +441,7 @@ def test_compute_granularity_sparse_object_in_larger_image(
     elsewhere in this file, where the object is a large fraction of the image.
     """
     img, lab = make_image_and_label(shape, center)
-    imgset = ImageSetLoaderModel()
+    imgset = ImageSetLoaderModel(anisotropy_spacing=anisotropy_spacing)
     loader = ObjectLoaderModel(
         image=img,
         label_image=lab,

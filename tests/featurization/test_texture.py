@@ -15,6 +15,12 @@ from zedprofiler.featurization.texture import compute_texture, scale_image  # no
 
 LABEL_OBJ_1 = 1
 LABEL_OBJ_2 = 2
+ANISOTROPY_SPACINGS = [
+    (1.0, 1.0, 1.0),
+    (2.0, 1.0, 1.0),
+    (5.0, 1.0, 1.0),
+    (10.0, 1.0, 1.0),
+]
 
 
 class ImageSetLoaderModel(BaseModel):
@@ -22,6 +28,8 @@ class ImageSetLoaderModel(BaseModel):
     image_set_name: str = "texture"
     # mirrors ImageSetLoader.image_id (falls back to image_set_name)
     image_id: str = "texture"
+    # mirrors ImageSetLoader.anisotropy_spacing (z, y, x spacing)
+    anisotropy_spacing: tuple[float, float, float] = (1.0, 1.0, 1.0)
 
 
 class ObjectLoaderModel(BaseModel):
@@ -53,12 +61,14 @@ def make_texture_image(
 
 
 @pytest.mark.parametrize("shape,center", [((15, 15, 15), (7, 7, 7))])
+@pytest.mark.parametrize("anisotropy_spacing", ANISOTROPY_SPACINGS)
 def test_compute_texture_basic(
     shape: tuple[int, int, int],
     center: tuple[int, int, int],
+    anisotropy_spacing: tuple[float, float, float],
 ) -> None:
     image, label = make_texture_image(shape, center)
-    imgset = ImageSetLoaderModel()
+    imgset = ImageSetLoaderModel(anisotropy_spacing=anisotropy_spacing)
     loader = ObjectLoaderModel(
         image=image,
         label_image=label,
