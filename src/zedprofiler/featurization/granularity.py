@@ -332,7 +332,7 @@ def compute_granularity(  # noqa: C901, PLR0912, PLR0913, PLR0915
     # subsample_size here instead, a bug that leaves back_pixels the same
     # size as pixels (mostly zero-filled from out-of-bounds sampling) and
     # applies the tophat radius at the wrong scale. We intentionally do
-    # not replicate that bug.
+    # not replicate that 3D bug.
     # ------------------------------------------------------------------
     if image_sample_size < 1.0:
         back_shape = new_shape * image_sample_size
