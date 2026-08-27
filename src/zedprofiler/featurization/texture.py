@@ -70,7 +70,7 @@ def resample_to_isotropic(
     """Resample a (z, y, x) volume to isotropic voxel spacing along z.
     This function is written to be used for both the signal image
     and the mask image.
-    The order parameter controls the interpolation 
+    The order parameter controls the interpolation
     for the resampling.
     For the signal image, we use cubic spline interpolation (order=3).
     For the mask image, we use nearest neighbor interpolation (order=0).
