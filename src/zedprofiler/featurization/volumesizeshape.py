@@ -177,6 +177,11 @@ def measure_3D_volume_size_shape(
         # volume to get the physical volume
         # if isometric, voxel_volume = 1,
         # so volume_physical = props["area"].item()
+        # multiply by the voxel volume to get the physical volume
+        # this means anisotropic voxel sizes are properly
+        # accounted for in the volume calculation
+        # and isotropic voxel sizes are also properly accounted for
+        # and do not change the volume calculation
         volume_physical = props["area"].item() * voxel_volume
         bbox_volume_physical = props["bbox_area"].item() * voxel_volume
         equivalent_diameter_physical = (6 * volume_physical / np.pi) ** (1 / 3)
