@@ -221,6 +221,8 @@ class ImageSetLoader:
         self.anisotropy_spacing = anisotropy_spacing
         self.anisotropy_factor = validate_anisotropy_factor_with_pydantic(
             self.anisotropy_spacing[0] / self.anisotropy_spacing[1],
+            y_spacing=self.anisotropy_spacing[1],
+            x_spacing=self.anisotropy_spacing[2],
         ).anisotropy_factor
         self.image_set_name = config.image_set_name
         self.label_set_path = label_set_path
@@ -305,6 +307,8 @@ class ImageSetLoader:
         self.anisotropy_spacing = anisotropy_spacing
         self.anisotropy_factor = validate_anisotropy_factor_with_pydantic(
             self.anisotropy_spacing[0] / self.anisotropy_spacing[1],
+            y_spacing=self.anisotropy_spacing[1],
+            x_spacing=self.anisotropy_spacing[2],
         ).anisotropy_factor
         self.image_set_name = image_set_name
         self.label_set_path = None
@@ -547,6 +551,8 @@ class ImageSetLoader:
         """
         return validate_anisotropy_factor_with_pydantic(
             self.anisotropy_spacing[0] / self.anisotropy_spacing[1],
+            y_spacing=self.anisotropy_spacing[1],
+            x_spacing=self.anisotropy_spacing[2],
         ).anisotropy_factor
 
 

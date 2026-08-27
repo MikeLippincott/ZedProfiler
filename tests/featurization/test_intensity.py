@@ -168,6 +168,52 @@ def test_compute_intensity_basic(
 
 
 @pytest.mark.parametrize("anisotropy_spacing", ANISOTROPY_SPACINGS)
+def test_compute_intensity_mass_displacement_scales_with_z_spacing(
+    anisotropy_spacing: tuple[float, float, float],
+) -> None:
+    """MassDisplacement must scale the z-offset by the physical z-spacing.
+
+    A single centered voxel is always symmetric (geometric center equals
+    intensity-weighted center regardless of spacing), so it never exercises
+    the z-spacing scaling in ``compute_intensity``. This uses a two-voxel
+    object, offset only along z with unequal intensities, so the geometric
+    and intensity-weighted centers diverge along z and MassDisplacement has
+    a spacing-dependent expected value.
+    """
+    shape = (6, 6, 6)
+    image = np.zeros(shape, dtype=float)
+    label = np.zeros(shape, dtype=int)
+    image[1, 2, 2] = 1.0
+    image[4, 2, 2] = 3.0
+    label[1, 2, 2] = 1
+    label[4, 2, 2] = 1
+
+    imgset = ImageSetLoaderModel(anisotropy_spacing=anisotropy_spacing)
+    loader = ObjectLoaderModel(
+        image=image,
+        label_image=label,
+        object_ids=[1],
+        image_set_loader=imgset,
+    )
+
+    df = compute_intensity(loader)
+    md_col = [c for c in df.columns if "MassDisplacement" in c]
+    assert md_col, "MassDisplacement column not found in output"
+
+    row = df[df["Metadata_Object_ObjectID"] == 1]
+    mass_displacement = float(row[md_col[0]].values[0])
+
+    z_spacing, _y_spacing, _x_spacing = anisotropy_spacing
+    cm_z = (1 + 4) / 2
+    cmi_z = (1 * 1.0 + 4 * 3.0) / (1.0 + 3.0)
+    expected = abs(cm_z - cmi_z) * z_spacing
+    assert np.isclose(mass_displacement, expected, atol=1e-6), (
+        f"MassDisplacement = {mass_displacement}, expected {expected} for "
+        f"anisotropy_spacing={anisotropy_spacing}."
+    )
+
+
+@pytest.mark.parametrize("anisotropy_spacing", ANISOTROPY_SPACINGS)
 def test_compute_intensity_skips_phantom_object_id_without_bbox(
     anisotropy_spacing: tuple[float, float, float],
 ) -> None:

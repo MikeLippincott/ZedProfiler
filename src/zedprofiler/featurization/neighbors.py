@@ -658,9 +658,9 @@ def visualize_organoid_shells(
         mask = shell_assignments == shell
         if numpy.sum(mask) > 0:  # Only plot if shell has cells
             ax1.scatter(  # type: ignore[misc]
-                x_coords[mask],
-                y_coords[mask],
                 z_coords[mask],
+                y_coords[mask],
+                x_coords[mask],
                 c=[colors[shell]],
                 label=f"Shell {shell + 1} (n={numpy.sum(mask)})",
                 s=50,
